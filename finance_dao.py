@@ -3,7 +3,7 @@ import requests
 import json
 from json import JSONDecodeError
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, date
 from pandas_datareader import data
 
 
@@ -55,11 +55,11 @@ class Iol(object):
 
     def getCotiz(self, ticker, mercado='bCBA'):
         URL="https://api.invertironline.com/api/v2/"+mercado+"/Titulos/"+ticker+"/Cotizacion?mercado="+mercado+"&simbolo="+ticker+"&model.simbolo="+ticker+"&model.mercado="+mercado
-        auth="Bearer "+self.token
-        headers={'Authorization': auth}
+
+        headers={'Authorization': "Bearer "+self.token}
 
         r = requests.get(url = URL, headers = headers)
-        if (r.status_code != 200):
+        if r.status_code != 200:
             raise ConnectionError("Fallo conexion IOL, CODE: " + str(r.status_code))
 
         body=""
@@ -87,6 +87,44 @@ class Iol(object):
 
 
         return [float(body['cierreAnterior']),float(body['ultimoPrecio']), proporcionTicker]
+
+    def getCotizConPuntas(self, ticker, mercado='bCBA'):
+        URL = "https://api.invertironline.com/api/v2/" + mercado + "/Titulos/" + ticker + "/Cotizacion?mercado=" + mercado + "&simbolo=" + ticker + "&model.simbolo=" + ticker + "&model.mercado=" + mercado
+        headers = {'Authorization': "Bearer " + self.token}
+
+        r = requests.get(url=URL, headers=headers)
+        if r.status_code != 200:
+            raise ConnectionError("Fallo conexion IOL, CODE: " + str(r.status_code))
+
+        body = ""
+        try:
+            body = json.loads(r.text)
+            listaPuntas = body['puntas']
+        except (JSONDecodeError, KeyError):
+            self.login()
+            print('Fallo la consulta api iol, intento Reconexion. Status code: ' + str(r.status_code))
+
+        # print(' - - '+ticker+': '+json.dumps(body, indent=4, sort_keys=True))
+
+        cantidadCompra = 0
+        cantidadVenta = 0
+        precioCompra = 0
+        precioVenta = 200000
+
+        ##print(' - - '+ticker+': '+json.dumps(body, indent=4, sort_keys=True))
+        for j in listaPuntas:
+            if j['precioCompra']>precioCompra:
+                precioCompra=j['precioCompra']
+                cantidadCompra = j['cantidadCompra']
+            if j['precioVenta']<precioVenta:
+                precioVenta = j['precioVenta']
+                cantidadVenta = j['cantidadVenta']
+
+
+        return [float(body['cierreAnterior']), float(body['ultimoPrecio']), precioCompra, cantidadCompra, precioVenta, cantidadVenta]
+
+
+
 
     ## Devuelve un dataframe de Panda con las acciones del mercado BVBA y la cotiz del ultimo cierre
     # 'UltimoPrecio devuelve el precio actual de la accion
@@ -136,6 +174,67 @@ class Iol(object):
 
         return proporcionTicker
 
+    def comprar(self, ticker, cantidad, precio, validez):
+        nrope = 0
+        URL = "https://api.invertironline.com/api/v2/operar/Comprar"
+        auth = "Bearer " + self.token
+
+        headers = {'Authorization': auth}
+        payload = {
+            'mercado': 'bCBA',
+            'simbolo': ticker,
+            'cantidad': cantidad,
+            'precio': precio,
+            'plazo': 't2',
+            'validez': validez
+        }
+
+        r = requests.post(url=URL, json=payload, headers=headers)
+
+        if r.status_code > 299:
+            raise ConnectionError("Fallo conexion IOL, CODE: " + str(r.status_code))
+        
+        return json.loads(r.text)
+
+    def vender(self, ticker, cantidad, precio, validez):
+        nrope = 0
+        URL = "https://api.invertironline.com/api/v2/operar/Vender"
+        auth = "Bearer " + self.token
+
+        headers = {'Authorization': auth}
+        payload = {
+            'mercado': 'bCBA',
+            'simbolo': ticker,
+            'cantidad': cantidad,
+            'precio': precio,
+            'plazo': 't2',
+            'validez': validez
+        }
+
+        r = requests.post(url=URL, json=payload, headers=headers)
+
+        if r.status_code > 299:
+            raise ConnectionError("Fallo conexion IOL, CODE: " + str(r.status_code))
+        print(r.encoding)
+        r.encoding = 'ISO-8859-1'
+        return r.text
+
+    def borrarOperacion(self, number):
+        headers = {'Authorization': "Bearer " + self.token}
+        request = requests.delete("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
+        return request
+
+    def getOperacion(self, number):
+        headers = {'Authorization': "Bearer " + self.token}
+        request = requests.get("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
+        return request
+
+    def getOperaciones(self):
+        headers = {'Authorization': "Bearer " + self.token}
+        request = requests.get("https://api.invertironline.com/api/v2/operaciones/", headers=headers)
+        return request
+
+
 ### Clase que accede a datos del servidor Yahoo
 class Yahoo(object):
     hoy=''
@@ -167,11 +266,17 @@ class PandaDataReader(object):
 
         return float(cotiz)
 
+
 ##Test
 #print('Prueba de valores de GGAL en todas las fuentes de datos.')
 #y = Yahoo()
 #iol = Iol()
-#pdr = PandaDataReader()
+#hoy=datetime.now().strftime('%Y-%m-%d')
+#result1 = iol.comprar("BMA",1,232,hoy)
+#print(result1)
+
+#print(iol.vender("BMA",1,235,hoy))
+#print(iol.borrarOperacion('23016794'))
 
 
 #print(' GGAL YAHOO: '+ str(y.getCotiz('GGAL.BA')))
