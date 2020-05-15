@@ -213,7 +213,7 @@ class AADR(object):
         
         logging.info("Valor compra Maximo {0:.2f}".format(valorCompraMax))
         logging.info("Valor venta Minimo {0:.2f}".format(valorVentaMin))
-        resultado = self.compra(ticker,valor, 1, punta_cantidadVenta, punta_precioVenta)
+        resultado = self.compra(ticker,valor, self.calculoCantidad(ticker,punta_precioVenta), punta_cantidadVenta, punta_precioVenta)
         return [resultado, valorVentaMin]
 
     ## Orden que envia a comprar a IOL y agrega a la lista de operaciones pendientes.
@@ -224,14 +224,16 @@ class AADR(object):
         self.compras.append((ticker, cantidad, valor, "000", ahora))
 
         return 0
-
+    def calculoCantidad(self, ticker, precio):
+        return self.MONTOCOMPRA // precio
+    def printCompras(self):
+        print(self.compras)
         
-        
 
-lista=[]
-aa = AADR(lista)
+#lista=[]
+#aa = AADR(lista)
 #aa.larva()
-aa.xcompra("BMA",230, 240, 100, 232)
+##aa.xcompra("BMA",230, 240, 100, 232)
 
 #y = Yahoo()
 #iol = Iol()
