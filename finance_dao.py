@@ -221,18 +221,18 @@ class Iol(object):
 
     def borrarOperacion(self, number):
         headers = {'Authorization': "Bearer " + self.token}
-        request = requests.delete("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
-        return request
+        r = requests.delete("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
+        return r.text
 
     def getOperacion(self, number):
         headers = {'Authorization': "Bearer " + self.token}
-        request = requests.get("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
-        return request
+        r = requests.get("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
+        return r.text
 
     def getOperaciones(self):
         headers = {'Authorization': "Bearer " + self.token}
-        request = requests.get("https://api.invertironline.com/api/v2/operaciones/", headers=headers)
-        return request
+        r = requests.get("https://api.invertironline.com/api/v2/operaciones/", headers=headers)
+        return json.loads(r.text)
 
 
 ### Clase que accede a datos del servidor Yahoo

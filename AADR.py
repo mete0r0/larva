@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime,date
 from finance_dao import Iol
-from finance_dao import Yahoo
+import json
 import yfinance as yf
 import numpy
 import logging
@@ -13,9 +13,9 @@ logging.basicConfig(filename='larva.log',format=' %(asctime)s - %(name)s - %(lev
 
 class AADR(object):
     lista=[] ##Lista que mantiene cotizaciónes al cierre anterior
-    compras=[] ##  ( TICKER, CANTIDAD, VALOR, NROOPERACION, TIMESTAMPi
-    ventas=[]
-    timeRefresh=60
+    compras=[] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, TIMESTAMP)
+    ventas=[] ##   ( TICKER, VALOR, CANTIDADm NROOPERACION, TIMESTAMP)
+    timeRefresh=10
 
     MONTOCOMPRA=1000
     ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO) 
@@ -36,7 +36,7 @@ class AADR(object):
 
         self.hoy=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
         print("Fecha: "+self.hoy)
-        logging.info("INICIANDO LARVA"+self.hoy)
+        logging.info("INICIANDO LARVA "+self.hoy)
 
         self.lista.sort()
         self.cargar_cotiz()
@@ -44,6 +44,7 @@ class AADR(object):
 
         print("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
 
+        logging.info("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
         self.cargar_ValoresArbitrados()
         self.setTimeRefresh(60)
 
@@ -167,7 +168,7 @@ class AADR(object):
             print("Fecha: "+ahora)
             for tt in self.lista:
                 tickerlocal = tt[1].split(".")[0]
-                local_ca, local_up, precioCompra, cantidadCompra, precioVenta, cantidadVenta = iol.getCotizConPuntas(tickerlocal, mercado="BCBA")
+                local_ca, local_up, precioCompra, cantidadCompra, punta_precioVenta, punta_cantidadVenta = iol.getCotizConPuntas(tickerlocal, mercado="BCBA")
                 adr_ca, adr_up, adr_prop = iol.getCotiz(ticker=tt[0], mercado="NYSE")
                 valor_arbi = float(tt[5])
                 cotizlocalf = float(local_up)
@@ -177,27 +178,49 @@ class AADR(object):
                 variacion = float((diferencia)*100)/float(cotizlocalf)
                 if (variacion>=2): 
                     print(Fore.GREEN+tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
-                    ###
-                    result_compra, valorVentaMin=self.xcompra(tickerlocal,cotizlocalf, valor_arbi, punta_cantidadVenta, punta_precioVenta)
 
-                    ##Proceso de venta
-
-                    if (valorCompraMax!=0 and valorCompraMax> precioVenta):
-                        print(Fore.BLUE+"Comprar punta, cantidad: {0:.2f}".format(cantidadVenta)+ " Valor: {0:.2f}".format(precioVenta)+Fore.RESET)
-
+                    ##################
+                    ### Proceso Compra
+                    result_compra, valorCompraMax = self.xcompra(tickerlocal, cotizlocalf, valor_arbi, punta_cantidadVenta, punta_precioVenta)
+                    if (valorCompraMax!=0 and punta_precioVenta!=0 and valorCompraMax> punta_precioVenta):
+                        print(Fore.BLUE+"Comprar punta VENDEDORA: cantidad: {0:.2f}".format(punta_cantidadVenta)+ " Valor punta Vendedora: {0:.2f}".format(punta_precioVenta)+Fore.RESET)
                 else:
                     print(tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion))
+
+                ## Proceso de VENTA
+                ## Recorre lista de compras
+
+                if (len(self.compras) == 0 ):
+                    logging.info("NO HAY COMPRAS HECHAS")
+                else: 
+                    logging.info("Compras hechas: {0:.2f}".format(len(self.compras)))
+                    self.xventa()
+
                 logging.info(tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion))
                                         
             ## TIEMPO DEL CICLO
-            print("\n ... En Ejecucion")
-            time.sleep(self.getTimeRefresh())
+            print("\n ... En Ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            time.sleep(10)
 
     def getTimeRefresh(self):
         return self.timeRefresh
 
     def setTimeRefresh(self,valor):
         self.timeRefresh=valor
+
+    def xventa(self):
+        logging.info("Reviso todos as compras y miro si alcanzo el valorVentaMin")
+        iol = Iol()
+        for campo in self.compras:
+            loc_ca, loc_up, prop=iol.getCotiz(campo[0])
+            valorMinVenta = campo[4]
+            cotizActual = loc_up
+            logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(campo[4]))
+            if loc_up>=valorMinVenta: 
+                print(Fore.Blue+"\tObjetivo Venta: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
+                logging.log("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
+                vender(campo[0], loc_up, campo[2]) 
+
 
     def xcompra(self,ticker, valor, valorArbitrado, punta_cantidadVenta, punta_precioVenta):
         logging.info("XCOMPRA - "+ticker+ " VALOR: {0:.2f}".format(valor)+ " VALOR ARBITRADO: {0:.2f}".format(valorArbitrado))
@@ -211,29 +234,60 @@ class AADR(object):
         valorCompraMax = medio - (medio*0.5/100)
         valorVentaMin = medio + (medio*0.5/100)
         
-        logging.info("Valor compra Maximo {0:.2f}".format(valorCompraMax))
-        logging.info("Valor venta Minimo {0:.2f}".format(valorVentaMin))
-        resultado = self.compra(ticker,valor, self.calculoCantidad(ticker,punta_precioVenta), punta_cantidadVenta, punta_precioVenta)
-        return [resultado, valorVentaMin]
+        logging.info("\tValor compra Maximo {0:.2f}".format(valorCompraMax))
+        logging.info("\tValor venta Minimo {0:.2f}".format(valorVentaMin))
+        resultado = self.compra(ticker, punta_precioVenta, self.calculoCantidad(ticker, punta_precioVenta), valorVentaMin)
+        return [ resultado, valorCompraMax]
 
     ## Orden que envia a comprar a IOL y agrega a la lista de operaciones pendientes.
-    def compra(self, ticker, valor, cantidad, punta_cantidadVenta, punta_precioVenta):
+    def compra(self, ticker, valor, cantidad, valorVentaMin):
         logging.info("Envio orden de COMPRA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
-
-        ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.compras.append((ticker, cantidad, valor, "000", ahora))
-
+        self.agregarCompra(ticker, valor, cantidad, valorVentaMin)
         return 0
+    
+    ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
+    #TODO Falta ver puntos y vender en funcion de eso.
+    def vender(self, ticker, valor, cantidad):
+        logging.info("Envio orden de VENTA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
+        self.agregarVenta(ticker, valor, cantidad)
+        return 0
+
+
+    ## Calcula la cantidad a comprar.
     def calculoCantidad(self, ticker, precio):
+        if precio==0: return 0
         return self.MONTOCOMPRA // precio
+
+    ## Imprime el listado de compras hechas
     def printCompras(self):
         print(self.compras)
+
+    def leerArchCompras(self):
+        fp = open('compras.json', 'r')
+        ret = json.load(fp)
+        fp.close()
+
+    def agregarCompra(self, ticker, valor, cantidad, valorVentaMin):
+        ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.compras.append((ticker, valor, cantidad, "000", valorVentaMin, ahora))
+        fp = open('compras.json', 'w')
+        json.dump(self.compras, fp)
+        fp.close()
+    
+    def agregarVenta(self, ticker, valor, cantidad):
+        ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.ventas.append((ticker, valor, cantidad, "000", ahora))
+        fp = open('ventas.json', 'w')
+        json.dump(self.ventas, fp)
+        fp.close()
         
 
 #lista=[]
-#aa = AADR(lista)
-#aa.larva()
-##aa.xcompra("BMA",230, 240, 100, 232)
+#a = AADR(lista)
+#a.larva()
+#a.xcompra("BMA",230, 240, 100, 232)
+#a.xcompra("BBAR",250, 240, 100, 232)
+#a.printCompras()
 
 #y = Yahoo()
 #iol = Iol()
