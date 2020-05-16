@@ -7,8 +7,6 @@ import numpy
 import logging
 import time
 from colorama import init, Fore, Back
-#logging.basicConfig(filename='larva_debug.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ',level=logging.DEBUG)
-
 logging.basicConfig(filename='larva.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ',level=logging.INFO)
 
 class AADR(object):
