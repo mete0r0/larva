@@ -7,6 +7,9 @@ import numpy
 import logging
 import time
 from colorama import init, Fore, Back
+import pickle
+
+
 logging.basicConfig(filename='larva.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ',level=logging.INFO)
 
 class AADR(object):
@@ -45,6 +48,12 @@ class AADR(object):
         logging.info("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
         self.cargar_ValoresArbitrados()
         self.setTimeRefresh(60)
+
+        ##Cargo compras desde archivo
+        with open("compras.dat", "rb") as f:
+                self.compras = pickle.load(f)
+        print("Cantidad compras en Inicio: "+str(len(self.compras)))
+        print("Cantidad ventas en Inicio: "+str(len(self.ventas)))
 
     ##
     # Metodo que te carga el valor arbitrado de todos los tickers en la lista.
@@ -215,9 +224,9 @@ class AADR(object):
             cotizActual = loc_up
             logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(campo[4]))
             if loc_up>=valorMinVenta: 
-                print(Fore.Blue+"\tObjetivo Venta: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
-                logging.log("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
-                vender(campo[0], loc_up, campo[2]) 
+                print(Fore.BLUE+"\tObjetivo Venta: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
+                logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
+                iol.vender(campo[0], loc_up, campo[2]) 
 
 
     def xcompra(self,ticker, valor, valorArbitrado, punta_cantidadVenta, punta_precioVenta):
@@ -240,16 +249,27 @@ class AADR(object):
     ## Orden que envia a comprar a IOL y agrega a la lista de operaciones pendientes.
     def compra(self, ticker, valor, cantidad, valorVentaMin):
         logging.info("Envio orden de COMPRA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
-        self.agregarCompra(ticker, valor, cantidad, valorVentaMin)
+        if not self.buscar(self.compras,ticker,valor,cantidad):
+            self.agregarCompra(ticker, valor, cantidad, valorVentaMin)
+        else: logging.info("Esa compra ya fue agregada")
         return 0
     
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
     #TODO Falta ver puntos y vender en funcion de eso.
     def vender(self, ticker, valor, cantidad):
         logging.info("Envio orden de VENTA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
-        self.agregarVenta(ticker, valor, cantidad)
+
+        if not self.buscar(self.ventas,ticker,valor,cantidad):
+            self.agregarVenta(ticker, valor, cantidad)
+        else: logging.info("Esa Venta ya fue agregada.")
         return 0
 
+    ## Busqueda generica
+    def buscar(self,lista,ticker,valor,cantidad):
+        for tt in lista:
+            if (tt[0] == ticker and tt[1] == valor and tt[2] == cantidad): return True
+
+        return False
 
     ## Calcula la cantidad a comprar.
     def calculoCantidad(self, ticker, precio):
@@ -268,9 +288,18 @@ class AADR(object):
     def agregarCompra(self, ticker, valor, cantidad, valorVentaMin):
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.compras.append((ticker, valor, cantidad, "000", valorVentaMin, ahora))
-        fp = open('compras.json', 'w')
-        json.dump(self.compras, fp)
-        fp.close()
+        with open("compras.dat", "wb") as f:
+            pickle.dump(self.compras, f)
+
+        #fp = open('compras.json', 'w')
+        #json.dump(self.compras, fp)
+        #fp.close()
+    
+    def borrarCompras(self):
+        l = []
+        self.compras = l
+        with open("compras.dat", "wb") as f:
+            pickle.dump(self.compras, f)
     
     def agregarVenta(self, ticker, valor, cantidad):
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -280,12 +309,14 @@ class AADR(object):
         fp.close()
         
 
-#lista=[]
-#a = AADR(lista)
+lista=[]
+a = AADR(lista)
 #a.larva()
-#a.xcompra("BMA",230, 240, 100, 232)
+
+a.xcompra("BBAR",139, 100, 100, 232)
 #a.xcompra("BBAR",250, 240, 100, 232)
-#a.printCompras()
+a.printCompras()
+a.larva()
 
 #y = Yahoo()
 #iol = Iol()
