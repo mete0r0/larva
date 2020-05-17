@@ -5,11 +5,16 @@ from json import JSONDecodeError
 import yfinance as yf
 from datetime import datetime, date
 from pandas_datareader import data
+import logging
+
+logging.basicConfig(filename='finance_dao.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ',level=logging.INFO)
 
 
 #### Clase que accede a datos del servidor Invertir Online
 class Iol(object):
     status=200
+    token = "0"
+    refreshToken = "0"
     lista = []
     lista.append(('GGAL', 'GGAL.BA', 10, 0, 0,))
     lista.append(('YPF', 'YPFD.BA', 1, 0, 0))
@@ -25,11 +30,8 @@ class Iol(object):
     lista.append(('TGS', 'TGSU2.BA', 5, 0, 0))
     lista.append(('TGS', 'TGSU2.BA', 5, 0, 0))
 
-
-    token="0"
     def __init__(self):
         self.login()
-
 
     # Loguin almacena en una variable de clase el token de conexion.
     def login(self):
@@ -42,21 +44,38 @@ class Iol(object):
         payload = {'username': usuario, 'password': password, 'grant_type': 'password'}
 
         r = requests.post(url = url,headers=headers,data=payload)
+        self.timestampLogin = datetime.now()
         self.status=r.status_code
 
         if (self.getStatus()!=200):
             raise ConnectionError("Fallo conexion IOL, CODE: "+str(r.status_code))
-        #print("C IOL: "+ str(r.status_code))
         body=json.loads(r.text)
+
+        self.refreshToken = body["refresh_token"]
         self.token = body["access_token"]
 
     def getStatus(self):
         return self.status
 
+    def getToken(self):
+        ahora = datetime.now()
+        diff = ahora - self.timestampLogin
+        if diff.seconds > 880:
+            logging.info("Haciendo refresh del token iol")
+            url = "https://api.invertironline.com/token"
+            headers = {'content-type': 'application/x-www-form-urlencoded'}
+            payload = {'refresh_token': self.refreshToken, 'grant_type': 'refresh_token'}
+            r = requests.post(url=url, headers=headers, data=payload)
+            body = json.loads(r.text)
+            self.timestampLogin = datetime.now()
+            self.refreshToken = body["refresh_token"]
+            self.token = body["access_token"]
+        return self.token
+
     def getCotiz(self, ticker, mercado='bCBA'):
         URL="https://api.invertironline.com/api/v2/"+mercado+"/Titulos/"+ticker+"/Cotizacion?mercado="+mercado+"&simbolo="+ticker+"&model.simbolo="+ticker+"&model.mercado="+mercado
 
-        headers={'Authorization': "Bearer "+self.token}
+        headers={'Authorization': "Bearer "+self.getToken()}
 
         r = requests.get(url = URL, headers = headers)
         if r.status_code != 200:
@@ -270,7 +289,8 @@ class PandaDataReader(object):
 ##Test
 #print('Prueba de valores de GGAL en todas las fuentes de datos.')
 #y = Yahoo()
-#iol = Iol()
+iol = Iol()
+print(iol.getCotiz("BMA"))
 #hoy=datetime.now().strftime('%Y-%m-%d')
 #result1 = iol.comprar("BMA",1,232,hoy)
 #print(result1)
@@ -283,7 +303,7 @@ class PandaDataReader(object):
 #print(' GGAL IOL: '+ str(iol.getCotiz('BMA')))
 #print(' GGAL PandaDataReader: '+ str(pdr.getCotiz('GGAL.BA')))
 
-#iol.getCotizAccionesTodas()
+iol.getCotizAccionesTodas()
 
             
 
