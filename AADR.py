@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime,date
-from finance_dao import Iol
 import json
-import yfinance as yf
-import numpy
 import logging
-import time
-from colorama import init, Fore, Back
 import pickle
+import time
+from datetime import datetime,date
+
+import numpy
+import yfinance as yf
+from colorama import Fore
+
+from finance_dao import Iol
+
 logging.basicConfig(filename='larva.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ')#,level=logging.INFO)
-logging.FileHandler("debug.log")
+#logging.basicConfig(format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ')#,level=logging.INFO)
+
 
 class AADR(object):
     lista=[] ##Lista que mantiene cotizaciónes al cierre anterior
@@ -18,16 +22,8 @@ class AADR(object):
     ventas=[] ##   ( TICKER, VALOR, CANTIDADm NROOPERACION, TIMESTAMP)
     timeRefresh=10
     MONTOCOMPRA=1000
-    logger = logging.getLogger('debug.log')
-
-
-    def log(self):
-        fh = logging.FileHandler('debug.log')
-        fh.setLevel(logging.DEBUG)
-        logger.addHandler(fh)
-        logger.debug('iniciado logger debug')
-
-
+    GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
+    DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
 
     def __init__(self,lista):
         self.lista=lista
@@ -185,6 +181,9 @@ class AADR(object):
         logging.info("Arranca larva: ")
         iol = Iol()
 
+        ###
+        ###
+        ### Bucle principal
         while (True):
             ahora=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
             print("Fecha: "+ahora)
@@ -198,16 +197,22 @@ class AADR(object):
 
                 diferencia = float(valor_arbi)-float(cotizlocalf)
                 variacion = float((diferencia)*100)/float(cotizlocalf)
-                if (variacion>=2): 
-                    print(Fore.GREEN+tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
-
+                if (variacion>=self.DIFPORCENTUALMINCOMPRA):
+                    print(Fore.BLUE+tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
                     ##################
                     ### Proceso Compra
-                    result_compra, valorCompraMax = self.xcompra(tickerlocal, cotizlocalf, valor_arbi, punta_cantidadVenta, punta_precioVenta)
-                    if (valorCompraMax!=0 and punta_precioVenta!=0 and valorCompraMax> punta_precioVenta):
-                        print(Fore.BLUE+"Comprar punta VENDEDORA: cantidad: {0:.2f}".format(punta_cantidadVenta)+ " Valor punta Vendedora: {0:.2f}".format(punta_precioVenta)+Fore.RESET)
+                    valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(cotizlocalf, valor_arbi)
+
+                    if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta:
+                        cantidad = self.MONTOCOMPRA // cotizlocalf
+                        print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(cantidad)+ " - Punta vendedora - Cant: {0:.2f}".format(
+                            punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta) + Fore.RESET)
+                        self.compra(tickerlocal, cotizlocalf, cantidad, valorVentaMin)
                 else:
-                    print(tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion))
+                    print(tickerlocal + "\t\t C LOCAL ACTUAL {0:.2f}".format(
+                    cotizlocalf) + "\t\t C ADR ACTUAL: {0:.2f}".format(
+                    cotizadrf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi) + "\t\t DIF: {0:.2f}".format(
+                    float(diferencia)) + "\t\t VAR: {0:.2f}%".format(variacion))
 
                 ## Proceso de VENTA
                 ## Recorre lista de compras
@@ -237,7 +242,6 @@ class AADR(object):
             if campo[0] == ticker:
                 loc_ca, loc_up, prop=iol.getCotiz(campo[0])
                 valorMinVenta = campo[4]
-                cotizActual = loc_up
                 logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(campo[4]))
                 if loc_up>=valorMinVenta: 
                     print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
@@ -245,29 +249,33 @@ class AADR(object):
                     self.vender(campo[0], loc_up, campo[2])
 
 
-    def xcompra(self,ticker, valor, valorArbitrado, punta_cantidadVenta, punta_precioVenta):
-        logging.info("XCOMPRA - "+ticker+ " VALOR: {0:.2f}".format(valor)+ " VALOR ARBITRADO: {0:.2f}".format(valorArbitrado))
-        valorCompraMax = 0
-        ##Calculo costo compra con comision.
-        costoTotal = (valor*0.5/100)*1.21
-        valorTotal = valor + costoTotal
-        logging.info("Costo total compra (0.5% + IVA): {0:.2f}".format(valorTotal))
+    ## Calcula el punto medio entre el valor y el arbitrado y se mueve 0,5 para cada lado
+    def calculoValoresCompraYVenta(self, valor, valorArbitrado):
 
-        medio = (valorArbitrado + valor)/2
-        valorCompraMax = medio - (medio*0.5/100)
-        valorVentaMin = medio + (medio*0.5/100)
-        
+        medio = (valorArbitrado + valor) / 2
+        valorCompraMax = medio - (medio * (self.GANANCIAPORCENTUAL/2) / 100)
+        valorVentaMin = medio + (medio * (self.GANANCIAPORCENTUAL/2) / 100)
+
         logging.info("\tValor compra Maximo {0:.2f}".format(valorCompraMax))
         logging.info("\tValor venta Minimo {0:.2f}".format(valorVentaMin))
-        resultado = self.compra(ticker, punta_precioVenta, self.calculoCantidad(ticker, punta_precioVenta), valorVentaMin)
-        return [ resultado, valorCompraMax]
+
+        return [valorCompraMax, valorVentaMin]
+
 
     ## Orden que envia a comprar a IOL y agrega a la lista de operaciones pendientes.
     def compra(self, ticker, valor, cantidad, valorVentaMin):
         logging.info("Envio orden de COMPRA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
+
+        costoTotal = (valor * 0.5 / 100) * 1.21
+        valorTotal = valor + costoTotal
+        logging.info("Costo total compra (0.5% + IVA): {0:.2f}".format(valorTotal))
+
         if not self.buscar(self.compras,ticker,valor,cantidad):
             self.agregarCompra(ticker, valor, cantidad, valorVentaMin)
-        else: logging.info("Esa compra ya fue agregada")
+            print("Comprado.")
+        else:
+            print("\tComprado anteriormente.")
+            logging.info("Comprado anteriormente.")
         return 0
     
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
@@ -277,7 +285,7 @@ class AADR(object):
 
         if not self.buscar(self.ventas,ticker,valor,cantidad):
             self.agregarVenta(ticker, valor, cantidad)
-        else: logging.info("Esa Venta ya fue agregada.")
+        else: logging.info("Esta venta ya fue hecha.")
         return 0
 
     ## Busqueda generica
@@ -325,10 +333,10 @@ lista=[]
 a = AADR(lista)
 #a.larva()
 
-a.xcompra("BBAR",139, 100, 100, 232)
+#a.xcompra("BBAR",139, 100, 100, 232)
 #a.xcompra("BBAR",250, 240, 100, 232)
 #a.printCompras()
-a.agregarVenta("BMA", 24,1)
+#a.agregarVenta("BMA", 24,1)
 a.larva()
 
 #y = Yahoo()
