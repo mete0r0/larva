@@ -19261,3 +19261,853 @@ YPFD		 C LOCAL ACTUAL 490.00		 C ADR ACTUAL: 3.80		 C LOC. ARBI: 521.01		 DIF: 3
  2020-05-18 08:55:45,839 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
  2020-05-18 08:55:46,550 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
  2020-05-18 08:55:46,551 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:41:30,604 - root - INFO - INICIANDO LARVA 18/05/2020 09:41:30 
+ 2020-05-18 09:41:30,607 - root - INFO - cargar_cotiz: Cargando cotizaciones ultimo cierre. 
+ 2020-05-18 09:42:39,548 - root - INFO - 2020-05-15 - BBAR C. ADR ULT CIERRE 3.38 C. Loc ULT CIERRE 142.05 
+ 2020-05-18 09:42:40,293 - root - INFO - 2020-05-15 - BMA C. ADR ULT CIERRE 18.72 C. Loc ULT CIERRE 228.15 
+ 2020-05-18 09:42:40,982 - root - INFO - 2020-05-15 - CEPU C. ADR ULT CIERRE 2.95 C. Loc ULT CIERRE 35.50 
+ 2020-05-18 09:42:41,669 - root - INFO - 2020-05-15 - CRESY C. ADR ULT CIERRE 3.22 C. Loc ULT CIERRE 40.90 
+ 2020-05-18 09:42:42,386 - root - INFO - 2020-05-15 - EDN C. ADR ULT CIERRE 3.35 C. Loc ULT CIERRE 20.25 
+ 2020-05-18 09:42:43,115 - root - INFO - 2020-05-15 - GGAL C. ADR ULT CIERRE 8.40 C. Loc ULT CIERRE 102.85 
+ 2020-05-18 09:42:43,863 - root - INFO - 2020-05-15 - LOMA C. ADR ULT CIERRE 3.89 C. Loc ULT CIERRE 96.50 
+ 2020-05-18 09:42:44,678 - root - INFO - 2020-05-15 - PAM C. ADR ULT CIERRE 10.93 C. Loc ULT CIERRE 53.70 
+ 2020-05-18 09:42:45,419 - root - INFO - 2020-05-15 - SUPV C. ADR ULT CIERRE 1.95 C. Loc ULT CIERRE 49.05 
+ 2020-05-18 09:42:46,155 - root - INFO - 2020-05-15 - TEO C. ADR ULT CIERRE 7.55 C. Loc ULT CIERRE 189.25 
+ 2020-05-18 09:42:47,978 - root - INFO - 2020-05-15 - TGS C. ADR ULT CIERRE 5.18 C. Loc ULT CIERRE 127.50 
+ 2020-05-18 09:42:48,684 - root - INFO - 2020-05-15 - YPF C. ADR ULT CIERRE 4.14 C. Loc ULT CIERRE 510.95 
+ 2020-05-18 09:42:48,684 - root - INFO - GGAL.BA C. ADR: 8.40 C. Loc: 102.85 Fac.: 10 CCL: 122.44 
+ 2020-05-18 09:42:48,684 - root - INFO - YPFD.BA C. ADR: 4.14 C. Loc: 510.95 Fac.: 1 CCL: 123.42 
+ 2020-05-18 09:42:48,684 - root - INFO - BMA.BA C. ADR: 18.72 C. Loc: 228.15 Fac.: 10 CCL: 121.88 
+ 2020-05-18 09:42:48,684 - root - INFO - PAMP.BA C. ADR: 10.93 C. Loc: 53.70 Fac.: 25 CCL: 122.83 
+ 2020-05-18 09:42:48,684 - root - INFO - 
+
+**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: 122.64 
+ 2020-05-18 09:42:48,684 - root - INFO - Calculando CCL al cierre anterior 
+ 2020-05-18 09:42:48,688 - root - INFO - Arranca larva:  
+ 2020-05-18 09:42:50,942 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:42:50,943 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:42:51,688 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:42:51,688 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:42:53,282 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:42:53,282 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:42:54,006 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:42:54,006 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:42:55,408 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:42:55,408 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:42:56,117 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:42:56,117 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:42:57,701 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:42:57,701 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:42:58,456 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:42:58,456 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:43:00,015 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:00,017 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:00,784 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:00,785 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:43:02,218 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:02,218 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:03,107 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:03,107 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:43:04,711 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:04,711 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:05,445 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:05,446 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:43:06,948 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:06,948 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:07,674 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:07,675 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:43:09,129 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:09,129 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:09,850 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:09,853 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:43:11,299 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:11,299 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:12,017 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:12,017 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:43:13,574 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:13,574 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:14,308 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:14,309 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:43:15,779 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:15,779 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:16,515 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:16,515 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:43:28,016 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:28,016 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:28,718 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:28,718 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:43:30,137 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:30,137 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:30,853 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:30,853 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:43:32,415 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:32,416 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:33,131 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:33,131 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:43:34,903 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:34,906 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:35,607 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:35,607 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:43:37,157 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:37,157 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:37,872 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:37,872 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:43:39,486 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:39,486 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:40,206 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:40,206 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:43:41,652 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:41,653 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:42,453 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:42,454 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:43:44,248 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:44,248 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:44,945 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:44,945 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:43:46,596 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:46,596 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:47,399 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:47,399 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:43:48,817 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:48,818 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:49,544 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:49,544 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:43:51,002 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:51,003 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:51,714 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:51,714 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:43:53,516 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:43:53,519 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:43:54,219 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:43:54,219 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:44:11,728 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:11,730 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:12,429 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:12,429 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:44:13,883 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:13,883 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:14,622 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:14,622 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:44:16,107 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:16,108 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:16,829 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:16,830 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:44:18,328 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:18,329 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:19,051 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:19,051 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:44:20,508 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:20,508 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:21,228 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:21,229 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:44:23,354 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:23,354 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:24,071 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:24,072 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:44:25,542 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:25,543 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:26,310 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:26,310 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:44:27,861 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:27,861 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:28,591 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:28,592 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:44:30,032 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:30,035 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:30,789 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:30,789 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:44:32,238 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:32,238 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:32,963 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:32,963 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:44:34,369 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:34,372 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:35,091 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:35,091 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:44:36,508 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:36,508 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:37,331 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:37,331 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:44:48,826 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:48,829 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:49,606 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:49,606 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:44:51,032 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:51,032 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:51,731 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:51,732 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:44:53,154 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:53,154 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:54,225 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:54,225 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:44:55,640 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:55,640 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:56,372 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:56,372 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:44:57,876 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:44:57,878 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:44:58,586 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:44:58,587 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:45:00,196 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:00,196 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:00,901 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:00,902 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:45:02,442 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:02,442 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:03,183 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:03,183 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:45:04,887 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:04,887 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:05,605 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:05,606 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:45:07,119 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:07,119 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:07,832 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:07,832 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:45:09,264 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:09,264 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:09,998 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:09,998 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:45:11,993 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:11,993 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:12,715 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:12,716 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:45:14,135 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:14,135 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:14,852 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:14,852 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:45:29,337 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:29,337 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:30,045 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:30,046 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:45:31,485 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:31,485 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:32,196 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:32,197 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:45:33,629 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:33,629 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:34,341 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:34,341 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:45:35,780 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:35,783 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:36,506 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:36,506 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:45:37,907 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:37,907 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:38,637 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:38,638 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:45:40,091 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:40,091 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:40,801 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:40,801 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:45:42,271 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:42,271 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:43,003 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:43,003 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:45:44,412 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:44,414 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:45,166 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:45,166 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:45:46,626 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:46,629 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:47,330 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:47,330 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:45:48,786 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:48,787 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:49,494 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:49,495 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:45:50,891 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:50,893 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:51,595 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:51,595 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:45:53,123 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:45:53,123 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:45:53,838 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:45:53,838 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:46:05,282 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:05,284 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:06,006 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:06,006 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:46:07,439 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:07,439 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:08,146 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:08,146 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:46:09,580 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:09,580 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:10,293 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:10,293 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:46:11,715 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:11,715 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:12,415 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:12,415 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:46:13,995 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:13,995 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:14,700 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:14,700 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:46:16,190 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:16,190 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:16,892 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:16,894 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:46:18,293 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:18,293 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:19,062 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:19,062 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:46:20,509 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:20,509 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:21,223 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:21,224 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:46:22,635 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:22,635 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:23,351 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:23,352 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:46:24,823 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:24,824 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:25,638 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:25,638 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:46:27,099 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:27,100 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:27,821 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:27,823 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:46:29,297 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:29,297 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:30,020 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:30,020 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:46:41,514 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:41,516 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:42,247 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:42,247 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:46:46,778 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:46,778 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:47,495 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:47,496 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:46:49,813 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:49,813 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:50,522 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:50,522 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:46:51,957 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:51,957 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:52,702 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:52,702 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:46:54,173 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:54,174 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:54,871 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:54,871 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:46:56,297 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:56,298 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:57,060 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:57,060 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:46:58,474 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:46:58,475 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:46:59,196 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:46:59,196 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:47:00,616 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:00,617 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:01,443 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:01,444 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:47:02,890 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:02,890 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:03,623 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:03,623 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:47:05,070 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:05,070 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:05,785 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:05,785 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:47:07,551 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:07,552 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:08,316 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:08,317 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:47:13,297 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:13,297 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:14,024 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:14,024 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:47:25,525 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:25,525 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:26,289 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:26,290 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:47:27,742 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:27,742 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:28,441 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:28,441 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:47:29,873 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:29,873 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:30,583 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:30,583 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:47:31,980 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:31,981 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:32,684 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:32,684 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:47:34,132 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:34,132 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:34,840 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:34,841 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:47:36,263 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:36,263 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:36,994 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:36,994 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:47:38,456 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:38,456 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:39,156 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:39,156 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:47:40,607 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:40,607 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:41,455 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:41,456 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:47:42,888 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:42,888 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:43,583 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:43,583 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:47:45,018 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:45,018 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:45,730 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:45,730 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:47:47,182 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:47,182 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:47,909 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:47,909 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:47:49,315 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:47:49,315 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:47:50,025 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:47:50,026 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:48:01,450 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:01,450 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:02,215 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:02,215 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:48:03,643 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:03,643 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:04,362 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:04,362 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:48:05,806 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:05,806 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:06,563 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:06,563 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:48:07,988 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:07,988 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:08,704 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:08,704 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:48:10,141 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:10,141 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:10,845 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:10,845 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:48:12,283 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:12,284 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:12,992 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:12,992 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:48:14,634 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:14,634 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:15,357 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:15,357 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:48:17,773 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:17,773 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:18,476 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:18,476 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:48:19,928 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:19,928 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:20,637 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:20,638 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:48:22,053 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:22,053 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:22,866 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:22,866 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:48:24,288 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:24,289 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:25,001 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:25,001 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:48:26,411 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:26,411 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:27,130 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:27,130 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:48:38,577 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:38,578 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:39,298 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:39,299 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:48:40,786 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:40,786 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:41,486 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:41,486 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:48:42,893 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:42,894 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:43,611 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:43,611 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:48:45,020 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:45,020 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:45,728 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:45,728 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:48:47,146 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:47,147 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:47,838 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:47,838 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:48:49,286 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:49,286 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:50,004 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:50,005 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:48:51,439 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:51,439 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:52,150 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:52,151 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:48:53,589 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:53,589 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:54,312 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:54,312 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:48:55,742 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:55,742 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:56,470 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:56,470 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:48:57,930 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:48:57,930 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:48:58,631 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:48:58,631 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:49:00,083 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:00,083 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:00,785 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:00,785 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:49:02,212 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:02,212 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:02,914 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:02,914 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:49:14,313 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:14,314 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:15,021 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:15,021 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:49:16,439 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:16,439 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:17,165 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:17,166 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:49:18,641 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:18,641 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:19,338 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:19,338 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:49:20,754 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:20,755 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:21,589 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:21,589 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:49:23,063 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:23,063 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:23,774 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:23,775 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:49:25,215 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:25,215 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:25,947 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:25,948 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:49:27,413 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:27,413 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:28,129 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:28,129 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:49:29,552 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:29,552 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:30,261 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:30,262 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:49:31,756 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:31,756 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:32,441 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:32,442 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:49:33,911 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:33,911 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:34,612 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:34,612 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:49:36,026 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:36,026 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:36,722 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:36,722 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:49:38,138 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:38,139 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:38,857 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:38,857 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:49:50,386 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:50,386 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:51,076 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:51,076 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:49:52,476 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:52,476 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:53,185 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:53,186 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:49:54,618 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:54,618 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:55,312 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:55,312 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:49:56,736 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:56,736 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:57,445 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:57,445 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:49:58,855 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:49:58,855 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:49:59,543 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:49:59,543 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:50:00,940 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:50:00,940 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:50:01,663 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:50:01,663 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:50:31,321 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:50:31,321 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:50:32,561 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:50:32,561 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:50:35,527 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:50:35,527 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:50:36,482 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:50:36,483 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:50:40,652 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:50:40,652 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:50:41,874 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:50:41,875 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:50:45,256 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:50:45,256 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:50:46,487 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:50:46,488 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:50:49,469 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:50:49,469 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:50:50,587 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:50:50,588 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:50:53,346 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:50:53,346 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:50:54,675 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:50:54,676 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:51:06,101 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:06,101 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:07,015 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:07,015 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:51:08,470 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:08,471 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:09,192 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:09,192 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:51:10,623 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:10,623 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:11,329 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:11,330 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:51:12,891 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:12,891 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:13,621 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:13,621 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:51:15,051 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:15,051 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:15,774 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:15,774 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:51:17,208 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:17,209 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:18,003 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:18,003 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:51:19,480 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:19,480 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:20,193 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:20,194 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:51:21,624 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:21,624 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:22,355 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:22,355 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:51:23,785 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:23,786 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:24,512 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:24,513 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:51:25,967 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:25,968 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:26,753 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:26,753 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:51:28,180 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:28,180 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:28,903 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:28,904 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:51:30,332 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:30,333 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:31,044 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:31,045 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 09:51:43,459 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:43,459 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:44,185 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:44,185 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 09:51:45,785 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:45,788 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:46,488 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:46,489 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 09:51:47,955 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:47,955 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:48,779 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:48,780 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 09:51:50,227 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:50,230 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:50,935 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:50,935 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 09:51:52,490 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:52,490 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:53,229 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:53,229 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 09:51:54,672 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:54,672 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:55,390 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:55,390 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 09:51:56,810 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:56,810 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:57,509 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:57,509 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 09:51:59,041 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:51:59,041 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:51:59,750 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:51:59,750 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 09:52:01,209 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:52:01,209 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:52:02,000 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:52:02,000 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 09:52:03,500 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:52:03,500 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:52:04,197 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:52:04,197 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 09:52:05,678 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:52:05,679 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:52:06,380 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:52:06,381 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 09:52:07,805 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 09:52:07,806 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 09:52:08,507 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 09:52:08,507 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.16		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 10:00:02,079 - root - INFO - INICIANDO LARVA 18/05/2020 10:00:02 
+ 2020-05-18 10:00:02,082 - root - INFO - cargar_cotiz: Cargando cotizaciones ultimo cierre. 
+ 2020-05-18 10:00:06,482 - root - INFO - 2020-05-15 - BBAR C. ADR ULT CIERRE 3.38 C. Loc ULT CIERRE 142.05 
+ 2020-05-18 10:00:07,161 - root - INFO - 2020-05-15 - BMA C. ADR ULT CIERRE 18.72 C. Loc ULT CIERRE 228.15 
+ 2020-05-18 10:00:07,812 - root - INFO - 2020-05-15 - CEPU C. ADR ULT CIERRE 2.95 C. Loc ULT CIERRE 35.50 
+ 2020-05-18 10:00:08,588 - root - INFO - 2020-05-15 - CRESY C. ADR ULT CIERRE 3.22 C. Loc ULT CIERRE 40.90 
+ 2020-05-18 10:00:09,378 - root - INFO - 2020-05-15 - EDN C. ADR ULT CIERRE 3.35 C. Loc ULT CIERRE 20.25 
+ 2020-05-18 10:00:10,235 - root - INFO - 2020-05-15 - GGAL C. ADR ULT CIERRE 8.40 C. Loc ULT CIERRE 102.85 
+ 2020-05-18 10:00:11,076 - root - INFO - 2020-05-15 - LOMA C. ADR ULT CIERRE 3.89 C. Loc ULT CIERRE 96.50 
+ 2020-05-18 10:00:11,943 - root - INFO - 2020-05-15 - PAM C. ADR ULT CIERRE 10.93 C. Loc ULT CIERRE 53.70 
+ 2020-05-18 10:00:12,620 - root - INFO - 2020-05-15 - SUPV C. ADR ULT CIERRE 1.95 C. Loc ULT CIERRE 49.05 
+ 2020-05-18 10:00:13,307 - root - INFO - 2020-05-15 - TEO C. ADR ULT CIERRE 7.55 C. Loc ULT CIERRE 189.25 
+ 2020-05-18 10:00:14,054 - root - INFO - 2020-05-15 - TGS C. ADR ULT CIERRE 5.18 C. Loc ULT CIERRE 127.50 
+ 2020-05-18 10:00:14,867 - root - INFO - 2020-05-15 - YPF C. ADR ULT CIERRE 4.14 C. Loc ULT CIERRE 510.95 
+ 2020-05-18 10:00:14,867 - root - INFO - GGAL.BA C. ADR: 8.40 C. Loc: 102.85 Fac.: 10 CCL: 122.44 
+ 2020-05-18 10:00:14,867 - root - INFO - YPFD.BA C. ADR: 4.14 C. Loc: 510.95 Fac.: 1 CCL: 123.42 
+ 2020-05-18 10:00:14,867 - root - INFO - BMA.BA C. ADR: 18.72 C. Loc: 228.15 Fac.: 10 CCL: 121.88 
+ 2020-05-18 10:00:14,867 - root - INFO - PAMP.BA C. ADR: 10.93 C. Loc: 53.70 Fac.: 25 CCL: 122.83 
+ 2020-05-18 10:00:14,867 - root - INFO - 
+
+**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: 122.64 
+ 2020-05-18 10:00:14,867 - root - INFO - Calculando CCL al cierre anterior 
+ 2020-05-18 10:00:14,884 - root - INFO - Arranca larva:  
+ 2020-05-18 10:00:19,965 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:19,968 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:20,682 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:20,682 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 10:00:22,108 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:22,109 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:23,373 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:23,373 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.76		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 10:00:24,853 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:24,853 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:25,604 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:25,605 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 10:00:27,039 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:27,039 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:27,735 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:27,735 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 10:00:29,170 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:29,170 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:29,882 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:29,883 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 10:00:31,317 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:31,317 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:32,033 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:32,033 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 10:00:33,448 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:33,448 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:34,150 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:34,150 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 10:00:35,595 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:35,597 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:36,297 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:36,297 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 10:00:37,730 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:37,731 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:38,442 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:38,442 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 10:00:39,870 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:39,870 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:40,563 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:40,564 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 10:00:42,122 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:42,124 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:42,897 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:42,897 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 10:00:44,506 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:44,506 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:45,198 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:45,198 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.15		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 10:00:56,665 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:56,666 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:57,405 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:57,406 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.38		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 10:00:58,834 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:00:58,834 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:00:59,565 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:00:59,566 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.79		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 10:01:01,007 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:01,007 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:01,779 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:01,780 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 10:01:03,223 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:03,223 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:03,935 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:03,936 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 10:01:05,344 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:05,344 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:06,044 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:06,045 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 10:01:07,480 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:07,480 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:08,202 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:08,203 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.39		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 10:01:09,665 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:09,667 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:10,386 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:10,388 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 10:01:11,881 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:11,881 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:13,175 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:13,175 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 10:01:14,639 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:14,640 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:15,342 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:15,343 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
+ 2020-05-18 10:01:16,813 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:16,814 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:17,533 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:17,534 - root - INFO - TECO2		 C LOCAL ACTUAL 189.25		 C ADR ACTUAL: 7.57		 C LOC. ARBI: 185.19		 DIF: -4.06		 VAR: -2.15% 
+ 2020-05-18 10:01:19,029 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:19,029 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:19,766 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:19,767 - root - INFO - TGSU2		 C LOCAL ACTUAL 126.80		 C ADR ACTUAL: 5.20		 C LOC. ARBI: 127.06		 DIF: 0.26		 VAR: 0.20% 
+ 2020-05-18 10:01:21,219 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:21,229 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:22,018 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:22,018 - root - INFO - YPFD		 C LOCAL ACTUAL 510.95		 C ADR ACTUAL: 4.15		 C LOC. ARBI: 507.73		 DIF: -3.22		 VAR: -0.63% 
+ 2020-05-18 10:01:33,739 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:33,741 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:34,468 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:34,468 - root - INFO - BBAR		 C LOCAL ACTUAL 139.75		 C ADR ACTUAL: 3.39		 C LOC. ARBI: 138.17		 DIF: -1.58		 VAR: -1.13% 
+ 2020-05-18 10:01:35,902 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:35,903 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:36,622 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:36,622 - root - INFO - BMA		 C LOCAL ACTUAL 228.15		 C ADR ACTUAL: 18.79		 C LOC. ARBI: 229.58		 DIF: 1.43		 VAR: 0.63% 
+ 2020-05-18 10:01:38,059 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:38,059 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:38,750 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:38,751 - root - INFO - CEPU		 C LOCAL ACTUAL 35.50		 C ADR ACTUAL: 2.94		 C LOC. ARBI: 36.18		 DIF: 0.68		 VAR: 1.91% 
+ 2020-05-18 10:01:40,164 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:40,164 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:40,905 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:40,905 - root - INFO - CRES		 C LOCAL ACTUAL 40.90		 C ADR ACTUAL: 3.22		 C LOC. ARBI: 39.49		 DIF: -1.41		 VAR: -3.45% 
+ 2020-05-18 10:01:42,363 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:42,363 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:43,098 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:43,098 - root - INFO - EDN		 C LOCAL ACTUAL 20.25		 C ADR ACTUAL: 3.32		 C LOC. ARBI: 20.54		 DIF: 0.29		 VAR: 1.44% 
+ 2020-05-18 10:01:44,526 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:44,526 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:45,258 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:45,258 - root - INFO - GGAL		 C LOCAL ACTUAL 102.85		 C ADR ACTUAL: 8.40		 C LOC. ARBI: 103.02		 DIF: 0.17		 VAR: 0.16% 
+ 2020-05-18 10:01:46,813 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:46,815 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:47,531 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:47,531 - root - INFO - LOMA		 C LOCAL ACTUAL 96.50		 C ADR ACTUAL: 3.88		 C LOC. ARBI: 95.41		 DIF: -1.09		 VAR: -1.13% 
+ 2020-05-18 10:01:48,959 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:48,959 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:49,690 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:49,690 - root - INFO - PAMP		 C LOCAL ACTUAL 53.70		 C ADR ACTUAL: 10.93		 C LOC. ARBI: 53.62		 DIF: -0.08		 VAR: -0.15% 
+ 2020-05-18 10:01:51,156 - root - INFO - Compras hechas: 1.00 
+ 2020-05-18 10:01:51,156 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-18 10:01:51,855 - root - INFO - Ticker: CEPU Precio Actual: 35.50 Objetivo: 36.03 
+ 2020-05-18 10:01:51,855 - root - INFO - SUPV		 C LOCAL ACTUAL 49.05		 C ADR ACTUAL: 1.95		 C LOC. ARBI: 47.83		 DIF: -1.22		 VAR: -2.49% 
