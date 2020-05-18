@@ -70,17 +70,15 @@ class Iol(object):
             self.timestampLogin = datetime.now()
             self.refreshToken = body["refresh_token"]
             self.token = body["access_token"]
+        logging.debug("getToken: "+self.token)
         return self.token
 
     def getCotiz(self, ticker, mercado='bCBA'):
         URL="https://api.invertironline.com/api/v2/"+mercado+"/Titulos/"+ticker+"/Cotizacion?mercado="+mercado+"&simbolo="+ticker+"&model.simbolo="+ticker+"&model.mercado="+mercado
-
         headers={'Authorization': "Bearer "+self.getToken()}
-
         r = requests.get(url = URL, headers = headers)
         if r.status_code != 200:
             raise ConnectionError("Fallo conexion IOL, CODE: " + str(r.status_code))
-
         body=""
         try:
             body=json.loads(r.text)

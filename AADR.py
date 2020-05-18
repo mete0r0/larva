@@ -8,18 +8,27 @@ import logging
 import time
 from colorama import init, Fore, Back
 import pickle
-
-
-logging.basicConfig(filename='larva.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ',level=logging.INFO)
+logging.basicConfig(filename='larva.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ')#,level=logging.INFO)
+logging.FileHandler("debug.log")
 
 class AADR(object):
     lista=[] ##Lista que mantiene cotizaciónes al cierre anterior
+    ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO) 
     compras=[] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, TIMESTAMP)
     ventas=[] ##   ( TICKER, VALOR, CANTIDADm NROOPERACION, TIMESTAMP)
     timeRefresh=10
-
     MONTOCOMPRA=1000
-    ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO) 
+    logger = logging.getLogger('debug.log')
+
+
+    def log(self):
+        fh = logging.FileHandler('debug.log')
+        fh.setLevel(logging.DEBUG)
+        logger.addHandler(fh)
+        logger.debug('iniciado logger debug')
+
+
+
     def __init__(self,lista):
         self.lista=lista
         self.lista.append(('GGAL','GGAL.BA',10,0,0,0))
@@ -53,7 +62,13 @@ class AADR(object):
         with open("compras.dat", "rb") as f:
                 self.compras = pickle.load(f)
         print("Cantidad compras en Inicio: "+str(len(self.compras)))
+        print(self.compras)
+
+        ##Cargo ventas desde archivo
+        with open("ventas.dat", "rb") as f:
+                self.ventas = pickle.load(f)
         print("Cantidad ventas en Inicio: "+str(len(self.ventas)))
+        print(self.ventas)
 
     ##
     # Metodo que te carga el valor arbitrado de todos los tickers en la lista.
@@ -201,7 +216,7 @@ class AADR(object):
                     logging.info("NO HAY COMPRAS HECHAS")
                 else: 
                     logging.info("Compras hechas: {0:.2f}".format(len(self.compras)))
-                    self.xventa()
+                    self.xventa(tickerlocal)
 
                 logging.info(tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion))
                                         
@@ -215,18 +230,19 @@ class AADR(object):
     def setTimeRefresh(self,valor):
         self.timeRefresh=valor
 
-    def xventa(self):
+    def xventa(self,ticker):
         logging.info("Reviso todos as compras y miro si alcanzo el valorVentaMin")
         iol = Iol()
         for campo in self.compras:
-            loc_ca, loc_up, prop=iol.getCotiz(campo[0])
-            valorMinVenta = campo[4]
-            cotizActual = loc_up
-            logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(campo[4]))
-            if loc_up>=valorMinVenta: 
-                print(Fore.BLUE+"\tObjetivo Venta: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
-                logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
-                iol.vender(campo[0], loc_up, campo[2]) 
+            if campo[0] == ticker:
+                loc_ca, loc_up, prop=iol.getCotiz(campo[0])
+                valorMinVenta = campo[4]
+                cotizActual = loc_up
+                logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(campo[4]))
+                if loc_up>=valorMinVenta: 
+                    print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
+                    logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
+                    self.vender(campo[0], loc_up, campo[2])
 
 
     def xcompra(self,ticker, valor, valorArbitrado, punta_cantidadVenta, punta_precioVenta):
@@ -290,24 +306,20 @@ class AADR(object):
         self.compras.append((ticker, valor, cantidad, "000", valorVentaMin, ahora))
         with open("compras.dat", "wb") as f:
             pickle.dump(self.compras, f)
-
-        #fp = open('compras.json', 'w')
-        #json.dump(self.compras, fp)
-        #fp.close()
     
     def borrarCompras(self):
         l = []
         self.compras = l
         with open("compras.dat", "wb") as f:
             pickle.dump(self.compras, f)
-    
+   
+
     def agregarVenta(self, ticker, valor, cantidad):
+        logging.info("Agregando Venta Nueva")
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.ventas.append((ticker, valor, cantidad, "000", ahora))
-        fp = open('ventas.json', 'w')
-        json.dump(self.ventas, fp)
-        fp.close()
-        
+        with open("ventas.dat", "wb") as f:
+            pickle.dump(self.ventas, f)
 
 lista=[]
 a = AADR(lista)
@@ -315,7 +327,8 @@ a = AADR(lista)
 
 a.xcompra("BBAR",139, 100, 100, 232)
 #a.xcompra("BBAR",250, 240, 100, 232)
-a.printCompras()
+#a.printCompras()
+a.agregarVenta("BMA", 24,1)
 a.larva()
 
 #y = Yahoo()

@@ -19028,3 +19028,36 @@ YPFD		 C LOCAL ACTUAL 490.00		 C ADR ACTUAL: 3.80		 C LOC. ARBI: 521.01		 DIF: 3
  2020-05-17 01:30:47,707 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
  2020-05-17 01:30:48,734 - root - INFO - Ticker: BBAR Precio Actual: 139.75 Objetivo: 120.10 
  2020-05-17 01:30:48,735 - root - INFO - 	Objetivo Venta CUMPLIDO: BBAR Valor: 139.75 
+ 2020-05-17 14:07:26,793 - root - INFO - INICIANDO LARVA 17/05/2020 14:07:26 
+ 2020-05-17 14:07:26,793 - root - INFO - cargar_cotiz: Cargando cotizaciones ultimo cierre. 
+ 2020-05-17 14:07:27,306 - root - INFO - 2020-05-15 - BBAR C. ADR ULT CIERRE 3.38 C. Loc ULT CIERRE 139.75 
+ 2020-05-17 14:07:27,740 - root - INFO - 2020-05-15 - BMA C. ADR ULT CIERRE 18.72 C. Loc ULT CIERRE 228.15 
+ 2020-05-17 14:07:28,233 - root - INFO - 2020-05-15 - CEPU C. ADR ULT CIERRE 2.95 C. Loc ULT CIERRE 35.50 
+ 2020-05-17 14:07:28,705 - root - INFO - 2020-05-15 - CRESY C. ADR ULT CIERRE 3.22 C. Loc ULT CIERRE 40.90 
+ 2020-05-17 14:07:29,138 - root - INFO - 2020-05-15 - EDN C. ADR ULT CIERRE 3.35 C. Loc ULT CIERRE 20.25 
+ 2020-05-17 14:07:29,642 - root - INFO - 2020-05-15 - GGAL C. ADR ULT CIERRE 8.40 C. Loc ULT CIERRE 102.85 
+ 2020-05-17 14:07:30,090 - root - INFO - 2020-05-15 - LOMA C. ADR ULT CIERRE 3.89 C. Loc ULT CIERRE 96.50 
+ 2020-05-17 14:07:30,513 - root - INFO - 2020-05-15 - PAM C. ADR ULT CIERRE 10.93 C. Loc ULT CIERRE 53.70 
+ 2020-05-17 14:07:30,942 - root - INFO - 2020-05-15 - SUPV C. ADR ULT CIERRE 1.95 C. Loc ULT CIERRE 49.05 
+ 2020-05-17 14:07:31,398 - root - INFO - 2020-05-15 - TEO C. ADR ULT CIERRE 7.55 C. Loc ULT CIERRE 189.25 
+ 2020-05-17 14:07:31,873 - root - INFO - 2020-05-15 - TGS C. ADR ULT CIERRE 5.18 C. Loc ULT CIERRE 126.80 
+ 2020-05-17 14:07:32,349 - root - INFO - 2020-05-15 - YPF C. ADR ULT CIERRE 4.14 C. Loc ULT CIERRE 510.95 
+ 2020-05-17 14:07:32,350 - root - INFO - GGAL.BA C. ADR: 8.40 C. Loc: 102.85 Fac.: 10 CCL: 122.44 
+ 2020-05-17 14:07:32,350 - root - INFO - YPFD.BA C. ADR: 4.14 C. Loc: 510.95 Fac.: 1 CCL: 123.42 
+ 2020-05-17 14:07:32,350 - root - INFO - BMA.BA C. ADR: 18.72 C. Loc: 228.15 Fac.: 10 CCL: 121.88 
+ 2020-05-17 14:07:32,350 - root - INFO - PAMP.BA C. ADR: 10.93 C. Loc: 53.70 Fac.: 25 CCL: 122.83 
+ 2020-05-17 14:07:32,351 - root - INFO - 
+
+**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: 122.64 
+ 2020-05-17 14:07:32,351 - root - INFO - Calculando CCL al cierre anterior 
+ 2020-05-17 14:07:32,351 - root - INFO - XCOMPRA - BBAR VALOR: 139.00 VALOR ARBITRADO: 100.00 
+ 2020-05-17 14:07:32,351 - root - INFO - Costo total compra (0.5% + IVA): 139.84 
+ 2020-05-17 14:07:32,352 - root - INFO - 	Valor compra Maximo 118.90 
+ 2020-05-17 14:07:32,352 - root - INFO - 	Valor venta Minimo 120.10 
+ 2020-05-17 14:07:32,352 - root - INFO - Envio orden de COMPRA A IOL: BBAR Cantidad: 4.00 Valor: 232.00 
+ 2020-05-17 14:07:32,352 - root - INFO - Esa compra ya fue agregada 
+ 2020-05-17 14:07:32,352 - root - INFO - Arranca larva:  
+ 2020-05-17 14:07:33,942 - root - INFO - Compras hechas: 1.00 
+ 2020-05-17 14:07:33,942 - root - INFO - Reviso todos as compras y miro si alcanzo el valorVentaMin 
+ 2020-05-17 14:07:34,946 - root - INFO - Ticker: BBAR Precio Actual: 139.75 Objetivo: 120.10 
+ 2020-05-17 14:07:34,946 - root - INFO - 	Objetivo Venta CUMPLIDO: BBAR Valor: 139.75 
