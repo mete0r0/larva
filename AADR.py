@@ -4,14 +4,14 @@ import logging
 import pickle
 import time
 from datetime import datetime,date
-
+import threading
 import numpy
 import yfinance as yf
 from colorama import Fore
 
 from finance_dao import Iol
 
-logging.basicConfig(filename='larva.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ')#,level=logging.INFO)
+logging.basicConfig(filename='larva.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ',level=logging.INFO)
 #logging.basicConfig(format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ')#,level=logging.INFO)
 
 
@@ -179,6 +179,9 @@ class AADR(object):
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
     def larva(self):
         logging.info("Arranca larva: ")
+        #vendedora = threading.Thread(target=self.worker_venta(), name='WorkerVenta')
+        #vendedora.start()
+
         iol = Iol()
 
         ###
@@ -214,14 +217,13 @@ class AADR(object):
                     cotizadrf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi) + "\t\t DIF: {0:.2f}".format(
                     float(diferencia)) + "\t\t VAR: {0:.2f}%".format(variacion))
 
-                ## Proceso de VENTA
-                ## Recorre lista de compras
-
-                if (len(self.compras) == 0 ):
+                ## Proceso de venta
+                if (len(self.compras) == 0):
                     logging.info("NO HAY COMPRAS HECHAS")
-                else: 
+                else:
                     logging.info("Compras hechas: {0:.2f}".format(len(self.compras)))
-                    self.xventa(tickerlocal)
+                    self.xventa(iol)
+
 
                 logging.info(tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion))
                                         
@@ -235,19 +237,43 @@ class AADR(object):
     def setTimeRefresh(self,valor):
         self.timeRefresh=valor
 
-    def xventa(self,ticker):
-        logging.info("Reviso todos as compras y miro si alcanzo el valorVentaMin")
+    ## Metodo que implementa el Hilo de Venta
+    def worker_venta(self):
+        ## Proceso de VENTA
+        ## Recorre lista de compras
         iol = Iol()
-        for campo in self.compras:
-            if campo[0] == ticker:
-                loc_ca, loc_up, prop=iol.getCotiz(campo[0])
-                valorMinVenta = campo[4]
-                logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(campo[4]))
-                if loc_up>=valorMinVenta: 
-                    print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
-                    logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
-                    self.vender(campo[0], loc_up, campo[2])
+        print("inicio worker venta")
+        while (True):
+            if (len(self.compras) == 0):
+                logging.info("NO HAY COMPRAS HECHAS")
+            else:
+                logging.info("Compras hechas: {0:.2f}".format(len(self.compras)))
+                self.xventa(iol)
+            time.sleep(2)
 
+    def xventa(self, iol):
+        logging.info("Reviso todos as compras y miro si alcanzo el valorVentaMin")
+        for campo in self.compras:
+            loc_ca, loc_up, prop=iol.getCotiz(campo[0])
+            valorMinVenta = campo[4]
+            logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(valorMinVenta))
+            if loc_up >= valorMinVenta:
+                print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
+                logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
+                self.vender(campo[0], loc_up, campo[2])
+
+    ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
+    # TODO Falta ver puntos y vender en funcion de eso.
+    def vender(self, ticker, valor, cantidad):
+        logging.info("Envio orden de VENTA A IOL: " + ticker + " Cantidad: {0:.2f}".format(
+            cantidad) + " Valor: {0:.2f}".format(valor))
+        if not self.buscar(self.ventas, ticker, valor, cantidad):
+            self.agregarVenta(ticker, valor, cantidad)
+            print(Fore.GREEN + "\tVenta Finalizada: " + ticker + " Valor: {0:.2f}".format(valor)+ " Cantidad: {0:.2f}".format(cantidad) + Fore.RESET)
+        else:
+            print("Venta ya hecha")
+            logging.info("Esta venta ya fue hecha.")
+        return 0
 
     ## Calcula el punto medio entre el valor y el arbitrado y se mueve 0,5 para cada lado
     def calculoValoresCompraYVenta(self, valor, valorArbitrado):
@@ -278,15 +304,7 @@ class AADR(object):
             logging.info("Comprado anteriormente.")
         return 0
     
-    ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
-    #TODO Falta ver puntos y vender en funcion de eso.
-    def vender(self, ticker, valor, cantidad):
-        logging.info("Envio orden de VENTA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
 
-        if not self.buscar(self.ventas,ticker,valor,cantidad):
-            self.agregarVenta(ticker, valor, cantidad)
-        else: logging.info("Esta venta ya fue hecha.")
-        return 0
 
     ## Busqueda generica
     def buscar(self,lista,ticker,valor,cantidad):
