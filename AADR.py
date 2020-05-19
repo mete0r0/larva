@@ -23,7 +23,7 @@ class AADR(object):
     MONTOCOMPRA=1000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 1
+    MODOTEST = 0
 
     def __init__(self,lista):
         self.loguear()
@@ -42,6 +42,8 @@ class AADR(object):
             self.lista.append(('TGS','TGSU2.BA',5,0,0,0))
             self.lista.sort()
             self.cargar_cotiz()
+
+            self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG("YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
             self.cargar_ValoresArbitrados()
 
             ## Guardo la lista
@@ -53,8 +55,8 @@ class AADR(object):
                 self.lista = pickle.load(f)
             print("Cantidad lista en Inicio: " + str(len(self.lista)))
             print(self.lista)
+        
 
-        self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG("YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
         self.hoy = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
         print("Fecha: " + self.hoy)
         logging.info("INICIANDO LARVA " + self.hoy)
@@ -214,7 +216,7 @@ class AADR(object):
         ### Bucle principal
         while (True):
             ahora=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-            self.getTodasLasCotizaciones()
+            #self.getTodasLasCotizaciones()
 
             print("Fecha: "+ahora)
             for tt in self.lista:
