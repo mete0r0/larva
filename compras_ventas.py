@@ -1,16 +1,28 @@
 # -*- coding: utf-8 -*-
 import pickle
 
+i = 0
 compras =[]
 with open("compras.dat", "rb") as f:
     compras = pickle.load(f)
 print("Cantidad compras: " + str(len(compras)))
-print(compras+"\n\n")
+print(compras)
 
 ventas = []
 with open("ventas.dat", "rb") as f:
     ventas = pickle.load(f)
 print("Cantidad ventas: " + str(len(ventas)))
-print(ventas+"\n\n")
+print(ventas)
+
+for c in compras:
+    for v in ventas:
+        if c[0] == v[0] and c[1] == v[1]:
+            comprado = float(c[2]*c[1])
+            vendido = float(v[2]*v[1])
+            print("\tCotiz: {0:.2f}".format(c[1]))
+            print("\tCerrada: "+c[0]+" GAN: {0:.2f}".format(float(vendido-comprado))+" date venta: "+str(v[4]))
+            break
+    i +=1
+    print(str(i)+"  "+c[0]+" Compra sin vender {0:.2f}".format(c[1])+" Time: "+ c[5])
 
 
