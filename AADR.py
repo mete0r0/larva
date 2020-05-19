@@ -204,8 +204,6 @@ class AADR(object):
         self.listaValoresActuales = l
 
 
-
-
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
     def larva(self):
         threadvendedor = threading.Thread(target=self.worker_venta, name="HiloVentas")
@@ -260,19 +258,20 @@ class AADR(object):
             else:
                 logging.debug("Compras hechas: {0:.2f}".format(len(self.compras)))
                 self.xventa(iol)
+
             logging.info(Fore.CYAN+"\n ...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
             time.sleep(2)
 
     def xventa(self, iol):
         logging.debug("Reviso todos as compras y miro si alcanzo el valorVentaMin")
         for campo in self.compras:
-            loc_ca, loc_up, prop=iol.getCotiz(campo[0])
-            valorMinVenta = campo[4]
-            logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(valorMinVenta))
-            if loc_up >= valorMinVenta:
-                print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
-                logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
-                self.vender(campo[0], loc_up, campo[2])
+                loc_ca, loc_up, prop=iol.getCotiz(campo[0])
+                valorMinVenta = campo[4]
+                logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(valorMinVenta))
+                if loc_up >= valorMinVenta:
+                    print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
+                    logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
+                    self.vender(campo[0], loc_up, campo[2])
 
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
     # TODO Falta ver puntos y vender en funcion de eso.
