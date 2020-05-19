@@ -154,8 +154,9 @@ class Iol(object):
         body = json.loads(r.text)
         #print(json.dumps(body, indent=4, sort_keys=True))
 
-        for titulo in body['titulos']:
-            print("Ticker: "+titulo['simbolo']+" -- Ultimo Precio: $ {0:.2f}".format(titulo['ultimoPrecio'])+" Ultimo Cierre: $ {0:.2f}".format(titulo['ultimoCierre']))
+        #for titulo in body['titulos']:
+        #   print("Ticker: "+titulo['simbolo']+" -- Ultimo Precio: $ {0:.2f}".format(titulo['ultimoPrecio'])+" Ultimo Cierre: $ {0:.2f}".format(titulo['ultimoCierre']))
+        return body
 
     def getTitulos(self):
         url = "https://api.invertironline.com/api/v2/Cotizaciones/Acciones/Merval/argentina"
@@ -287,7 +288,7 @@ class PandaDataReader(object):
 ##Test
 #print('Prueba de valores de GGAL en todas las fuentes de datos.')
 #y = Yahoo()
-#iol = Iol()
+iol = Iol()
 #print(iol.getCotiz("BMA"))
 #hoy=datetime.now().strftime('%Y-%m-%d')
 #result1 = iol.comprar("BMA",1,232,hoy)
@@ -301,7 +302,7 @@ class PandaDataReader(object):
 #print(' GGAL IOL: '+ str(iol.getCotiz('BMA')))
 #print(' GGAL PandaDataReader: '+ str(pdr.getCotiz('GGAL.BA')))
 
-#iol.getCotizAccionesTodas()
+iol.getCotizAccionesTodas()
 
             
 

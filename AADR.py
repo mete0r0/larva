@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
+import logging.handlers
 import pickle
 import time
 from datetime import datetime,date
@@ -8,51 +9,57 @@ import threading
 import numpy
 import yfinance as yf
 from colorama import Fore
-
+import os
 from finance_dao import Iol
-
-logging.basicConfig(filename='larva.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ',level=logging.INFO)
-#logging.basicConfig(format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ')#,level=logging.INFO)
+from json import JSONDecodeError
 
 
 class AADR(object):
-    lista=[] ##Lista que mantiene cotizaciónes al cierre anterior
-    ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO) 
-    compras=[] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, TIMESTAMP)
-    ventas=[] ##   ( TICKER, VALOR, CANTIDADm NROOPERACION, TIMESTAMP)
-    timeRefresh=10
+    lista = [] ##Lista que mantiene cotizaciónes al cierre anterior ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO)
+    compras = [] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, TIMESTAMP)
+    ventas = [] ##   ( TICKER, VALOR, CANTIDADm NROOPERACION, TIMESTAMP)
+    listaValoresActuales = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
+    TIMEREFRESH = 10
     MONTOCOMPRA=1000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
+    MODOTEST = 1
 
     def __init__(self,lista):
-        self.lista=lista
-        self.lista.append(('GGAL','GGAL.BA',10,0,0,0))
-        self.lista.append(('YPF','YPFD.BA',1,0,0,0))
-        self.lista.append(('BMA','BMA.BA',10,0,0,0))
-        self.lista.append(('PAM','PAMP.BA',25,0,0,0))
-        self.lista.append(('BBAR','BBAR.BA',3,0,0,0))
-        self.lista.append(('CEPU','CEPU.BA',10,0,0,0))
-        self.lista.append(('CRESY','CRES.BA',10,0,0,0))
-        self.lista.append(('EDN','EDN.BA',20,0,0,0))
-        self.lista.append(('LOMA','LOMA.BA',5,0,0,0))
-        self.lista.append(('SUPV','SUPV.BA',5,0,0,0))
-        self.lista.append(('TEO','TECO2.BA',5,0,0,0))
-        self.lista.append(('TGS','TGSU2.BA',5,0,0,0))
+        self.loguear()
+        if (self.MODOTEST != 1):
+            self.lista=lista
+            self.lista.append(('GGAL','GGAL.BA',10,0,0,0))
+            self.lista.append(('YPF','YPFD.BA',1,0,0,0))
+            self.lista.append(('BMA','BMA.BA',10,0,0,0))
+            self.lista.append(('PAM','PAMP.BA',25,0,0,0))
+            self.lista.append(('BBAR','BBAR.BA',3,0,0,0))
+            self.lista.append(('CEPU','CEPU.BA',10,0,0,0))
+            self.lista.append(('CRESY','CRES.BA',10,0,0,0))
+            self.lista.append(('EDN','EDN.BA',20,0,0,0))
+            self.lista.append(('SUPV','SUPV.BA',5,0,0,0))
+            self.lista.append(('TEO','TECO2.BA',5,0,0,0))
+            self.lista.append(('TGS','TGSU2.BA',5,0,0,0))
+            self.lista.sort()
+            self.cargar_cotiz()
+            self.cargar_ValoresArbitrados()
 
-        self.hoy=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-        print("Fecha: "+self.hoy)
-        logging.info("INICIANDO LARVA "+self.hoy)
+            ## Guardo la lista
+            with open("lista.dat", "wb") as f:
+                pickle.dump(self.lista, f)
+        else:
+            ##Cargo lista desde archivo
+            with open("lista.dat", "rb") as f:
+                self.lista = pickle.load(f)
+            print("Cantidad lista en Inicio: " + str(len(self.lista)))
+            print(self.lista)
 
-        self.lista.sort()
-        self.cargar_cotiz()
-        self.dolar_ccl_promedio=(self.calculo_ccl_AlCierreARG("GGAL.BA")+self.calculo_ccl_AlCierreARG("YPFD.BA")+self.calculo_ccl_AlCierreARG("BMA.BA")+self.calculo_ccl_AlCierreARG("PAMP.BA"))/4
-
+        self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG("YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
+        self.hoy = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+        print("Fecha: " + self.hoy)
+        logging.info("INICIANDO LARVA " + self.hoy)
         print("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
-
         logging.info("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
-        self.cargar_ValoresArbitrados()
-        self.setTimeRefresh(60)
 
         ##Cargo compras desde archivo
         with open("compras.dat", "rb") as f:
@@ -66,10 +73,19 @@ class AADR(object):
         print("Cantidad ventas en Inicio: "+str(len(self.ventas)))
         print(self.ventas)
 
+    def loguear(self):
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
+        #handler = logging.StreamHandler()
+        formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
+        handler.setFormatter(formatter)
+        root = logging.getLogger()
+        root.setLevel(os.environ.get("LOGLEVEL", "INFO"))
+        root.addHandler(handler)
+
     ##
     # Metodo que te carga el valor arbitrado de todos los tickers en la lista.
     def cargar_ValoresArbitrados(self):
-        logging.info("Calculando CCL al cierre anterior")
+        logging.debug("Calculando CCL al cierre anterior")
         lista_aux=[]
         for campo in self.lista:
             valor_arbitrado = float(self.calculo_valor_arbitrado(campo[1],self.dolar_ccl_promedio))
@@ -77,10 +93,9 @@ class AADR(object):
             lista_aux.append(campo_aux)
         self.lista=lista_aux
 
-
     ## Carga cotizaciones del cierre anterior en lista.
     def cargar_cotiz(self):
-        logging.info('cargar_cotiz: Cargando cotizaciones ultimo cierre.')
+        logging.debug('Cargando cotizaciones ultimo cierre.')
         lista_aux=[]
         ultimoCierre=""
         for campo in self.lista:
@@ -91,7 +106,7 @@ class AADR(object):
                 pd_local_aux = yf.download(campo[1], period="2d", interval="1d")
                 pd_local = pd_local_aux.drop(hoy_aux).tail(1)
             except KeyError:
-                logging.debug("CARGA COTIZ: No se pudo borrar el dia de hoy. "+ campo[1])
+                logging.warning("No se pudo borrar el dia de hoy. "+ campo[1])
                 pd_local = pd_local_aux.tail(1)
 
             if  not pd_local.empty:
@@ -157,38 +172,52 @@ class AADR(object):
         
         return (cotizadrf/float(factor))*float(dolar_ccl_promedio)
 
-    def imprimir_resultado(self, tickerlocal, valor_arbi):
-        cotizadrf=0
-        cotizlocalf=0
+
+     ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
+
+    def getTodasLasCotizaciones(self):
+        iol = Iol()
+        body = iol.getCotizAccionesTodas()
+        l = []
         for campo in self.lista:
-            if (campo[1] == tickerlocal):
-                cotizadrf=campo[3]
-                cotizlocalf=campo[4]
-                break
-        diferencia = float(valor_arbi)-float(cotizlocalf)
-        variacion = float((diferencia)*100)/float(cotizlocalf)
-        print("TICKER: "+tickerlocal+"\t\t C LOCAL: {0:.3f}".format(cotizlocalf)+"\t C ADR: {0:.3f}".format(cotizadrf)+"\t C ARBI: {0:.3f}".format(valor_arbi)+"\t DIF: {0:.3f}".format(float(diferencia))+"\t VAR: {0:.3f}%".format(variacion))
-        return 0
+            for campoBody in body['titulos']:
+                ticker = campo[1].split(".")[0]
+                if ticker == campoBody['simbolo']:
+                    puntas = campoBody['puntas']
+                    punta_cantCompra = 0
+                    punta_precioCompra = 0
+                    punta_cantVenta = 0
+                    punta_precioVenta = 0
+                    try:
+                        punta_cantCompra = puntas['cantidadCompra']
+                        punta_precioCompra = puntas['precioCompra']
+                        punta_cantVenta = puntas['cantidadVenta']
+                        punta_precioVenta = puntas['precioVenta']
+                    except:
+                        logging.error("Lista de puntas incompleta. ")
 
+                    ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    ultimoPrecio = campoBody['ultimoPrecio']
+                    l.append((ticker, ultimoPrecio, punta_cantCompra, punta_precioCompra,
+                                   punta_cantVenta, punta_precioVenta, ahora))
+                    break
+        self.listaValoresActuales = l
 
-    def normalizar(self, valor, min, max):
-        return (valor / (abs(max) + abs(min))) * 20
 
 
 
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
     def larva(self):
-        logging.info("Arranca larva: ")
-        #vendedora = threading.Thread(target=self.worker_venta(), name='WorkerVenta')
-        #vendedora.start()
-
+        threadvendedor = threading.Thread(target=self.worker_venta, name="HiloVentas")
+        threadvendedor.start()
+        logging.debug("Arranca larva: ")
         iol = Iol()
-
-        ###
         ###
         ### Bucle principal
         while (True):
             ahora=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+            self.getTodasLasCotizaciones()
+
             print("Fecha: "+ahora)
             for tt in self.lista:
                 tickerlocal = tt[1].split(".")[0]
@@ -200,8 +229,9 @@ class AADR(object):
 
                 diferencia = float(valor_arbi)-float(cotizlocalf)
                 variacion = float((diferencia)*100)/float(cotizlocalf)
+
                 if (variacion>=self.DIFPORCENTUALMINCOMPRA):
-                    print(Fore.BLUE+tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
+                    print(Fore.BLUE+tickerlocal + "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
                     ##################
                     ### Proceso Compra
                     valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(cotizlocalf, valor_arbi)
@@ -212,47 +242,29 @@ class AADR(object):
                             punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta) + Fore.RESET)
                         self.compra(tickerlocal, cotizlocalf, cantidad, valorVentaMin)
                 else:
-                    print(tickerlocal + "\t\t C LOCAL ACTUAL {0:.2f}".format(
-                    cotizlocalf) + "\t\t C ADR ACTUAL: {0:.2f}".format(
-                    cotizadrf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi) + "\t\t DIF: {0:.2f}".format(
-                    float(diferencia)) + "\t\t VAR: {0:.2f}%".format(variacion))
-
-                ## Proceso de venta
-                if (len(self.compras) == 0):
-                    logging.info("NO HAY COMPRAS HECHAS")
-                else:
-                    logging.info("Compras hechas: {0:.2f}".format(len(self.compras)))
-                    self.xventa(iol)
-
-
-                logging.info(tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion))
-                                        
+                    print(tickerlocal + "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
+                    logging.debug(tickerlocal+ "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
             ## TIEMPO DEL CICLO
-            print("\n ... En Ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            time.sleep(10)
-
-    def getTimeRefresh(self):
-        return self.timeRefresh
-
-    def setTimeRefresh(self,valor):
-        self.timeRefresh=valor
+            print(Fore.RED+"\n ...Hilo ppal en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
+            time.sleep(1)
 
     ## Metodo que implementa el Hilo de Venta
     def worker_venta(self):
-        ## Proceso de VENTA
+        ## Hilo de VENTA
         ## Recorre lista de compras
         iol = Iol()
-        print("inicio worker venta")
+        logging.debug("Inicio worker venta")
         while (True):
             if (len(self.compras) == 0):
-                logging.info("NO HAY COMPRAS HECHAS")
+                logging.debug("NO HAY COMPRAS HECHAS")
             else:
-                logging.info("Compras hechas: {0:.2f}".format(len(self.compras)))
+                logging.debug("Compras hechas: {0:.2f}".format(len(self.compras)))
                 self.xventa(iol)
+            logging.info(Fore.CYAN+"\n ...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
             time.sleep(2)
 
     def xventa(self, iol):
-        logging.info("Reviso todos as compras y miro si alcanzo el valorVentaMin")
+        logging.debug("Reviso todos as compras y miro si alcanzo el valorVentaMin")
         for campo in self.compras:
             loc_ca, loc_up, prop=iol.getCotiz(campo[0])
             valorMinVenta = campo[4]
@@ -272,7 +284,7 @@ class AADR(object):
             print(Fore.GREEN + "\tVenta Finalizada: " + ticker + " Valor: {0:.2f}".format(valor)+ " Cantidad: {0:.2f}".format(cantidad) + Fore.RESET)
         else:
             print("Venta ya hecha")
-            logging.info("Esta venta ya fue hecha.")
+            logging.debug("Esta venta ya fue hecha.")
         return 0
 
     ## Calcula el punto medio entre el valor y el arbitrado y se mueve 0,5 para cada lado
@@ -303,8 +315,6 @@ class AADR(object):
             print("\tComprado anteriormente.")
             logging.info("Comprado anteriormente.")
         return 0
-    
-
 
     ## Busqueda generica
     def buscar(self,lista,ticker,valor,cantidad):
@@ -349,13 +359,13 @@ class AADR(object):
 
 lista=[]
 a = AADR(lista)
-#a.larva()
+
+a.larva()
 
 #a.xcompra("BBAR",139, 100, 100, 232)
 #a.xcompra("BBAR",250, 240, 100, 232)
 #a.printCompras()
 #a.agregarVenta("BMA", 24,1)
-a.larva()
 
 #y = Yahoo()
 #iol = Iol()
