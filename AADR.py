@@ -222,14 +222,14 @@ class AADR(object):
                     logging.info("NO HAY COMPRAS HECHAS")
                 else:
                     logging.info("Compras hechas: {0:.2f}".format(len(self.compras)))
-                    self.xventa(iol)
+                    self.xventa(iol,tickerlocal)
 
 
                 logging.info(tickerlocal+"\t\t C LOCAL ACTUAL {0:.2f}".format(cotizlocalf)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion))
                                         
             ## TIEMPO DEL CICLO
             print("\n ... En Ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            time.sleep(10)
+            time.sleep(1)
 
     def getTimeRefresh(self):
         return self.timeRefresh
@@ -251,16 +251,17 @@ class AADR(object):
                 self.xventa(iol)
             time.sleep(2)
 
-    def xventa(self, iol):
+    def xventa(self, iol, ticker):
         logging.info("Reviso todos as compras y miro si alcanzo el valorVentaMin")
         for campo in self.compras:
-            loc_ca, loc_up, prop=iol.getCotiz(campo[0])
-            valorMinVenta = campo[4]
-            logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(valorMinVenta))
-            if loc_up >= valorMinVenta:
-                print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
-                logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
-                self.vender(campo[0], loc_up, campo[2])
+            if ticker == campo[0]:
+                loc_ca, loc_up, prop=iol.getCotiz(campo[0])
+                valorMinVenta = campo[4]
+                logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(valorMinVenta))
+                if loc_up >= valorMinVenta:
+                    print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
+                    logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
+                    self.vender(campo[0], loc_up, campo[2])
 
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
     # TODO Falta ver puntos y vender en funcion de eso.
