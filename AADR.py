@@ -11,8 +11,6 @@ import yfinance as yf
 from colorama import Fore
 import os
 from finance_dao import Iol
-from json import JSONDecodeError
-
 
 class AADR(object):
     lista = [] ##Lista que mantiene cotizaciónes al cierre anterior ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO)
@@ -305,22 +303,21 @@ class AADR(object):
     def compra(self, ticker, valor, cantidad, valorVentaMin):
         logging.info("Envio orden de COMPRA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
 
-        costoTotal = (valor * 0.5 / 100) * 1.21
-        valorTotal = valor + costoTotal
-        logging.info("Costo total compra (0.5% + IVA): {0:.2f}".format(valorTotal))
-
         if not self.buscar(self.compras,ticker,valor,cantidad):
             self.agregarCompra(ticker, valor, cantidad, valorVentaMin)
-            print("Comprado.")
+            costoTotal = (valor * 0.5 / 100) * 1.21
+            valorTotal = valor + costoTotal
+            logging.info("Costo total compra (0.5% + IVA): {0:.2f}".format(valorTotal))
+            print("Comprado!!!")
         else:
-            print("\tComprado anteriormente.")
-            logging.info("Comprado anteriormente.")
+            print("\tTicket Comprado anteriormente.")
+            logging.info("Ticket Comprado anteriormente.")
         return 0
 
     ## Busqueda generica
     def buscar(self,lista,ticker,valor,cantidad):
         for tt in lista:
-            if (tt[0] == ticker and tt[1] == valor and tt[2] == cantidad): return True
+            if (tt[0] == ticker): return True
 
         return False
 
