@@ -137,11 +137,7 @@ class Iol(object):
                 precioVenta = j['precioVenta']
                 cantidadVenta = j['cantidadVenta']
 
-
         return [float(body['cierreAnterior']), float(body['ultimoPrecio']), precioCompra, cantidadCompra, precioVenta, cantidadVenta]
-
-
-
 
     ## Devuelve un dataframe de Panda con las acciones del mercado BVBA y la cotiz del ultimo cierre
     # 'UltimoPrecio devuelve el precio actual de la accion
@@ -157,6 +153,20 @@ class Iol(object):
         #for titulo in body['titulos']:
         #   print("Ticker: "+titulo['simbolo']+" -- Ultimo Precio: $ {0:.2f}".format(titulo['ultimoPrecio'])+" Ultimo Cierre: $ {0:.2f}".format(titulo['ultimoCierre']))
         return body
+
+    def getCotizAdrsTodas(self):
+        url = "https://api.invertironline.com/api/v2/Cotizaciones/adrs/Argentina/estados_Unidos"
+        auth = "Bearer " + self.token
+        headers = {'Authorization': auth}
+        r = requests.get(url=url, headers=headers)
+        body = json.loads(r.text)
+        # print(json.dumps(body, indent=4, sort_keys=True))
+
+        # for titulo in body['titulos']:
+        #   print("Ticker: "+titulo['simbolo']+" -- Ultimo Precio: $ {0:.2f}".format(titulo['ultimoPrecio'])+" Ultimo Cierre: $ {0:.2f}".format(titulo['ultimoCierre']))
+        return body
+
+
 
     def getTitulos(self):
         url = "https://api.invertironline.com/api/v2/Cotizaciones/Acciones/Merval/argentina"

@@ -16,12 +16,13 @@ class AADR(object):
     lista = [] ##Lista que mantiene cotizaciónes al cierre anterior ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO)
     compras = [] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, TIMESTAMP)
     ventas = [] ##   ( TICKER, VALOR, CANTIDADm NROOPERACION, TIMESTAMP)
-    listaValoresActuales = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
+    listaValoresActualesAcciones = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
+    listaValoresActualesAdrs = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     TIMEREFRESH = 10
     MONTOCOMPRA=1000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 0
+    MODOTEST = 1
 
     def __init__(self,lista):
         self.loguear()
@@ -41,9 +42,6 @@ class AADR(object):
             self.lista.sort()
             self.cargar_cotiz()
 
-            self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG("YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
-            self.cargar_ValoresArbitrados()
-
             ## Guardo la lista
             with open("lista.dat", "wb") as f:
                 pickle.dump(self.lista, f)
@@ -53,7 +51,11 @@ class AADR(object):
                 self.lista = pickle.load(f)
             print("Cantidad lista en Inicio: " + str(len(self.lista)))
             print(self.lista)
-        
+
+        self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG(
+            "YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
+        self.cargar_ValoresArbitrados()
+
 
         self.hoy = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
         print("Fecha: " + self.hoy)
@@ -174,7 +176,6 @@ class AADR(object):
 
 
      ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
-
     def getTodasLasCotizaciones(self):
         iol = Iol()
         body = iol.getCotizAccionesTodas()
@@ -201,8 +202,42 @@ class AADR(object):
                     l.append((ticker, ultimoPrecio, punta_cantCompra, punta_precioCompra,
                                    punta_cantVenta, punta_precioVenta, ahora))
                     break
-        self.listaValoresActuales = l
+        self.listaValoresActualesAcciones = l
 
+    ## ADRs
+    ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
+    def getTodasLasCotizacionesADRs(self):
+        iol = Iol()
+        body = iol.getCotizAdrsTodas()
+        l = []
+        for campo in self.lista:
+            for campoBody in body['titulos']:
+                ticker = campo[1].split(".")[0]
+                if ticker == campoBody['simbolo']:
+                    puntas = campoBody['puntas']
+                    punta_cantCompra = 0
+                    punta_precioCompra = 0
+                    punta_cantVenta = 0
+                    punta_precioVenta = 0
+                    try:
+                        punta_cantCompra = puntas['cantidadCompra']
+                        punta_precioCompra = puntas['precioCompra']
+                        punta_cantVenta = puntas['cantidadVenta']
+                        punta_precioVenta = puntas['precioVenta']
+                    except:
+                        logging.error("Lista de puntas incompleta. ")
+
+                    ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    ultimoPrecio = campoBody['ultimoPrecio']
+                    l.append((ticker, ultimoPrecio, punta_cantCompra, punta_precioCompra,
+                              punta_cantVenta, punta_precioVenta, ahora))
+                    break
+        self.listaValoresActualesAdrs = l
+    ## devuelve: ULTIMOPRECIO, punta_precioCompra, punta_cantCompra, punta_precioVenta, punta_cantVenta
+    def getCotizacion(self, tickerlocal):
+        for campo in self.listaValoresActualesAcciones:
+            if campo[0] == tickerlocal:
+                return [campo[1], campo[3], campo[2], campo[5], campo[4]]
 
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
     def larva(self):
@@ -211,19 +246,24 @@ class AADR(object):
         logging.debug("Arranca larva: ")
         iol = Iol()
         ###
-        ### Bucle principal
+        ### Bucle principal ##############################################################
         while (True):
             ahora=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-            #self.getTodasLasCotizaciones()
+            self.getTodasLasCotizaciones()
+            #self.getTodasLasCotizacionesADRs()
 
             print("Fecha: "+ahora)
             for tt in self.lista:
                 tickerlocal = tt[1].split(".")[0]
-                local_ca, local_up, precioCompra, cantidadCompra, punta_precioVenta, punta_cantidadVenta = iol.getCotizConPuntas(tickerlocal, mercado="BCBA")
-                adr_ca, adr_up, adr_prop = iol.getCotiz(ticker=tt[0], mercado="NYSE")
+                local_up, precioCompra, cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(tickerlocal)
+
+                #local_ca, local_up, precioCompra, cantidadCompra, punta_precioVenta, punta_cantidadVenta = iol.getCotizConPuntas(tickerlocal, mercado="BCBA")
+
+                #adr_ca, adr_up, adr_prop = iol.getCotiz(ticker=tt[0], mercado="NYSE")
+
                 valor_arbi = float(tt[5])
                 cotizlocalf = float(local_up)
-                cotizadrf = float(adr_up)
+                cotizadrf = 0 #float(adr_up)
 
                 diferencia = float(valor_arbi)-float(cotizlocalf)
                 variacion = float((diferencia)*100)/float(cotizlocalf)
