@@ -22,7 +22,7 @@ class AADR(object):
     MONTOCOMPRA=1000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 0
+    MODOTEST = 1
 
     def __init__(self,lista):
         self.loguear()
@@ -272,7 +272,8 @@ class AADR(object):
                     print(Fore.BLUE+tickerlocal + "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
                     ##################
                     ### Proceso Compra
-                    valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(cotizlocalf, valor_arbi)
+                    valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(tickerlocal, cotizlocalf, valor_arbi)
+
 
                     if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta:
                         cantidad = self.MONTOCOMPRA // cotizlocalf
@@ -299,7 +300,7 @@ class AADR(object):
                 logging.debug("Compras hechas: {0:.2f}".format(len(self.compras)))
                 self.xventa(iol)
 
-            logging.info(Fore.CYAN+"\n ...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
+            logging.info("\n ...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
             time.sleep(2)
 
     def xventa(self, iol):
@@ -327,14 +328,13 @@ class AADR(object):
         return 0
 
     ## Calcula el punto medio entre el valor y el arbitrado y se mueve 0,5 para cada lado
-    def calculoValoresCompraYVenta(self, valor, valorArbitrado):
+    def calculoValoresCompraYVenta(self, ticker, valor, valorArbitrado):
 
         medio = (valorArbitrado + valor) / 2
         valorCompraMax = medio - (medio * (self.GANANCIAPORCENTUAL/2) / 100)
         valorVentaMin = medio + (medio * (self.GANANCIAPORCENTUAL/2) / 100)
 
-        logging.info("\tValor compra Maximo {0:.2f}".format(valorCompraMax))
-        logging.info("\tValor venta Minimo {0:.2f}".format(valorVentaMin))
+        logging.info(ticker+" COTIZ ACTUAL: $ {0:.2f}".format(valor)+"\t Valor compra Maximo {0:.2f}".format(valorCompraMax)+" -- Valor venta Minimo {0:.2f}".format(valorVentaMin))
 
         return [valorCompraMax, valorVentaMin]
 
