@@ -19,10 +19,10 @@ class AADR(object):
     listaValoresActualesAcciones = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     listaValoresActualesAdrs = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     TIMEREFRESH = 10
-    MONTOCOMPRA=1000
+    MONTOCOMPRA=2000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 1
+    MODOTEST = 0
 
     def __init__(self,lista):
         self.loguear()
@@ -45,12 +45,25 @@ class AADR(object):
             ## Guardo la lista
             with open("lista.dat", "wb") as f:
                 pickle.dump(self.lista, f)
+
+            ## Guardo la listaValoresActualesAcciones
+            with open("listaValoresActualesAcciones.dat", "wb") as f:
+                pickle.dump(self.listaValoresActualesAcciones, f)
+
         else:
             ##Cargo lista desde archivo
             with open("lista.dat", "rb") as f:
                 self.lista = pickle.load(f)
             print("Cantidad lista en Inicio: " + str(len(self.lista)))
             print(self.lista)
+
+            ##Cargo listaValoresActualesAcciones desde archivo
+            with open("listaValoresActualesAcciones.dat", "rb") as f:
+                self.listaValoresActualesAcciones = pickle.load(f)
+            print("Cantidad listaValoresActualesAcciones en Inicio: " + str(len(self.lista)))
+            print(self.listaValoresActualesAcciones)
+
+
 
         self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG(
             "YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
@@ -75,9 +88,11 @@ class AADR(object):
         print("Cantidad ventas en Inicio: "+str(len(self.ventas)))
         print(self.ventas)
 
+
+    ## LOGGER
     def loguear(self):
-        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
-        #handler = logging.StreamHandler()
+        #handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
+        handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
         root = logging.getLogger()
@@ -108,7 +123,7 @@ class AADR(object):
                 pd_local_aux = yf.download(campo[1], period="2d", interval="1d")
                 pd_local = pd_local_aux.drop(hoy_aux).tail(1)
             except KeyError:
-                logging.warning("No se pudo borrar el dia de hoy. "+ campo[1])
+                logging.debug("No se pudo borrar el dia de hoy. "+ campo[1])
                 pd_local = pd_local_aux.tail(1)
 
             if  not pd_local.empty:
@@ -195,13 +210,14 @@ class AADR(object):
                         punta_cantVenta = puntas['cantidadVenta']
                         punta_precioVenta = puntas['precioVenta']
                     except:
-                        logging.error("Lista de puntas incompleta. ")
+                        logging.warning("Lista de puntas incompleta. Se cargan valores en Cero. ")
 
                     ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     ultimoPrecio = campoBody['ultimoPrecio']
                     l.append((ticker, ultimoPrecio, punta_cantCompra, punta_precioCompra,
                                    punta_cantVenta, punta_precioVenta, ahora))
                     break
+        logging.debug("Se cargaron todas las cotizaciónes desde IOL, total: "+str(len(l)))
         self.listaValoresActualesAcciones = l
 
     ## ADRs
@@ -238,6 +254,8 @@ class AADR(object):
         for campo in self.listaValoresActualesAcciones:
             if campo[0] == tickerlocal:
                 return [campo[1], campo[3], campo[2], campo[5], campo[4]]
+        logging.warning("NO encontro el ticker: "+tickerlocal)
+        return [0,0,0,0,0]
 
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
     def larva(self):
@@ -291,31 +309,40 @@ class AADR(object):
     def worker_venta(self):
         ## Hilo de VENTA
         ## Recorre lista de compras
-        iol = Iol()
         logging.debug("Inicio worker venta")
         while (True):
             if (len(self.compras) == 0):
                 logging.debug("NO HAY COMPRAS HECHAS")
             else:
                 logging.debug("Compras hechas: {0:.2f}".format(len(self.compras)))
-                self.xventa(iol)
+                self.xventa()
 
             logging.info("\n ...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
             time.sleep(2)
 
-    def xventa(self, iol):
+
+    ## Metodo que compara el objetivo de venta con el precio de la punta de compra. Si es menor manda la compra.
+    # TODO: falta ver que pasa cuando la cantidad a comprar es mayor que la punta.
+    def xventa(self):
         logging.debug("Reviso todos as compras y miro si alcanzo el valorVentaMin")
         for campo in self.compras:
-                loc_ca, loc_up, prop=iol.getCotiz(campo[0])
+
+                ##loc_ca, loc_up, prop=iol.getCotiz(campo[0])
+                ## devuelve: ULTIMOPRECIO, punta_precioCompra, punta_cantCompra, punta_precioVenta, punta_cantVenta
+
+                local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(campo[0])
                 valorMinVenta = campo[4]
-                logging.info("Ticker: "+campo[0]+" Precio Actual: {0:.2f}".format(loc_up)+" Objetivo: {0:.2f}".format(valorMinVenta))
-                if loc_up >= valorMinVenta:
-                    print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up)+Fore.RESET)
-                    logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(loc_up))
-                    self.vender(campo[0], loc_up, campo[2])
+
+                logging.info("Ticker: "+campo[0]+" Punta de compra: $ {0:.2f}".format(punta_precioCompra)+" Objetivo: $ {0:.2f}".format(valorMinVenta))
+
+                if (not self.buscar(self.ventas, campo[0])) and punta_precioCompra !=0 and punta_precioCompra >= valorMinVenta:
+                    print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra)+Fore.RESET)
+                    logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra))
+                    if (punta_cantidadCompra < campo[2]):
+                        logging.info("La cantidad de la punta de compra es menor a la cantidad que se quiere vender. VER")
+                        self.vender(campo[0], punta_precioCompra, campo[2])
 
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
-    # TODO Falta ver puntos y vender en funcion de eso.
     def vender(self, ticker, valor, cantidad):
         logging.info("Envio orden de VENTA A IOL: " + ticker + " Cantidad: {0:.2f}".format(
             cantidad) + " Valor: {0:.2f}".format(valor))
@@ -355,7 +382,7 @@ class AADR(object):
         return 0
 
     ## Busqueda generica
-    def buscar(self,lista,ticker,valor,cantidad):
+    def buscar(self,lista,ticker):
         for tt in lista:
             if (tt[0] == ticker): return True
 
