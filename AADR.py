@@ -91,8 +91,8 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        #handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
-        handler = logging.StreamHandler()
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
+        #handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
         root = logging.getLogger()
@@ -217,7 +217,7 @@ class AADR(object):
                     l.append((ticker, ultimoPrecio, punta_cantCompra, punta_precioCompra,
                                    punta_cantVenta, punta_precioVenta, ahora))
                     break
-        logging.debug("Se cargaron todas las cotizaciónes desde IOL, total: "+str(len(l)))
+        #logging.debug("Se cargaron todas las cotizaciónes desde IOL, total "+str(len(l)))
         self.listaValoresActualesAcciones = l
 
     ## ADRs
@@ -317,7 +317,7 @@ class AADR(object):
                 logging.debug("Compras hechas: {0:.2f}".format(len(self.compras)))
                 self.xventa()
 
-            logging.info("\n ...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            logging.info("...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
             time.sleep(2)
 
 
@@ -326,10 +326,8 @@ class AADR(object):
     def xventa(self):
         logging.debug("Reviso todos as compras y miro si alcanzo el valorVentaMin")
         for campo in self.compras:
-
                 ##loc_ca, loc_up, prop=iol.getCotiz(campo[0])
                 ## devuelve: ULTIMOPRECIO, punta_precioCompra, punta_cantCompra, punta_precioVenta, punta_cantVenta
-
                 local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(campo[0])
                 valorMinVenta = campo[4]
 
@@ -337,16 +335,17 @@ class AADR(object):
 
                 if (not self.buscar(self.ventas, campo[0])) and punta_precioCompra !=0 and punta_precioCompra >= valorMinVenta:
                     print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra)+Fore.RESET)
-                    logging.info("\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra))
+
+                    logging.info("Objetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra))
                     if (punta_cantidadCompra < campo[2]):
                         logging.info("La cantidad de la punta de compra es menor a la cantidad que se quiere vender. VER")
-                        self.vender(campo[0], punta_precioCompra, campo[2])
+                    self.vender(campo[0], punta_precioCompra, campo[2])
 
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
     def vender(self, ticker, valor, cantidad):
         logging.info("Envio orden de VENTA A IOL: " + ticker + " Cantidad: {0:.2f}".format(
             cantidad) + " Valor: {0:.2f}".format(valor))
-        if not self.buscar(self.ventas, ticker, valor, cantidad):
+        if not self.buscar(self.ventas, ticker):
             self.agregarVenta(ticker, valor, cantidad)
             print(Fore.GREEN + "\tVenta Finalizada: " + ticker + " Valor: {0:.2f}".format(valor)+ " Cantidad: {0:.2f}".format(cantidad) + Fore.RESET)
         else:
@@ -370,7 +369,7 @@ class AADR(object):
     def compra(self, ticker, valor, cantidad, valorVentaMin):
         logging.info("Envio orden de COMPRA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
 
-        if not self.buscar(self.compras,ticker,valor,cantidad):
+        if not self.buscar(self.compras,ticker):
             self.agregarCompra(ticker, valor, cantidad, valorVentaMin)
             costoTotal = (valor * 0.5 / 100) * 1.21
             valorTotal = valor + costoTotal
