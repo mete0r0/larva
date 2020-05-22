@@ -22,7 +22,7 @@ class AADR(object):
     MONTOCOMPRA=2000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 0
+    MODOTEST = 1
 
     def __init__(self,lista):
         self.loguear()
@@ -91,12 +91,12 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
-        #handler = logging.StreamHandler()
+        #handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
+        handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
         root = logging.getLogger()
-        root.setLevel(os.environ.get("LOGLEVEL", "INFO"))
+        root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
         root.addHandler(handler)
 
     ##
@@ -194,6 +194,10 @@ class AADR(object):
     def getTodasLasCotizaciones(self):
         iol = Iol()
         body = iol.getCotizAccionesTodas()
+
+        if body == "":
+            return 0
+
         l = []
         for campo in self.lista:
             for campoBody in body['titulos']:

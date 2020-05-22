@@ -147,11 +147,10 @@ class Iol(object):
         auth = "Bearer " + self.token
         headers = {'Authorization': auth}
         r = requests.get(url=url, headers=headers)
-        body = json.loads(r.text)
-        #print(json.dumps(body, indent=4, sort_keys=True))
-
-        #for titulo in body['titulos']:
-        #   print("Ticker: "+titulo['simbolo']+" -- Ultimo Precio: $ {0:.2f}".format(titulo['ultimoPrecio'])+" Ultimo Cierre: $ {0:.2f}".format(titulo['ultimoCierre']))
+        try:
+            body = json.loads(r.text)
+        except:
+            return ""
         return body
 
     def getCotizAdrsTodas(self):
@@ -159,13 +158,11 @@ class Iol(object):
         auth = "Bearer " + self.token
         headers = {'Authorization': auth}
         r = requests.get(url=url, headers=headers)
-        body = json.loads(r.text)
-        # print(json.dumps(body, indent=4, sort_keys=True))
-
-        # for titulo in body['titulos']:
-        #   print("Ticker: "+titulo['simbolo']+" -- Ultimo Precio: $ {0:.2f}".format(titulo['ultimoPrecio'])+" Ultimo Cierre: $ {0:.2f}".format(titulo['ultimoCierre']))
+        try:
+            body = json.loads(r.text)
+        except:
+            return ""
         return body
-
 
 
     def getTitulos(self):

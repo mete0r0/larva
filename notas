@@ -1,0 +1,8 @@
+ARreglos
+-- Evitar exeption de Json en el GetTOdaslascotizaciones. para que no parece el hilo.
+
+
+Mejoras
+
+- Trabajar con un saldo de dinero, con el objetivo que compre lo mejor que le parezca y no todo.
+- Poder comprar y vender dos veces el mismo papel.
