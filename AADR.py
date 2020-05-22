@@ -19,7 +19,7 @@ class AADR(object):
     listaValoresActualesAcciones = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     listaValoresActualesAdrs = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     TIMEREFRESH = 10
-    MONTOCOMPRA=2000
+    MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     MODOTEST = 1
@@ -93,8 +93,8 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        #handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
-        handler = logging.StreamHandler()
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
+        #handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
         root = logging.getLogger()
@@ -273,6 +273,8 @@ class AADR(object):
         ### Bucle principal ##############################################################
         while (True):
             ahora=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+
+            print(self.compras)
             self.getTodasLasCotizaciones()
             #self.getTodasLasCotizacionesADRs()
 
