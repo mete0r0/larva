@@ -23,6 +23,8 @@ class AADR(object):
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     MODOTEST = 1
+    FECHALIMITECOMPRA11 = 15
+
 
     def __init__(self,lista):
         self.loguear()
