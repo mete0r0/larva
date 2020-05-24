@@ -24,6 +24,7 @@ class AADR(object):
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     MODOTEST = 1
     FECHALIMITECOMPRA11 = 15
+    MINUTEGRADIENTEVENTA = 30
 
 
     def __init__(self,lista):
@@ -255,6 +256,8 @@ class AADR(object):
                               punta_cantVenta, punta_precioVenta, ahora))
                     break
         self.listaValoresActualesAdrs = l
+
+
     ## devuelve: ULTIMOPRECIO, punta_precioCompra, punta_cantCompra, punta_precioVenta, punta_cantVenta
     def getCotizacion(self, tickerlocal):
         for campo in self.listaValoresActualesAcciones:
@@ -274,7 +277,7 @@ class AADR(object):
         while (True):
             ahora=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
 
-            print(self.compras)
+            print(Fore.BLUE+"\nCompras: "+str(self.compras)+Fore.RESET)
             self.getTodasLasCotizaciones()
             #self.getTodasLasCotizacionesADRs()
 
@@ -311,7 +314,7 @@ class AADR(object):
                     logging.debug(tickerlocal+ "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
             ## TIEMPO DEL CICLO
             print(Fore.RED+"\n ...Hilo ppal en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
-            time.sleep(1)
+            time.sleep(10)
 
     ## Metodo que implementa el Hilo de Venta
     def worker_venta(self):
@@ -326,7 +329,7 @@ class AADR(object):
                 self.xventa()
 
             logging.info("...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            time.sleep(2)
+            time.sleep(10)
 
 
     ## Metodo que compara el objetivo de venta con el precio de la punta de compra. Si es menor manda la compra.
@@ -337,7 +340,9 @@ class AADR(object):
                 ##loc_ca, loc_up, prop=iol.getCotiz(campo[0])
                 ## devuelve: ULTIMOPRECIO, punta_precioCompra, punta_cantCompra, punta_precioVenta, punta_cantVenta
                 local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(campo[0])
-                valorMinVenta = campo[4]
+
+                ##Logica que tiene en cuenta el tipo que hace que esta comprado y cambia el ValorMinVenta
+                valorMinVenta = self.gradientePrecioVenta(campo)
 
                 logging.info("Ticker: "+campo[0]+" Punta de compra: $ {0:.2f}".format(punta_precioCompra)+" Objetivo: $ {0:.2f}".format(valorMinVenta))
 
@@ -345,8 +350,10 @@ class AADR(object):
                     print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra)+Fore.RESET)
 
                     logging.info("Objetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra))
+
                     if (punta_cantidadCompra < campo[2]):
                         logging.info("La cantidad de la punta de compra es menor a la cantidad que se quiere vender. VER")
+
                     self.vender(campo[0], punta_precioCompra, campo[2])
 
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
@@ -361,9 +368,37 @@ class AADR(object):
             logging.debug("Esta venta ya fue hecha.")
         return 0
 
+    ## En funcion del tiempo que hace que esta comprado el papel baja el valorMinVenta.
+    ## compras ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, TIMESTAMP)
+
+    def gradientePrecioVenta(self, campo):
+        ahora = datetime.now()
+        horarioCompra = campo[5]
+
+        dif = ahora - datetime.strptime(horarioCompra,"%Y-%m-%d %H:%M:%S")
+        valorCompra = campo[1]
+        costoCompra = valorCompra + self.calculoCostoOp(valorCompra)
+        difObjetivo = campo[4] - costoCompra
+        descuento = difObjetivo / 3
+
+        logging.info(campo[0]+" Costo TOTAL compra: $ {0:.2f} (incluye costos broker)".format(costoCompra))
+
+        if  self.MINUTEGRADIENTEVENTA <= (dif.seconds/60) and (dif.seconds/60) < (2*self.MINUTEGRADIENTEVENTA):
+            logging.info(campo[0]+" Ejecuto Gradiente N1, decuento: ${0:.2f}".format(descuento)+" Nuevo ValorVentaMin: ${0:.2f}".format(campo[4]-descuento)+" (anterior: ${0:.2f})".format(campo[4]))
+            return campo[4]-descuento
+
+        elif (2*self.MINUTEGRADIENTEVENTA)<=(dif.seconds/60) and (dif.seconds/60) <= (4*self.MINUTEGRADIENTEVENTA)  :
+            logging.info(campo[0]+" Ejecuto Gradiente N2, decuento: ${0:.2f}".format(2*descuento)+" Nuevo ValorVentaMin: ${0:.2f}".format(campo[4]-(2*descuento))+" (anterior: ${0:.2f})".format(campo[4]))
+            return campo[4]-(2*descuento)
+        elif (dif.seconds/60) >= (4*self.MINUTEGRADIENTEVENTA):
+            logging.info(campo[0] + " Ejecuto Gradiente N3, decuento: ${0:.2f}".format(3 * descuento) + " Nuevo ValorVentaMin: ${0:.2f}".format(campo[4] - (3 * descuento)) + " (anterior: ${0:.2f})".format(campo[4]))
+            return campo[4] - (3 * descuento)
+
+        return campo[4]
+
+
     ## Calcula el punto medio entre el valor y el arbitrado y se mueve 0,5 para cada lado
     def calculoValoresCompraYVenta(self, ticker, valor, valorArbitrado):
-
         medio = (valorArbitrado + valor) / 2
         valorCompraMax = medio - (medio * (self.GANANCIAPORCENTUAL/2) / 100)
         valorVentaMin = medio + (medio * (self.GANANCIAPORCENTUAL/2) / 100)
@@ -379,14 +414,23 @@ class AADR(object):
 
         if not self.buscar(self.compras,ticker):
             self.agregarCompra(ticker, valor, cantidad, valorVentaMin)
-            costoTotal = (valor * 0.5 / 100) * 1.21
-            valorTotal = valor + costoTotal
-            logging.info("Costo total compra (0.5% + IVA): {0:.2f}".format(valorTotal))
+
+            costoOperacion = self.calculoCostoOp(valor)
+            logging.info("Costo compra: {0:.2f}".format(costoOperacion))
             print("Comprado!!!")
         else:
             print("\tTicket Comprado anteriormente.")
             logging.info("Ticket Comprado anteriormente.")
         return 0
+
+    ## Calcula costos en funcion de los costos de IOL. NO tiene en cuenta la intradiaria
+    def calculoCostoOp(self, monto):
+        COMISIONBROKER = 0.5/100
+        DERECHOMERCADO = 0.08/100
+        IVA = 21/100
+        return ( (monto * COMISIONBROKER) + (monto * DERECHOMERCADO) + ((monto * COMISIONBROKER) * IVA) + ((monto * DERECHOMERCADO) * IVA))
+
+
 
     ## Busqueda generica
     def buscar(self,lista,ticker):
