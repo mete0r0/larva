@@ -295,7 +295,7 @@ class PandaDataReader(object):
 ##Test
 #print('Prueba de valores de GGAL en todas las fuentes de datos.')
 #y = Yahoo()
-iol = Iol()
+#iol = Iol()
 #print(iol.getCotiz("BMA"))
 #hoy=datetime.now().strftime('%Y-%m-%d')
 #result1 = iol.comprar("BMA",1,232,hoy)
@@ -309,7 +309,7 @@ iol = Iol()
 #print(' GGAL IOL: '+ str(iol.getCotiz('BMA')))
 #print(' GGAL PandaDataReader: '+ str(pdr.getCotiz('GGAL.BA')))
 
-iol.getCotizAccionesTodas()
+#iol.getCotizAccionesTodas()
 
             
 

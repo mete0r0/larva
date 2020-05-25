@@ -3,8 +3,8 @@ import json
 import logging
 import logging.handlers
 import pickle
-import time
-from datetime import datetime,date
+import time as ti
+from datetime import datetime, date, timedelta, time
 import threading
 import numpy
 import yfinance as yf
@@ -25,7 +25,8 @@ class AADR(object):
     MODOTEST = 1
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
-
+    APERTURA = 0
+    PERIODOCOMPRA = MINUTEGRADIENTEVENTA
 
     def __init__(self,lista):
         self.loguear()
@@ -67,6 +68,11 @@ class AADR(object):
             print(self.listaValoresActualesAcciones)
 
 
+        hoy = datetime.now()
+        once = time(hour=11, minute=0, second=0)
+        self.APERTURA = datetime.combine(hoy, once)
+        logging.info("Apertura: "+str(self.APERTURA))
+
 
         self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG(
             "YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
@@ -94,8 +100,8 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
-        #handler = logging.StreamHandler()
+        #handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
+        handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
         root = logging.getLogger()
@@ -275,7 +281,8 @@ class AADR(object):
         ###
         ### Bucle principal ##############################################################
         while (True):
-            ahora=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+            ahoraDate = datetime.now()
+            ahora = ahoraDate.strftime('%d/%m/%Y %H:%M:%S')
 
             print(Fore.BLUE+"\nCompras: "+str(self.compras)+Fore.RESET)
             self.getTodasLasCotizaciones()
@@ -302,9 +309,14 @@ class AADR(object):
                     ##################
                     ### Proceso Compra
                     valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(tickerlocal, cotizlocalf, valor_arbi)
+                    minutosTranscurridos = (ahoraDate - self.APERTURA).seconds/60
 
+                    if (minutosTranscurridos <= self.PERIODOCOMPRA):
+                        logging.info(" Tiempo restante de compra: "+str(minutosTranscurridos))
+                    else:
+                        logging.info(" Ya no es periodo de compra.")
 
-                    if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta:
+                    if self.PERIODOCOMPRA >= minutosTranscurridos and valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta:
                         cantidad = self.MONTOCOMPRA // cotizlocalf
                         print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(cantidad)+ " - Punta vendedora - Cant: {0:.2f}".format(
                             punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta) + Fore.RESET)
@@ -314,7 +326,7 @@ class AADR(object):
                     logging.debug(tickerlocal+ "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
             ## TIEMPO DEL CICLO
             print(Fore.RED+"\n ...Hilo ppal en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
-            time.sleep(10)
+            ti.sleep(10)
 
     ## Metodo que implementa el Hilo de Venta
     def worker_venta(self):
@@ -329,7 +341,7 @@ class AADR(object):
                 self.xventa()
 
             logging.info("...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            time.sleep(10)
+            ti.sleep(10)
 
 
     ## Metodo que compara el objetivo de venta con el precio de la punta de compra. Si es menor manda la compra.
@@ -472,6 +484,9 @@ class AADR(object):
         self.ventas.append((ticker, valor, cantidad, "000", ahora))
         with open("ventas.dat", "wb") as f:
             pickle.dump(self.ventas, f)
+
+    def larvaBackTest(self):
+        logging.info("Ejecutando Backtest.")
 
 lista=[]
 a = AADR(lista)
