@@ -20,7 +20,7 @@ for c in compras:
         if c[0] == v[0]:
             comprado = float(c[2]*c[1])
             vendido = float(v[2]*v[1])
-            print("\tCotiz compra: $ {0:.2f}".format(c[1]))
+            print("\tCotiz compra: $ {0:.2f}".format(c[1])+" - Cotiz de venta: $ {0:.2f}".format(v[1]))
             print(Fore.GREEN+"\tCerrada: "+c[0]+" GAN: $ {0:.2f}".format(float(vendido-comprado))+", Fecha compra: "+str(c[5])+", Fecha Venta: "+str(v[4])+Fore.RESET)
             break
     i +=1
