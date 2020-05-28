@@ -32,6 +32,7 @@ class AADR(object):
     def __init__(self, lista, fecha):
         self.loguear()
         self.fecha = fecha
+        self.iol = Iol()
 
         if (self.MODOTEST != 1):
             self.lista=lista
@@ -205,8 +206,7 @@ class AADR(object):
 
      ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     def getTodasLasCotizaciones(self):
-        iol = Iol()
-        body = iol.getCotizAccionesTodas()
+        body = self.iol.getCotizAccionesTodas()
 
         if body == "":
             return 0
@@ -240,8 +240,7 @@ class AADR(object):
     ## ADRs
     ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     def getTodasLasCotizacionesADRs(self):
-        iol = Iol()
-        body = iol.getCotizAdrsTodas()
+        body = self.iol.getCotizAdrsTodas()
         l = []
         for campo in self.lista:
             for campoBody in body['titulos']:
@@ -282,7 +281,6 @@ class AADR(object):
         threadvendedor = threading.Thread(target=self.worker_venta, name="HiloVentas")
         threadvendedor.start()
         logging.debug("Arranca larva: ")
-        iol = Iol()
         ###
         ### Bucle principal ##############################################################
         while (True):
@@ -349,8 +347,6 @@ class AADR(object):
     def xventa(self):
         logging.debug("Reviso todos as compras y miro si alcanzo el valorVentaMin")
         for campo in self.compras:
-                ##loc_ca, loc_up, prop=iol.getCotiz(campo[0])
-                ## devuelve: ULTIMOPRECIO, punta_precioCompra, punta_cantCompra, punta_precioVenta, punta_cantVenta
                 local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(campo[0])
 
                 ##Logica que tiene en cuenta el tipo que hace que esta comprado y cambia el ValorMinVenta
@@ -370,7 +366,7 @@ class AADR(object):
 
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
     def vender(self, ticker, valor, cantidad):
-        logging.debug("Envio orden de VENTA A IOL: " + ticker + " Cantidad: {0:.2f}".format(
+        logging.debug("Envio orden de VENTA: " + ticker + " Cantidad: {0:.2f}".format(
             cantidad) + " Valor: {0:.2f}".format(valor))
         if not self.buscar(self.ventas, ticker):
             self.agregarVenta(ticker, valor, cantidad)
@@ -543,7 +539,6 @@ a.larva()
 #a.agregarVenta("BMA", 24,1)
 
 #y = Yahoo()
-#iol = Iol()
 
 #print(' GGAL YAHOO: '+ str(y.getCotiz('GGAL.BA')))
 #print(' GGAL IOL: '+ str(iol.getCotiz('GGAL')))

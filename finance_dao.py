@@ -11,8 +11,6 @@ import os
 
 #### Clase que accede a datos del servidor Invertir Online
 class Iol(object):
-
-    status=200
     token = "0"
     refreshToken = "0"
     lista = []
@@ -36,7 +34,6 @@ class Iol(object):
 
     # Loguin almacena en una variable de clase el token de conexion.
     def login(self):
-        #Loguin en Invertir Online
         usuario="martindonofri0"
         password="1982Tino"
 
@@ -46,20 +43,14 @@ class Iol(object):
 
         r = requests.post(url = url,headers=headers,data=payload)
         self.timestampLogin = datetime.now()
-        self.status=r.status_code
 
-        if (self.getStatus()!=200):
-            logging.ERROR("Fallo conexion IOL, CODE: "+str(self.status))
+        if (r.status_code != 200):
+            print("Fallo conexion IOL")
             return False
-
-
         body=json.loads(r.text)
 
         self.refreshToken = body["refresh_token"]
         self.token = body["access_token"]
-
-    def getStatus(self):
-        return self.status
 
     ## LOGGER
     def loguear(self):
@@ -75,7 +66,7 @@ class Iol(object):
         ahora = datetime.now()
         diff = ahora - self.timestampLogin
         if diff.seconds > 600:
-            logging.info("Haciendo refresh del token iol")
+            logging.debug("Haciendo refresh del token iol")
             url = "https://api.invertironline.com/token"
             headers = {'content-type': 'application/x-www-form-urlencoded'}
             payload = {'refresh_token': self.refreshToken, 'grant_type': 'refresh_token'}
@@ -91,8 +82,6 @@ class Iol(object):
         URL="https://api.invertironline.com/api/v2/"+mercado+"/Titulos/"+ticker+"/Cotizacion?mercado="+mercado+"&simbolo="+ticker+"&model.simbolo="+ticker+"&model.mercado="+mercado
         headers={'Authorization': "Bearer "+self.getToken()}
         r = requests.get(url = URL, headers = headers)
-        #if r.status_code != 200:
-            #raise ConnectionError("Fallo conexion IOL, CODE: " + str(r.status_code))
         body=""
         try:
             body=json.loads(r.text)
@@ -119,11 +108,8 @@ class Iol(object):
 
     def getCotizConPuntas(self, ticker, mercado='bCBA'):
         URL = "https://api.invertironline.com/api/v2/" + mercado + "/Titulos/" + ticker + "/Cotizacion?mercado=" + mercado + "&simbolo=" + ticker + "&model.simbolo=" + ticker + "&model.mercado=" + mercado
-        headers = {'Authorization': "Bearer " + self.token}
-
+        headers = {'Authorization': "Bearer " +self.getToken()}
         r = requests.get(url=URL, headers=headers)
-       # if r.status_code != 200:
-       #     raise ConnectionError("Fallo conexion IOL, CODE: " + str(r.status_code))
 
         body = ""
         try:
@@ -156,7 +142,7 @@ class Iol(object):
 
     def getCotizAccionesTodas(self):
         url = "https://api.invertironline.com/api/v2/Cotizaciones/Acciones/Merval/argentina"
-        auth = "Bearer " + self.token
+        auth = "Bearer " + self.getToken()
         headers = {'Authorization': auth}
         r = requests.get(url=url, headers=headers)
         try:
@@ -167,7 +153,7 @@ class Iol(object):
 
     def getCotizAdrsTodas(self):
         url = "https://api.invertironline.com/api/v2/Cotizaciones/adrs/Argentina/estados_Unidos"
-        auth = "Bearer " + self.token
+        auth = "Bearer " + self.getToken()
         headers = {'Authorization': auth}
         r = requests.get(url=url, headers=headers)
         try:
@@ -179,7 +165,7 @@ class Iol(object):
 
     def getTitulos(self):
         url = "https://api.invertironline.com/api/v2/Cotizaciones/Acciones/Merval/argentina"
-        auth = "Bearer " + self.token
+        auth = "Bearer " + self.getToken()
         headers = {'Authorization': auth}
         r = requests.get(url=url, headers=headers)
         body = json.loads(r.text)
@@ -191,7 +177,7 @@ class Iol(object):
 
     def getPropCompras(self, ticker, mercado='bCBA'):
         URL = "https://api.invertironline.com/api/v2/" + mercado + "/Titulos/" + ticker + "/Cotizacion?mercado=" + mercado + "&simbolo=" + ticker + "&model.simbolo=" + ticker + "&model.mercado=" + mercado
-        auth = "Bearer " + self.token
+        auth = "Bearer " + self.getToken()
         headers = {'Authorization': auth}
         r = requests.get(url=URL, headers=headers)
         body = json.loads(r.text)
@@ -214,7 +200,7 @@ class Iol(object):
     def comprar(self, ticker, cantidad, precio, validez):
         nrope = 0
         URL = "https://api.invertironline.com/api/v2/operar/Comprar"
-        auth = "Bearer " + self.token
+        auth = "Bearer " + self.getToken()
 
         headers = {'Authorization': auth}
         payload = {
@@ -236,7 +222,7 @@ class Iol(object):
     def vender(self, ticker, cantidad, precio, validez):
         nrope = 0
         URL = "https://api.invertironline.com/api/v2/operar/Vender"
-        auth = "Bearer " + self.token
+        auth = "Bearer " + self.getToken()
 
         headers = {'Authorization': auth}
         payload = {
@@ -257,17 +243,17 @@ class Iol(object):
         return r.text
 
     def borrarOperacion(self, number):
-        headers = {'Authorization': "Bearer " + self.token}
+        headers = {'Authorization': "Bearer " + self.getToken()}
         r = requests.delete("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
         return r.text
 
     def getOperacion(self, number):
-        headers = {'Authorization': "Bearer " + self.token}
+        headers = {'Authorization': "Bearer " + self.getToken()}
         r = requests.get("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
         return r.text
 
     def getOperaciones(self):
-        headers = {'Authorization': "Bearer " + self.token}
+        headers = {'Authorization': "Bearer " + self.getToken()}
         r = requests.get("https://api.invertironline.com/api/v2/operaciones/", headers=headers)
         return json.loads(r.text)
 
