@@ -3,8 +3,8 @@ import json
 import logging
 import logging.handlers
 import pickle
-import time
-from datetime import datetime,date
+import time as ti
+from datetime import datetime, date, timedelta, time
 import threading
 import numpy
 import yfinance as yf
@@ -21,13 +21,14 @@ class AADR(object):
     TIMEREFRESH = 10
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
-    DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL#+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
+    DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL +1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     MODOTEST = 0
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
+    APERTURA = 0
+    PERIODOCOMPRA = MINUTEGRADIENTEVENTA
 
-
-    def __init__(self,lista):
+    def __init__(self, lista, fecha):
         self.loguear()
         if (self.MODOTEST != 1):
             self.lista=lista
@@ -43,8 +44,8 @@ class AADR(object):
             self.lista.append(('TEO','TECO2.BA',5,0,0,0))
             self.lista.append(('TGS','TGSU2.BA',5,0,0,0))
             self.lista.sort()
-            self.cargar_cotiz()
-
+            l = self.cargar_cotiz(fecha)
+            self.lista = l
             ## Guardo la lista
             with open("lista.dat", "wb") as f:
                 pickle.dump(self.lista, f)
@@ -67,13 +68,17 @@ class AADR(object):
             print(self.listaValoresActualesAcciones)
 
 
+        once = time(hour=11, minute=0, second=0)
+        self.APERTURA = datetime.combine(fecha, once)
+        logging.info("Apertura: "+str(self.APERTURA))
+
 
         self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG(
             "YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
         self.cargar_ValoresArbitrados()
         print(" CCL: "+str(self.dolar_ccl_promedio))
 
-        self.hoy = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+        self.hoy = fecha.strftime('%d/%m/%Y %H:%M:%S')
         print("Fecha: " + self.hoy)
         logging.info("INICIANDO LARVA " + self.hoy)
         print("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
@@ -114,17 +119,20 @@ class AADR(object):
         self.lista=lista_aux
 
     ## Carga cotizaciones del cierre anterior en lista.
-    def cargar_cotiz(self):
+    def cargar_cotiz(self, fecha):
         logging.debug('Cargando cotizaciones ultimo cierre.')
         lista_aux=[]
         ultimoCierre=""
+        start = fecha - timedelta(days=2)
+        end = fecha
         for campo in self.lista:
             local_ca = 0
             adr_ca = 0
             try:
-                hoy_aux=date.today()
-                pd_local_aux = yf.download(campo[1], period="2d", interval="1d")
-                pd_local = pd_local_aux.drop(hoy_aux).tail(1)
+
+                pd_local_aux = yf.download(campo[1], start=start.strftime('%Y-%m-%d'), end=end.strftime('%Y-%m-%d'), interval="1d")
+                #pd_local_aux = yf.download(campo[1], period="2d", interval="1d")
+                pd_local = pd_local_aux.drop(fecha.date()).tail(1)
             except KeyError:
                 logging.debug("No se pudo borrar el dia de hoy. "+ campo[1])
                 pd_local = pd_local_aux.tail(1)
@@ -147,7 +155,7 @@ class AADR(object):
 
             campo_aux=(campo[0], campo[1], campo[2], adr_ca, local_ca, 0)
             lista_aux.append(campo_aux)
-        self.lista=lista_aux
+        return lista_aux
 
     def calculo_ccl(self, tickerlocal):
         cotizadrf=0
@@ -267,7 +275,7 @@ class AADR(object):
         return [0,0,0,0,0]
 
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
-    def larva(self):
+    def larva(self, fecha):
         threadvendedor = threading.Thread(target=self.worker_venta, name="HiloVentas")
         threadvendedor.start()
         logging.debug("Arranca larva: ")
@@ -275,20 +283,15 @@ class AADR(object):
         ###
         ### Bucle principal ##############################################################
         while (True):
-            ahora=datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+            ahora = fecha.strftime('%d/%m/%Y %H:%M:%S')
 
             print(Fore.BLUE+"\nCompras: "+str(self.compras)+Fore.RESET)
             self.getTodasLasCotizaciones()
-            #self.getTodasLasCotizacionesADRs()
 
             print("Fecha: "+ahora)
             for tt in self.lista:
                 tickerlocal = tt[1].split(".")[0]
                 local_up, precioCompra, cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(tickerlocal)
-
-                #local_ca, local_up, precioCompra, cantidadCompra, punta_precioVenta, punta_cantidadVenta = iol.getCotizConPuntas(tickerlocal, mercado="BCBA")
-
-                #adr_ca, adr_up, adr_prop = iol.getCotiz(ticker=tt[0], mercado="NYSE")
 
                 valor_arbi = float(tt[5])
                 cotizlocalf = float(local_up)
@@ -302,9 +305,15 @@ class AADR(object):
                     ##################
                     ### Proceso Compra
                     valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(tickerlocal, cotizlocalf, valor_arbi)
+                    now = datetime.now()
+                    minutosTranscurridos = (now - self.APERTURA).seconds / 60
 
+                    if (minutosTranscurridos <= self.PERIODOCOMPRA):
+                        logging.info(" Tiempo restante de compra: "+str(minutosTranscurridos))
+                    else:
+                        logging.info(" Ya no es periodo de compra.")
 
-                    if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta:
+                    if self.PERIODOCOMPRA >= minutosTranscurridos and valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta:
                         cantidad = self.MONTOCOMPRA // cotizlocalf
                         print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(cantidad)+ " - Punta vendedora - Cant: {0:.2f}".format(
                             punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta) + Fore.RESET)
@@ -314,7 +323,7 @@ class AADR(object):
                     logging.debug(tickerlocal+ "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
             ## TIEMPO DEL CICLO
             print(Fore.RED+"\n ...Hilo ppal en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
-            time.sleep(10)
+            ti.sleep(10)
 
     ## Metodo que implementa el Hilo de Venta
     def worker_venta(self):
@@ -329,7 +338,7 @@ class AADR(object):
                 self.xventa()
 
             logging.info("...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            time.sleep(10)
+            ti.sleep(10)
 
 
     ## Metodo que compara el objetivo de venta con el precio de la punta de compra. Si es menor manda la compra.
@@ -473,10 +482,46 @@ class AADR(object):
         with open("ventas.dat", "wb") as f:
             pickle.dump(self.ventas, f)
 
-lista=[]
-a = AADR(lista)
+    def larvaBackTest(self, fecha):
+        logging.info("Ejecutando Backtest.")
+        #threadvendedor = threading.Thread(target=self.worker_venta, name="HiloVentas")
+        #threadvendedor.start()
+        #logging.debug("Arranca larva: ")
 
-a.larva()
+        for campo in lista:
+            ticker = campo[1]
+            listaCotizaciones = yf.download(ticker, period=fecha.strftime('%Y-%m-%d'), interval='5m')
+
+            for x in range(len(listaCotizaciones)):
+                hora = listaCotizaciones.index[x]
+                precio = listaCotizaciones.iloc[x]['Close']
+                valor_arbi = float(campo[5])
+                cotizlocalf = float(precio)
+                diferencia = float(valor_arbi) - float(cotizlocalf)
+                variacion = float((diferencia) * 100) / float(cotizlocalf)
+                if (variacion >= self.DIFPORCENTUALMINCOMPRA):
+                    ### Proceso Compra
+                    valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(ticker, cotizlocalf, valor_arbi)
+                    if valorCompraMax != 0 and cotizlocalf != 0 and valorCompraMax >= cotizlocalf:
+                        cantidad = self.MONTOCOMPRA // cotizlocalf
+                        print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(
+                            cantidad) + " - Punta vendedora - Cant: {0:.2f}".format(
+                            cotizlocalf) + ", valor: {0:.2f}".format(cotizlocalf) + Fore.RESET)
+                        self.compra(ticker, cotizlocalf, cantidad, valorVentaMin)
+
+
+
+lista=[]
+ahora = datetime.now()
+#listaC = yf.download('BMA.BA',start='2020-5-15', end='2020-5-22',interval='1d')
+
+#for x in range(len(listaC)):
+#    fechaS = str(listaC.index[x])[0:10]
+#    fecha = datetime.strptime(fechaS, '%Y-%m-%d')
+#    a = AADR(lista, fecha)
+#    a.larvaBackTest(fecha)
+a = AADR(lista, ahora)
+a.larva(ahora)
 
 #a.xcompra("BBAR",139, 100, 100, 232)
 #a.xcompra("BBAR",250, 240, 100, 232)
