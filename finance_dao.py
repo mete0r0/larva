@@ -260,6 +260,14 @@ class Iol(object):
         r = requests.get("https://api.invertironline.com/api/v2/operaciones/", headers=headers)
         return json.loads(r.text)
 
+    ## Calcula costos en funcion de los costos de IOL. NO tiene en cuenta la intradiaria
+    def calculoCostoOp(self, monto):
+        COMISIONBROKER = 0.5 / 100
+        DERECHOMERCADO = 0.08 / 100
+        IVA = 21 / 100
+        return ((monto * COMISIONBROKER) + (monto * DERECHOMERCADO) + ((monto * COMISIONBROKER) * IVA) + (
+        (monto * DERECHOMERCADO) * IVA))
+
 
 ### Clase que accede a datos del servidor Yahoo
 class Yahoo(object):

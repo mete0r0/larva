@@ -4,7 +4,7 @@ import logging
 import logging.handlers
 import pickle
 import time as ti
-from datetime import datetime, date, timedelta, time
+from datetime import datetime, timedelta, time
 import threading
 import numpy
 import yfinance as yf
@@ -285,11 +285,24 @@ class AADR(object):
         ### Bucle principal ##############################################################
         while (True):
             ahora = self.fecha.strftime('%d/%m/%Y %H:%M:%S')
+            print("\tFecha: "+ahora)
 
             print(Fore.BLUE+"\nCompras: "+str(self.compras)+Fore.RESET)
             self.getTodasLasCotizaciones()
+            enPeriodo = True
 
-            print("Fecha: "+ahora)
+            now = datetime.now()
+            minutosTranscurridos = (now - self.APERTURA).seconds / 60
+
+            if (minutosTranscurridos <= self.PERIODOCOMPRA):
+                logging.info(" Tiempo restante de compra: " + str(minutosTranscurridos))
+                enPeriodo = True
+            else:
+                logging.info(" Ya no es periodo de compra.")
+                print("Fin periodo de compra. ")
+                enPeriodo = False
+
+
             for tt in self.lista:
                 tickerlocal = tt[1].split(".")[0]
                 local_up, precioCompra, cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(tickerlocal)
@@ -301,20 +314,15 @@ class AADR(object):
                 diferencia = float(valor_arbi)-float(cotizlocalf)
                 variacion = float((diferencia)*100)/float(cotizlocalf)
 
-                if (variacion>=self.DIFPORCENTUALMINCOMPRA):
+                if (variacion >= self.DIFPORCENTUALMINCOMPRA and enPeriodo):
+
+                    ## Imprimo ticker con posibilidad de compra.
                     print(Fore.BLUE+tickerlocal + "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
                     ##################
                     ### Proceso Compra
                     valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(tickerlocal, cotizlocalf, valor_arbi)
-                    now = datetime.now()
-                    minutosTranscurridos = (now - self.APERTURA).seconds / 60
 
-                    if (minutosTranscurridos <= self.PERIODOCOMPRA):
-                        logging.info(" Tiempo restante de compra: "+str(minutosTranscurridos))
-                    else:
-                        logging.info(" Ya no es periodo de compra.")
-
-                    if self.PERIODOCOMPRA >= minutosTranscurridos and valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta:
+                    if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta and not self.buscar(self.compras, tickerlocal):
                         cantidad = self.MONTOCOMPRA // cotizlocalf
                         print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(cantidad)+ " - Punta vendedora - Cant: {0:.2f}".format(
                             punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta) + Fore.RESET)
@@ -385,7 +393,7 @@ class AADR(object):
 
         dif = ahora - datetime.strptime(horarioCompra,"%Y-%m-%d %H:%M:%S")
         valorCompra = campo[1]
-        costoCompra = valorCompra + self.calculoCostoOp(valorCompra)
+        costoCompra = valorCompra + self.iol.calculoCostoOp(valorCompra)
         difObjetivo = campo[4] - costoCompra
         descuento = difObjetivo / 3
 
@@ -416,28 +424,14 @@ class AADR(object):
         return [valorCompraMax, valorVentaMin]
 
 
-    ## Orden que envia a comprar a IOL y agrega a la lista de operaciones pendientes.
+    ## Orden que envia a comprar y agrega a la lista de operaciones pendientes.
     def compra(self, ticker, valor, cantidad, valorVentaMin):
-        logging.debug("Envio orden de COMPRA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
-
-        if not self.buscar(self.compras,ticker):
+            logging.debug("Envio orden de COMPRA: " + ticker + " Cantidad: {0:.2f}".format(
+                cantidad) + " Valor: {0:.2f}".format(valor))
             self.agregarCompra(ticker, valor, cantidad, valorVentaMin)
-
-            costoOperacion = self.calculoCostoOp(valor)
+            costoOperacion = self.iol.calculoCostoOp(valor)
             logging.info("Costo compra: {0:.2f}".format(costoOperacion))
             print("Comprado!!!")
-        else:
-            print("\tTicket Comprado anteriormente.")
-            logging.info("Ticket Comprado anteriormente.")
-        return 0
-
-    ## Calcula costos en funcion de los costos de IOL. NO tiene en cuenta la intradiaria
-    def calculoCostoOp(self, monto):
-        COMISIONBROKER = 0.5/100
-        DERECHOMERCADO = 0.08/100
-        IVA = 21/100
-        return ( (monto * COMISIONBROKER) + (monto * DERECHOMERCADO) + ((monto * COMISIONBROKER) * IVA) + ((monto * DERECHOMERCADO) * IVA))
-
 
 
     ## Busqueda generica

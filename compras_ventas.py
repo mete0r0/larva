@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import pickle
 from colorama import Fore
+from finance_dao import Iol
+import logging
+import logging.handlers
 
 i = 0
 compras =[]
@@ -20,6 +23,7 @@ saldoTotal = float(0)
 ventaTotal = float(0)
 vendio = False
 totalGanado = float(0)
+iol = Iol()
 
 for c in compras:
     vendio = False
@@ -30,7 +34,9 @@ for c in compras:
             compraTotal = compraTotal + comprado
             ventaTotal = ventaTotal + vendido
             #print("\tCotiz compra: $ {0:.2f}".format(c[1])+" - Cotiz de venta: $ {0:.2f}".format(v[1]))
-            ganancia = vendido - comprado
+            costoCompra = iol.calculoCostoOp(comprado)
+
+            ganancia = vendido - (comprado+costoCompra)
             totalGanado = totalGanado + ganancia
             print(Fore.GREEN+"\tCerrada: "+c[0]+" GAN: $ {0:.2f}".format(float(ganancia))+", Fecha compra: "+str(c[5])+", Fecha Venta: "+str(v[4])+Fore.RESET)
             vendio = True
@@ -42,7 +48,9 @@ for c in compras:
         compraTotal = compraTotal + float(c[1]*c[2])
     #print(str(i)+"  "+c[0]+" Compra sin vender {0:.2f}".format(c[1])+" Time: "+ c[5])
 
-saldoTotal = ventaTotal - compraTotal
+
+costoCompras = iol.calculoCostoOp(compraTotal)
+saldoTotal = ventaTotal - (compraTotal+costoCompras)
 print(" Saldo: {0:.2f}".format(saldoTotal))
 print(" Ganado: {0:.2f}".format(totalGanado))
 
