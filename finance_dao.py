@@ -48,7 +48,8 @@ class Iol(object):
         self.status=r.status_code
 
         if (self.getStatus()!=200):
-            raise ConnectionError("Fallo conexion IOL, CODE: "+str(r.status_code))
+            logging.ERROR("Fallo conexion IOL, CODE: "+str(r.status_code))
+            return 1
         body=json.loads(r.text)
 
         self.refreshToken = body["refresh_token"]
@@ -86,8 +87,6 @@ class Iol(object):
         except (JSONDecodeError, KeyError):
             self.login()
             print('Fallo la consulta api iol, intento Reconexion. Status code: '+str(r.status_code))
-
-        #print(' - - '+ticker+': '+json.dumps(body, indent=4, sort_keys=True))
 
         cantidadCompra = 0
         cantidadVenta = 0
