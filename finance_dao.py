@@ -66,7 +66,7 @@ class Iol(object):
         ahora = datetime.now()
         diff = ahora - self.timestampLogin
         if diff.seconds > 600:
-            logging.debug("Haciendo refresh del token iol")
+            logging.debug("getToken: Haciendo refresh del token iol")
             url = "https://api.invertironline.com/token"
             headers = {'content-type': 'application/x-www-form-urlencoded'}
             payload = {'refresh_token': self.refreshToken, 'grant_type': 'refresh_token'}
@@ -75,7 +75,7 @@ class Iol(object):
             self.timestampLogin = datetime.now()
             self.refreshToken = body["refresh_token"]
             self.token = body["access_token"]
-        logging.debug("getToken: "+self.token)
+        logging.debug("getToken: "+self.token+ "\n*vigencia: {0:.2f}min \n".format(float(diff.seconds/60)))
         return self.token
 
     def getCotiz(self, ticker, mercado='bCBA'):
