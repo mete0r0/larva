@@ -7,6 +7,8 @@ from datetime import datetime, date
 from pandas_datareader import data
 import logging
 import os
+from colorama import Fore
+
 
 
 #### Clase que accede a datos del servidor Invertir Online
@@ -45,7 +47,8 @@ class Iol(object):
         self.timestampLogin = datetime.now()
 
         if (r.status_code != 200):
-            print("Fallo conexion IOL")
+            logging.DEBUG("Fallo conexion IOL")
+            print(Fore.RED+"Fallo conexion IOL"+Fore.RESET)
             return False
         body=json.loads(r.text)
 
