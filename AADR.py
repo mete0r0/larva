@@ -22,14 +22,17 @@ class AADR(object):
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 0
+    MODOTEST = 1
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
     PERIODOCOMPRA = MINUTEGRADIENTEVENTA
 
+
     def __init__(self, lista, fecha):
         self.loguear()
+        self.fecha = fecha
+
         if (self.MODOTEST != 1):
             self.lista=lista
             self.lista.append(('GGAL','GGAL.BA',10,0,0,0))
@@ -70,7 +73,7 @@ class AADR(object):
 
         once = time(hour=11, minute=0, second=0)
         self.APERTURA = datetime.combine(fecha, once)
-        logging.info("Apertura: "+str(self.APERTURA))
+        logging.debug("Apertura: "+str(self.APERTURA))
 
 
         self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG(
@@ -78,9 +81,8 @@ class AADR(object):
         self.cargar_ValoresArbitrados()
 
 
-        self.hoy = fecha.strftime('%d/%m/%Y %H:%M:%S')
-        print("Fecha: " + self.hoy)
-        logging.info("INICIANDO LARVA " + self.hoy)
+        print("Fecha: " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
+        logging.info("INICIANDO LARVA " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
         print("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
         logging.info("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
 
@@ -151,7 +153,7 @@ class AADR(object):
 
                 if not pd_adr.empty:
                     adr_ca = pd_adr['Close'].values[0]
-            logging.info(ultimoCierre+ " - "+campo[0] + " C. ADR ULT CIERRE {0:.2f}".format(adr_ca) + " C. Loc ULT CIERRE {0:.2f}".format(local_ca))
+            logging.debug(ultimoCierre+ " - "+campo[0] + " C. ADR ULT CIERRE {0:.2f}".format(adr_ca) + " C. Loc ULT CIERRE {0:.2f}".format(local_ca))
 
             campo_aux=(campo[0], campo[1], campo[2], adr_ca, local_ca, 0)
             lista_aux.append(campo_aux)
@@ -186,7 +188,7 @@ class AADR(object):
                 break
 
         resultado = (float(cotizlocalf) / (float(cotizadrf) / float(factor)))
-        logging.info(tickerlocal + " C. ADR: {0:.2f}".format(cotizadrf) + " C. Loc: {0:.2f}".format(cotizlocalf) + ' Fac.: ' + str(factor) + " CCL: {0:.2f}".format(resultado))
+        logging.debug(tickerlocal + " C. ADR: {0:.2f}".format(cotizadrf) + " C. Loc: {0:.2f}".format(cotizlocalf) + ' Fac.: ' + str(factor) + " CCL: {0:.2f}".format(resultado))
         return resultado
 
     def calculo_valor_arbitrado(self, tickerlocal, dolar_ccl_promedio):
@@ -256,7 +258,7 @@ class AADR(object):
                         punta_cantVenta = puntas['cantidadVenta']
                         punta_precioVenta = puntas['precioVenta']
                     except:
-                        logging.error("Lista de puntas incompleta. ")
+                        logging.warning("Lista de puntas incompleta. ")
 
                     ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     ultimoPrecio = campoBody['ultimoPrecio']
@@ -275,7 +277,8 @@ class AADR(object):
         return [0,0,0,0,0]
 
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
-    def larva(self, fecha):
+    def larva(self):
+        fecha = self.fecha
         threadvendedor = threading.Thread(target=self.worker_venta, name="HiloVentas")
         threadvendedor.start()
         logging.debug("Arranca larva: ")
@@ -283,7 +286,7 @@ class AADR(object):
         ###
         ### Bucle principal ##############################################################
         while (True):
-            ahora = fecha.strftime('%d/%m/%Y %H:%M:%S')
+            ahora = self.fecha.strftime('%d/%m/%Y %H:%M:%S')
 
             print(Fore.BLUE+"\nCompras: "+str(self.compras)+Fore.RESET)
             self.getTodasLasCotizaciones()
@@ -360,13 +363,13 @@ class AADR(object):
                     logging.info("Objetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra))
 
                     if (punta_cantidadCompra < campo[2]):
-                        logging.info("La cantidad de la punta de compra es menor a la cantidad que se quiere vender. VER")
+                        logging.debug("La cantidad de la punta de compra es menor a la cantidad que se quiere vender. VER")
 
                     self.vender(campo[0], punta_precioCompra, campo[2])
 
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
     def vender(self, ticker, valor, cantidad):
-        logging.info("Envio orden de VENTA A IOL: " + ticker + " Cantidad: {0:.2f}".format(
+        logging.debug("Envio orden de VENTA A IOL: " + ticker + " Cantidad: {0:.2f}".format(
             cantidad) + " Valor: {0:.2f}".format(valor))
         if not self.buscar(self.ventas, ticker):
             self.agregarVenta(ticker, valor, cantidad)
@@ -411,14 +414,14 @@ class AADR(object):
         valorCompraMax = medio - (medio * (self.GANANCIAPORCENTUAL/2) / 100)
         valorVentaMin = medio + (medio * (self.GANANCIAPORCENTUAL/2) / 100)
 
-        logging.info(ticker+" COTIZ ACTUAL: $ {0:.2f}".format(valor)+"\t Valor compra Maximo {0:.2f}".format(valorCompraMax)+" -- Valor venta Minimo {0:.2f}".format(valorVentaMin))
+        logging.debug(ticker+" COTIZ ACTUAL: $ {0:.2f}".format(valor)+"\t Valor compra Maximo {0:.2f}".format(valorCompraMax)+" -- Valor venta Minimo {0:.2f}".format(valorVentaMin))
 
         return [valorCompraMax, valorVentaMin]
 
 
     ## Orden que envia a comprar a IOL y agrega a la lista de operaciones pendientes.
     def compra(self, ticker, valor, cantidad, valorVentaMin):
-        logging.info("Envio orden de COMPRA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
+        logging.debug("Envio orden de COMPRA A IOL: "+ticker+" Cantidad: {0:.2f}".format(cantidad)+" Valor: {0:.2f}".format(valor))
 
         if not self.buscar(self.compras,ticker):
             self.agregarCompra(ticker, valor, cantidad, valorVentaMin)
@@ -475,7 +478,7 @@ class AADR(object):
    
 
     def agregarVenta(self, ticker, valor, cantidad):
-        logging.info("Agregando Venta Nueva")
+        logging.debug("Agregando Venta Nueva")
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.ventas.append((ticker, valor, cantidad, "000", ahora))
         with open("ventas.dat", "wb") as f:
@@ -511,6 +514,7 @@ class AADR(object):
 
 
 lista=[]
+#ahora = datetime.now()
 listaC = yf.download('BMA.BA',start='2020-5-15', end='2020-5-22',interval='1d')
 
 for x in range(len(listaC)):
@@ -518,7 +522,9 @@ for x in range(len(listaC)):
     fecha = datetime.strptime(fechaS, '%Y-%m-%d')
     a = AADR(lista, fecha)
     a.larvaBackTest(fecha)
-#a.larva(ahora)
+
+#a = AADR(lista, ahora)
+#a.larva()
 
 #a.xcompra("BBAR",139, 100, 100, 232)
 #a.xcompra("BBAR",250, 240, 100, 232)
