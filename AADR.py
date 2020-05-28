@@ -22,7 +22,7 @@ class AADR(object):
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 1
+    MODOTEST = 0
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
@@ -51,23 +51,32 @@ class AADR(object):
             l = self.cargar_cotiz(fecha)
             self.lista = l
             ## Guardo la lista
-            with open("lista.dat", "wb") as f:
+
+            with open("lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.lista, f)
 
             ## Guardo la listaValoresActualesAcciones
-            with open("listaValoresActualesAcciones.dat", "wb") as f:
+            with open("listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.listaValoresActualesAcciones, f)
 
         else:
             ##Cargo lista desde archivo
-            with open("lista.dat", "rb") as f:
-                self.lista = pickle.load(f)
+            try:
+                with open("lista"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+                    self.lista = pickle.load(f)
+            except Exception:
+                pickle.dump(self.lista, open("lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb"))
+
             print("Cantidad lista en Inicio: " + str(len(self.lista)))
             print(self.lista)
 
             ##Cargo listaValoresActualesAcciones desde archivo
-            with open("listaValoresActualesAcciones.dat", "rb") as f:
-                self.listaValoresActualesAcciones = pickle.load(f)
+            try:
+                with open("listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+                    self.listaValoresActualesAcciones = pickle.load(f)
+            except Exception:
+                pickle.dump(self.lista, open("listaValoresActualesAcciones" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
+
             print("Cantidad listaValoresActualesAcciones en Inicio: " + str(len(self.lista)))
             print(self.listaValoresActualesAcciones)
 
@@ -88,14 +97,22 @@ class AADR(object):
         logging.info("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
 
         ##Cargo compras desde archivo
-        with open("compras.dat", "rb") as f:
+        try:
+            with open("compras"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
                 self.compras = pickle.load(f)
+        except Exception:
+            pickle.dump(self.compras, open("compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
+
         print("Cantidad compras en Inicio: "+str(len(self.compras)))
         print(self.compras)
 
         ##Cargo ventas desde archivo
-        with open("ventas.dat", "rb") as f:
+        try:
+            with open("ventas"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
                 self.ventas = pickle.load(f)
+        except Exception:
+            pickle.dump(self.ventas, open("ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
+
         print("Cantidad ventas en Inicio: "+str(len(self.ventas)))
         print(self.ventas)
 
@@ -458,13 +475,13 @@ class AADR(object):
     def agregarCompra(self, ticker, valor, cantidad, valorVentaMin):
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.compras.append((ticker, valor, cantidad, "000", valorVentaMin, ahora))
-        with open("compras.dat", "wb") as f:
+        with open("compras"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
             pickle.dump(self.compras, f)
     
     def borrarCompras(self):
         l = []
         self.compras = l
-        with open("compras.dat", "wb") as f:
+        with open("compras"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
             pickle.dump(self.compras, f)
    
 
@@ -472,7 +489,7 @@ class AADR(object):
         logging.debug("Agregando Venta Nueva")
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.ventas.append((ticker, valor, cantidad, "000", ahora))
-        with open("ventas.dat", "wb") as f:
+        with open("ventas"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
             pickle.dump(self.ventas, f)
 
     def larvaBackTest(self, fecha):
