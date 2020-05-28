@@ -535,7 +535,7 @@ ahora = datetime.now()
 #    a = AADR(lista, fecha)
 #    a.larvaBackTest(fecha)
 a = AADR(lista, ahora)
-a.larva(ahora)
+a.larva()
 
 #a.xcompra("BBAR",139, 100, 100, 232)
 #a.xcompra("BBAR",250, 240, 100, 232)
