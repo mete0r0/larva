@@ -6,12 +6,12 @@ import yfinance as yf
 from datetime import datetime, date
 from pandas_datareader import data
 import logging
-
-#logging.basicConfig(filename='finance_dao.log',format=' %(asctime)s - %(name)s - %(levelname)s - %(message)s ',level=logging.INFO)
+import os
 
 
 #### Clase que accede a datos del servidor Invertir Online
 class Iol(object):
+
     status=200
     token = "0"
     refreshToken = "0"
@@ -32,6 +32,7 @@ class Iol(object):
 
     def __init__(self):
         self.login()
+        self.loguear()
 
     # Loguin almacena en una variable de clase el token de conexion.
     def login(self):
@@ -48,8 +49,10 @@ class Iol(object):
         self.status=r.status_code
 
         if (self.getStatus()!=200):
-            logging.ERROR("Fallo conexion IOL, CODE: "+str(r.status_code))
-            return 1
+            logging.ERROR("Fallo conexion IOL, CODE: "+str(self.status))
+            return False
+
+
         body=json.loads(r.text)
 
         self.refreshToken = body["refresh_token"]
@@ -57,6 +60,16 @@ class Iol(object):
 
     def getStatus(self):
         return self.status
+
+    ## LOGGER
+    def loguear(self):
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
+        # handler = logging.StreamHandler()
+        formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
+        handler.setFormatter(formatter)
+        root = logging.getLogger()
+        root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
+        root.addHandler(handler)
 
     def getToken(self):
         ahora = datetime.now()
