@@ -79,7 +79,7 @@ class AADR(object):
         self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG(
             "YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
         self.cargar_ValoresArbitrados()
-
+        print(" CCL: "+str(self.dolar_ccl_promedio))
 
         print("Fecha: " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
         logging.info("INICIANDO LARVA " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
@@ -101,12 +101,12 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        #handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
-        handler = logging.StreamHandler()
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
+        #handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
         root = logging.getLogger()
-        root.setLevel(os.environ.get("LOGLEVEL", "INFO"))
+        root.setLevel(os.environ.get("LOGLEVEL", "DEBUG"))
         root.addHandler(handler)
 
     ##
@@ -308,7 +308,8 @@ class AADR(object):
                     ##################
                     ### Proceso Compra
                     valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(tickerlocal, cotizlocalf, valor_arbi)
-                    minutosTranscurridos = (fecha - self.APERTURA).seconds / 60
+                    now = datetime.now()
+                    minutosTranscurridos = (now - self.APERTURA).seconds / 60
 
                     if (minutosTranscurridos <= self.PERIODOCOMPRA):
                         logging.info(" Tiempo restante de compra: "+str(minutosTranscurridos))
@@ -515,16 +516,26 @@ class AADR(object):
 
 lista=[]
 #ahora = datetime.now()
-listaC = yf.download('BMA.BA',start='2020-5-15', end='2020-5-22',interval='1d')
+#listaC = yf.download('BMA.BA',start='2020-5-15', end='2020-5-22',interval='1d')
 
-for x in range(len(listaC)):
-    fechaS = str(listaC.index[x])[0:10]
-    fecha = datetime.strptime(fechaS, '%Y-%m-%d')
-    a = AADR(lista, fecha)
-    a.larvaBackTest(fecha)
+#for x in range(len(listaC)):
+#    fechaS = str(listaC.index[x])[0:10]
+#    fecha = datetime.strptime(fechaS, '%Y-%m-%d')
+#    a = AADR(lista, fecha)
+#    a.larvaBackTest(fecha)
 
 #a = AADR(lista, ahora)
 #a.larva()
+ahora = datetime.now()
+#listaC = yf.download('BMA.BA',start='2020-5-15', end='2020-5-22',interval='1d')
+
+#for x in range(len(listaC)):
+#    fechaS = str(listaC.index[x])[0:10]
+#    fecha = datetime.strptime(fechaS, '%Y-%m-%d')
+#    a = AADR(lista, fecha)
+#    a.larvaBackTest(fecha)
+a = AADR(lista, ahora)
+a.larva(ahora)
 
 #a.xcompra("BBAR",139, 100, 100, 232)
 #a.xcompra("BBAR",250, 240, 100, 232)
