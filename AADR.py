@@ -26,7 +26,8 @@ class AADR(object):
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
-    PERIODOCOMPRA = MINUTEGRADIENTEVENTA
+    PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
+    PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta con perdida.
 
 
     def __init__(self, lista, fecha):
@@ -426,6 +427,10 @@ class AADR(object):
         elif (dif.seconds/60) >= (4*self.MINUTEGRADIENTEVENTA):
             logging.info(campo[0] + " Ejecuto Gradiente N3, decuento: ${0:.2f}".format(3 * descuento) + " Nuevo ValorVentaMin: ${0:.2f}".format(campo[4] - (3 * descuento)) + " (anterior: ${0:.2f})".format(campo[4]))
             return campo[4] - (3 * descuento)
+        elif self.PERIODOVENTA <= (ahora - self.APERTURA).seconds / 60:
+            logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(costoCompra))
+
+            return costoCompra
 
         return campo[4]
 
