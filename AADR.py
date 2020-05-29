@@ -119,7 +119,7 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./larva.log"))
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "/var/log/larva.log"))
         #handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
