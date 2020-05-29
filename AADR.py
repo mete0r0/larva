@@ -23,7 +23,7 @@ class AADR(object):
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     MODOTEST = 0
-    FECHALIMITECOMPRA11 = 15
+    FECHALIMITECOMPRA11 = 45
     MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
