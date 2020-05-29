@@ -4,16 +4,20 @@ from colorama import Fore
 from finance_dao import Iol
 import logging
 import logging.handlers
+from datetime import datetime
 
 i = 0
 compras =[]
-with open("compras.dat", "rb") as f:
+hoy = datetime.now()
+
+print("FECHA: "+hoy.strftime('%d%m%Y')+"\n")
+with open("compras"+hoy.strftime('%d%m%Y')+".dat", "rb") as f:
     compras = pickle.load(f)
 print("Cantidad compras: " + str(len(compras)))
 print(compras)
 
 ventas = []
-with open("ventas.dat", "rb") as f:
+with open("ventas"+hoy.strftime('%d%m%Y')+".dat", "rb") as f:
     ventas = pickle.load(f)
 print("Cantidad ventas: " + str(len(ventas)))
 #print(ventas)
