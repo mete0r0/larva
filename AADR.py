@@ -14,20 +14,20 @@ from finance_dao import Iol
 
 class AADR(object):
     lista = [] ##Lista que mantiene cotizaciónes al cierre anterior ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO)
-    compras = [] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, TIMESTAMP)
+    compras = [] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, VENDIDO, TIMESTAMP)
     ventas = [] ##   ( TICKER, VALOR, CANTIDADm NROOPERACION, TIMESTAMP)
     listaValoresActualesAcciones = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     listaValoresActualesAdrs = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     TIMEREFRESH = 10
     MONTOCOMPRA = 2000
-    GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
+    GANANCIAPORCENTUAL = 2 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     MODOTEST = 0
-    FECHALIMITECOMPRA11 = 45
-    MINUTEGRADIENTEVENTA = 30
+    FECHALIMITECOMPRA11 = 20
+    MINUTEGRADIENTEVENTA = 45
     APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
-    PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta con perdida.
+    PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta a costo.
 
 
     def __init__(self, lista, fecha):
@@ -120,7 +120,7 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "/var/log/larva.log"))
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "larva.log"))
         #handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
@@ -340,7 +340,7 @@ class AADR(object):
                     ### Proceso Compra
                     valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(tickerlocal, cotizlocalf, valor_arbi)
 
-                    if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta and not self.buscar(self.compras, tickerlocal):
+                    if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta and not self.siExiste(self.compras, tickerlocal):
                         cantidad = self.MONTOCOMPRA // cotizlocalf
                         print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(cantidad)+ " - Punta vendedora - Cant: {0:.2f}".format(
                             punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta) + Fore.RESET)
@@ -371,34 +371,33 @@ class AADR(object):
     ## Metodo que compara el objetivo de venta con el precio de la punta de compra. Si es menor manda la compra.
     # TODO: falta ver que pasa cuando la cantidad a comprar es mayor que la punta.
     def xventa(self):
-        logging.debug("Reviso todos as compras y miro si alcanzo el valorVentaMin")
         for campo in self.compras:
-                local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(campo[0])
+                if not campo[5]:
+                    local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(campo[0])
 
-                ##Logica que tiene en cuenta el tipo que hace que esta comprado y cambia el ValorMinVenta
-                valorMinVenta = self.gradientePrecioVenta(campo)
+                    ##Logica que tiene en cuenta el tipo que hace que esta comprado y cambia el ValorMinVenta
+                    valorMinVenta = self.gradientePrecioVenta(campo)
+                    campo[4] = valorMinVenta
+                    self.actualizarCompras()
 
-                logging.info("Ticker: "+campo[0]+" Punta de compra: $ {0:.2f}".format(punta_precioCompra)+" Objetivo: $ {0:.2f}".format(valorMinVenta))
+                    logging.info("Ticker: "+campo[0]+" Punta de compra: $ {0:.2f}".format(punta_precioCompra)+" Objetivo: $ {0:.2f}".format(valorMinVenta))
 
-                if (not self.buscar(self.ventas, campo[0])) and punta_precioCompra !=0 and punta_precioCompra >= valorMinVenta:
-                    print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra)+Fore.RESET)
+                    if punta_precioCompra !=0 and punta_precioCompra >= valorMinVenta:
+                        print(Fore.BLUE+"\tObjetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra)+Fore.RESET)
+                        logging.info("Objetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra))
+                        if (punta_cantidadCompra < campo[2]):
+                            logging.debug("La cantidad de la punta de compra es menor a la cantidad que se quiere vender. VER")
 
-                    logging.info("Objetivo Venta CUMPLIDO: "+campo[0]+" Valor: {0:.2f}".format(punta_precioCompra))
-
-                    if (punta_cantidadCompra < campo[2]):
-                        logging.debug("La cantidad de la punta de compra es menor a la cantidad que se quiere vender. VER")
-
-                    self.vender(campo[0], punta_precioCompra, campo[2])
+                        self.vender(campo[0], punta_precioCompra, campo[2])
 
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
     def vender(self, ticker, valor, cantidad):
-        logging.debug("Envio orden de VENTA: " + ticker + " Cantidad: {0:.2f}".format(
-            cantidad) + " Valor: {0:.2f}".format(valor))
-        if not self.buscar(self.ventas, ticker):
+        if not self.siExiste(self.ventas, ticker):
+            logging.debug("Envio orden de VENTA: " + ticker + " Cantidad: {0:.2f}".format(
+                cantidad) + " Valor: {0:.2f}".format(valor))
             self.agregarVenta(ticker, valor, cantidad)
             print(Fore.GREEN + "\tVenta Finalizada: " + ticker + " Valor: {0:.2f}".format(valor)+ " Cantidad: {0:.2f}".format(cantidad) + Fore.RESET)
         else:
-            print("Venta ya hecha")
             logging.debug("Esta venta ya fue hecha.")
         return 0
 
@@ -407,7 +406,7 @@ class AADR(object):
 
     def gradientePrecioVenta(self, campo):
         ahora = datetime.now()
-        horarioCompra = campo[5]
+        horarioCompra = campo[6]
 
         dif = ahora - datetime.strptime(horarioCompra,"%Y-%m-%d %H:%M:%S")
         valorCompra = campo[1]
@@ -427,9 +426,8 @@ class AADR(object):
         elif (dif.seconds/60) >= (4*self.MINUTEGRADIENTEVENTA):
             logging.info(campo[0] + " Ejecuto Gradiente N3, decuento: ${0:.2f}".format(3 * descuento) + " Nuevo ValorVentaMin: ${0:.2f}".format(campo[4] - (3 * descuento)) + " (anterior: ${0:.2f})".format(campo[4]))
             return campo[4] - (3 * descuento)
-        elif self.PERIODOVENTA <= (ahora - self.APERTURA).seconds / 60:
+        elif self.PERIODOVENTA <= ((ahora - self.APERTURA).seconds / 60):
             logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(costoCompra))
-
             return costoCompra
 
         return campo[4]
@@ -457,11 +455,17 @@ class AADR(object):
 
 
     ## Busqueda generica
-    def buscar(self,lista,ticker):
+    def siExiste(self, lista, ticker):
         for tt in lista:
             if (tt[0] == ticker): return True
-
         return False
+
+    ## Busqueda generica que devuelve el elemento buscado si existe
+    def buscar(self, lista, ticker):
+        for tt in lista:
+            if (tt[0] == ticker): return tt
+        return None
+
 
     ## Calcula la cantidad a comprar.
     def calculoCantidad(self, ticker, precio):
@@ -472,15 +476,14 @@ class AADR(object):
     def printCompras(self):
         print(self.compras)
 
-    def leerArchCompras(self):
-        fp = open('compras.json', 'r')
-        ret = json.load(fp)
-        fp.close()
-
     def agregarCompra(self, ticker, valor, cantidad, valorVentaMin):
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.compras.append((ticker, valor, cantidad, "000", valorVentaMin, ahora))
-        with open("compras"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
+        self.compras.append([ticker, valor, cantidad, "000", valorVentaMin, False, ahora])
+        self.actualizarVentas()
+
+
+    def actualizarCompras(self):
+        with open("compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
             pickle.dump(self.compras, f)
     
     def borrarCompras(self):
@@ -493,19 +496,29 @@ class AADR(object):
     def agregarVenta(self, ticker, valor, cantidad):
         logging.debug("Agregando Venta Nueva")
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.ventas.append((ticker, valor, cantidad, "000", ahora))
-        with open("ventas"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
+        campo = self.buscar(self.compras, ticker)
+        if campo != None:
+            campo[5] = True
+            self.ventas.append([ticker, valor, cantidad, "000", ahora])
+            self.actualizarVentas()
+
+    def actualizarVentas(self):
+        with open("ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
             pickle.dump(self.ventas, f)
 
     def larvaBackTest(self, fecha):
         logging.info("Ejecutando Backtest.")
-        #threadvendedor = threading.Thread(target=self.worker_venta, name="HiloVentas")
-        #threadvendedor.start()
-        #logging.debug("Arranca larva: ")
 
-        for campo in lista:
+        logging.debug("Arranca larva: ")
+
+        for campo in self.lista:
             ticker = campo[1]
-            listaCotizaciones = yf.download(ticker, period=fecha.strftime('%Y-%m-%d'), interval='5m')
+            print("\t"+ticker)
+
+            fechaS = fecha.strftime('%Y-%m-%d')
+            dia = timedelta(days=1)
+            fechaE = (fecha + dia).strftime('%Y-%m-%d')
+            listaCotizaciones = yf.download(ticker, start=fechaS, end=fechaE, interval='5m')
 
             for x in range(len(listaCotizaciones)):
                 hora = listaCotizaciones.index[x]
@@ -517,18 +530,22 @@ class AADR(object):
                 if (variacion >= self.DIFPORCENTUALMINCOMPRA):
                     ### Proceso Compra
                     valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(ticker, cotizlocalf, valor_arbi)
-                    if valorCompraMax != 0 and cotizlocalf != 0 and valorCompraMax >= cotizlocalf:
+                    if valorCompraMax != 0 and cotizlocalf != 0 and valorCompraMax >= cotizlocalf and not self.siExiste(self.compras, ticker):
                         cantidad = self.MONTOCOMPRA // cotizlocalf
-                        print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(
-                            cantidad) + " - Punta vendedora - Cant: {0:.2f}".format(
-                            cotizlocalf) + ", valor: {0:.2f}".format(cotizlocalf) + Fore.RESET)
+                        print(Fore.GREEN +str(hora)+ " AVISO: Comprar: {0:.2f}".format(cantidad)+", valor: {0:.2f}".format(cotizlocalf) + Fore.RESET)
                         self.compra(ticker, cotizlocalf, cantidad, valorVentaMin)
 
+                for campo in self.compras:
+                    if not self.siExiste(self.ventas,ticker):
+                        valorMinVenta = campo[4]
+                        if cotizlocalf != 0 and cotizlocalf >= valorMinVenta:
+                            self.vender(campo[0], cotizlocalf, campo[2])
+                            campo[5]=True
 
 
 lista=[]
 #ahora = datetime.now()
-#listaC = yf.download('BMA.BA',start='2020-5-15', end='2020-5-22',interval='1d')
+#listaC = yf.download('BMA.BA',start='2020-5-19', end='2020-5-20',interval='1d')
 
 #for x in range(len(listaC)):
 #    fechaS = str(listaC.index[x])[0:10]
@@ -536,16 +553,9 @@ lista=[]
 #    a = AADR(lista, fecha)
 #    a.larvaBackTest(fecha)
 
-#a = AADR(lista, ahora)
-#a.larva()
+
+#PRODUCCION
 ahora = datetime.now()
-#listaC = yf.download('BMA.BA',start='2020-5-15', end='2020-5-22',interval='1d')
-
-#for x in range(len(listaC)):
-#    fechaS = str(listaC.index[x])[0:10]
-#    fecha = datetime.strptime(fechaS, '%Y-%m-%d')
-#    a = AADR(lista, fecha)
-#    a.larvaBackTest(fecha)
 a = AADR(lista, ahora)
 a.larva()
 

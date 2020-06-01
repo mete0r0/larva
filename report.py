@@ -4,11 +4,13 @@ from colorama import Fore
 from finance_dao import Iol
 import logging
 import logging.handlers
-from datetime import datetime
+from datetime import datetime, date
 
 i = 0
 compras =[]
 hoy = datetime.now()
+#hoy = date(2020, 5, 19)
+
 
 print("FECHA: "+hoy.strftime('%d%m%Y')+"\n")
 with open("compras"+hoy.strftime('%d%m%Y')+".dat", "rb") as f:
