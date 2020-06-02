@@ -10,6 +10,8 @@ import yfinance as yf
 from colorama import Fore
 import os
 from finance_dao import Iol
+import json
+
 
 class AADR(object):
     lista = [] ##    ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO) ##Lista que mantiene cotizaciónes al cierre anterior ##
@@ -34,6 +36,7 @@ class AADR(object):
         self.loguear()
         self.fecha = fecha
         self.iol = Iol()
+        self.getConfig()
 
         if (self.MODOTEST != 1):
             self.lista=lista
@@ -51,28 +54,28 @@ class AADR(object):
             self.lista.sort()
             self.cargar_cotiz(fecha)
             ## Guardo la lista
-            with open("lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
+            with open(self.PATH+"lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.lista, f)
             ## Guardo la listaValoresActualesAcciones
-            with open("listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
+            with open(self.PATH+"listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.listaValoresActualesAcciones, f)
         else: # MODO TEST
             ##Cargo lista desde archivo
             try:
-                with open("lista"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+                with open(self.PATH+"lista"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
                     self.lista = pickle.load(f)
             except Exception:
-                pickle.dump(self.lista, open("lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb"))
+                pickle.dump(self.lista, open(self.PATH+"lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb"))
 
             print("Cantidad lista en Inicio: " + str(len(self.lista)))
             print(self.lista)
 
             ##Cargo listaValoresActualesAcciones desde archivo
             try:
-                with open("listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+                with open(self.PATH+"listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
                     self.listaValoresActualesAcciones = pickle.load(f)
             except Exception:
-                pickle.dump(self.lista, open("listaValoresActualesAcciones" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
+                pickle.dump(self.lista, open(self.PATH+"listaValoresActualesAcciones" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
 
             print("Cantidad listaValoresActualesAcciones en Inicio: " + str(len(self.lista)))
             print(self.listaValoresActualesAcciones)
@@ -88,7 +91,7 @@ class AADR(object):
         ## Guardo fecha y ccl de ultimo cierre
         if not self.siExiste(self.listaccl, self.fechaUltimoCierre):
             self.listaccl.append([self.fechaUltimoCierre, self.dolar_ccl_promedio])
-        with open("listaccl.dat", "wb") as f:
+        with open(self.PATH+"listaccl.dat", "wb") as f:
             pickle.dump(self.listaccl, f)
 
         self.cargar_ValoresArbitrados()
@@ -102,24 +105,29 @@ class AADR(object):
 
         ##Cargo compras desde archivo
         try:
-            with open("compras"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+            with open(self.PATH+"compras"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
                 self.compras = pickle.load(f)
         except Exception:
-            pickle.dump(self.compras, open("compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
+            pickle.dump(self.compras, open(self.PATH+"compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
 
         print("Cantidad compras en Inicio: "+str(len(self.compras)))
         print(self.compras)
 
         ##Cargo ventas desde archivo
         try:
-            with open("ventas"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+            with open(self.PATH+"ventas"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
                 self.ventas = pickle.load(f)
         except Exception:
-            pickle.dump(self.ventas, open("ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
+            pickle.dump(self.ventas, open(self.PATH+"ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
 
         print("Cantidad ventas en Inicio: "+str(len(self.ventas)))
         print(self.ventas)
 
+    ## Toma configuracion de un archivo
+    def getConfig(self):
+        with open('config.json', 'r') as file:
+            config = json.load(file)
+        self.PATH = config['DEFAULT']['PATH']
 
     ## LOGGER
     def loguear(self):
@@ -459,13 +467,13 @@ class AADR(object):
 
 
     def actualizarCompras(self):
-        with open("compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
+        with open(self.PATH+"compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
             pickle.dump(self.compras, f)
     
     def borrarCompras(self):
         l = []
         self.compras = l
-        with open("compras"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
+        with open(self.PATH+"compras"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
             pickle.dump(self.compras, f)
 
 
@@ -479,7 +487,7 @@ class AADR(object):
             self.actualizarVentas()
 
     def actualizarVentas(self):
-        with open("ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
+        with open(self.PATH+"ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
             pickle.dump(self.ventas, f)
 
     def larvaBackTest(self, fecha):
