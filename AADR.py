@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import json
 import logging
 import logging.handlers
 import pickle
@@ -13,11 +12,13 @@ import os
 from finance_dao import Iol
 
 class AADR(object):
-    lista = [] ##Lista que mantiene cotizaciónes al cierre anterior ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO)
+    lista = [] ##    ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO) ##Lista que mantiene cotizaciónes al cierre anterior ##
     compras = [] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, VENDIDO, TIMESTAMP)
     ventas = [] ##   ( TICKER, VALOR, CANTIDADm NROOPERACION, TIMESTAMP)
     listaValoresActualesAcciones = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     listaValoresActualesAdrs = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
+    listaccl = [] ##Lista de historicos CCL.
+    fechaUltimoCierre = ""
     TIMEREFRESH = 10
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 2 #Constante que defije objetivo de ganancia relativa porcentual
@@ -29,7 +30,6 @@ class AADR(object):
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
     PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta a costo.
 
-
     def __init__(self, lista, fecha):
         self.loguear()
         self.fecha = fecha
@@ -37,30 +37,26 @@ class AADR(object):
 
         if (self.MODOTEST != 1):
             self.lista=lista
-            self.lista.append(('GGAL','GGAL.BA',10,0,0,0))
-            self.lista.append(('YPF','YPFD.BA',1,0,0,0))
-            self.lista.append(('BMA','BMA.BA',10,0,0,0))
-            self.lista.append(('PAM','PAMP.BA',25,0,0,0))
-            self.lista.append(('BBAR','BBAR.BA',3,0,0,0))
-            self.lista.append(('CEPU','CEPU.BA',10,0,0,0))
-            self.lista.append(('CRESY','CRES.BA',10,0,0,0))
-            self.lista.append(('EDN','EDN.BA',20,0,0,0))
-            self.lista.append(('SUPV','SUPV.BA',5,0,0,0))
-            self.lista.append(('TEO','TECO2.BA',5,0,0,0))
-            self.lista.append(('TGS','TGSU2.BA',5,0,0,0))
+            self.lista.append(['GGAL','GGAL.BA',10,0,0,0])
+            self.lista.append(['YPF','YPFD.BA',1,0,0,0])
+            self.lista.append(['BMA','BMA.BA',10,0,0,0])
+            self.lista.append(['PAM','PAMP.BA',25,0,0,0])
+            self.lista.append(['BBAR','BBAR.BA',3,0,0,0])
+            self.lista.append(['CEPU','CEPU.BA',10,0,0,0])
+            self.lista.append(['CRESY','CRES.BA',10,0,0,0])
+            self.lista.append(['EDN','EDN.BA',20,0,0,0])
+            self.lista.append(['SUPV','SUPV.BA',5,0,0,0])
+            self.lista.append(['TEO','TECO2.BA',5,0,0,0])
+            self.lista.append(['TGS','TGSU2.BA',5,0,0,0])
             self.lista.sort()
-            l = self.cargar_cotiz(fecha)
-            self.lista = l
+            self.cargar_cotiz(fecha)
             ## Guardo la lista
-
             with open("lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.lista, f)
-
             ## Guardo la listaValoresActualesAcciones
             with open("listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.listaValoresActualesAcciones, f)
-
-        else:
+        else: # MODO TEST
             ##Cargo lista desde archivo
             try:
                 with open("lista"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
@@ -86,10 +82,17 @@ class AADR(object):
         self.APERTURA = datetime.combine(fecha, once)
         logging.debug("Apertura: "+str(self.APERTURA))
 
-
         self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG(
             "YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
+
+        ## Guardo fecha y ccl de ultimo cierre
+        if not self.siExiste(self.listaccl, self.fechaUltimoCierre):
+            self.listaccl.append([self.fechaUltimoCierre, self.dolar_ccl_promedio])
+        with open("listaccl.dat", "wb") as f:
+            pickle.dump(self.listaccl, f)
+
         self.cargar_ValoresArbitrados()
+
         print(" CCL: "+str(self.dolar_ccl_promedio))
 
         print("Fecha: " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
@@ -120,8 +123,8 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "larva.log"))
-        #handler = logging.StreamHandler()
+        #handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "larva.log"))
+        handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
         root = logging.getLogger()
@@ -131,28 +134,22 @@ class AADR(object):
     ##
     # Metodo que te carga el valor arbitrado de todos los tickers en la lista.
     def cargar_ValoresArbitrados(self):
-        logging.debug("Calculando CCL al cierre anterior")
-        lista_aux=[]
         for campo in self.lista:
             valor_arbitrado = float(self.calculo_valor_arbitrado(campo[1],self.dolar_ccl_promedio))
-            campo_aux=(campo[0], campo[1], campo[2], campo[3], campo[4], valor_arbitrado)
-            lista_aux.append(campo_aux)
-        self.lista=lista_aux
+            campo[5] = valor_arbitrado
 
     ## Carga cotizaciones del cierre anterior en lista.
+    ## ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO)
     def cargar_cotiz(self, fecha):
         logging.debug('Cargando cotizaciones ultimo cierre.')
-        lista_aux=[]
-        ultimoCierre=""
-        start = fecha - timedelta(days=2)
+        #lista_aux=[]
+        start = fecha - timedelta(days=3)
         end = fecha
         for campo in self.lista:
             local_ca = 0
             adr_ca = 0
             try:
-
                 pd_local_aux = yf.download(campo[1], start=start.strftime('%Y-%m-%d'), end=end.strftime('%Y-%m-%d'), interval="1d")
-                #pd_local_aux = yf.download(campo[1], period="2d", interval="1d")
                 pd_local = pd_local_aux.drop(fecha.date()).tail(1)
             except KeyError:
                 logging.debug("No se pudo borrar el dia de hoy. "+ campo[1])
@@ -161,37 +158,19 @@ class AADR(object):
             if  not pd_local.empty:
                 local_ca = pd_local['Close'].values[0]
                 np_date = pd_local.index.values[0]
-                ultimoCierre = numpy.datetime_as_string(np_date, "D")
+                self.fechaUltimoCierre = numpy.datetime_as_string(np_date, "D")
+                logging.debug("Calculo CCL al dia: "+self.fechaUltimoCierre)
 
                 ##Con esta linea me traigo el ADR del mismo dia del local
                 pd_adr = yf.download(campo[0], start=numpy.datetime_as_string(np_date, "D"), interval="1d").head(1)
 
-                ## Con esta me traigo el ultimo ADR ##TODO
-                #pd_adr = yf.download(campo[0], period="2d", interval="1d").tail(1)
-                #print(pd_adr)
-
                 if not pd_adr.empty:
                     adr_ca = pd_adr['Close'].values[0]
-            logging.debug(ultimoCierre+ " - "+campo[0] + " C. ADR ULT CIERRE {0:.2f}".format(adr_ca) + " C. Loc ULT CIERRE {0:.2f}".format(local_ca))
+            logging.debug(self.fechaUltimoCierre+ " - "+campo[0] + " C. ADR ULT CIERRE {0:.2f}".format(adr_ca) + " C. Loc ULT CIERRE {0:.2f}".format(local_ca))
 
-            campo_aux=(campo[0], campo[1], campo[2], adr_ca, local_ca, 0)
-            lista_aux.append(campo_aux)
-        return lista_aux
-
-    def calculo_ccl(self, tickerlocal):
-        cotizadrf=0
-        cotizlocalf=0
-        factor=0
-        for campo in self.lista:
-            if (campo[1] == tickerlocal):
-                cotizadrf=campo[3]
-                cotizlocalf=campo[4]
-                factor=campo[2]
-                break
-
-        resultado = (float(cotizlocalf)/(float(cotizadrf)/float(factor)))
-        #print (' ticket local: '+tickerlocal+ ' Cotiz ADR: '+ str(cotizadrf)+ ' Cotiz Local: '+str(cotizlocalf)+' Factor: '+str(factor)+' CCL: '+ str(resultado))
-        return resultado
+            campo[3] = adr_ca
+            campo[4] = local_ca
+        return None
 
     ### Metodo que calcula es CCL al ultimo cierre.
     ##
@@ -220,7 +199,6 @@ class AADR(object):
                 break
         
         return (cotizadrf/float(factor))*float(dolar_ccl_promedio)
-
 
      ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     def getTodasLasCotizaciones(self):
@@ -284,7 +262,6 @@ class AADR(object):
                     break
         self.listaValoresActualesAdrs = l
 
-
     ## devuelve: ULTIMOPRECIO, punta_precioCompra, punta_cantCompra, punta_precioVenta, punta_cantVenta
     def getCotizacion(self, tickerlocal):
         for campo in self.listaValoresActualesAcciones:
@@ -333,9 +310,8 @@ class AADR(object):
                 variacion = float((diferencia)*100)/float(cotizlocalf)
 
                 if (variacion >= self.DIFPORCENTUALMINCOMPRA and enPeriodo):
-
                     ## Imprimo ticker con posibilidad de compra.
-                    print(Fore.BLUE+tickerlocal + "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
+                    print(Fore.BLUE+tickerlocal + " => LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi) + " - VAR: {0:.2f}%".format(variacion)+Fore.RESET)
                     ##################
                     ### Proceso Compra
                     valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(tickerlocal, cotizlocalf, valor_arbi)
@@ -346,8 +322,8 @@ class AADR(object):
                             punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta) + Fore.RESET)
                         self.compra(tickerlocal, cotizlocalf, cantidad, valorVentaMin)
                 else:
-                    print(tickerlocal + "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
-                    logging.debug(tickerlocal+ "\t\t C LOC. ACTUAL: {0:.2f}".format(cotizlocalf) + "\t\t C LOC. ARBI: {0:.2f}".format(valor_arbi)+"\t\t C ADR ACTUAL: {0:.2f}".format(cotizadrf)+"\t\t DIF: {0:.2f}".format(float(diferencia))+"\t\t VAR: {0:.2f}%".format(variacion)+Fore.RESET)
+                    print(tickerlocal + " => LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
+                    logging.info(tickerlocal + " * LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
             ## TIEMPO DEL CICLO
             print(Fore.RED+"\n ...Hilo ppal en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
             ti.sleep(10)
@@ -427,11 +403,11 @@ class AADR(object):
             logging.info(campo[0] + " Ejecuto Gradiente N3, decuento: ${0:.2f}".format(3 * descuento) + " Nuevo ValorVentaMin: ${0:.2f}".format(campo[4] - (3 * descuento)) + " (anterior: ${0:.2f})".format(campo[4]))
             return campo[4] - (3 * descuento)
         elif self.PERIODOVENTA <= ((ahora - self.APERTURA).seconds / 60):
-            logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(costoCompra))
+            logging.info(campo[0] +
+                         " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(costoCompra))
             return costoCompra
 
         return campo[4]
-
 
     ## Calcula el punto medio entre el valor y el arbitrado y se mueve 0,5 para cada lado
     def calculoValoresCompraYVenta(self, ticker, valor, valorArbitrado):
@@ -491,7 +467,7 @@ class AADR(object):
         self.compras = l
         with open("compras"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
             pickle.dump(self.compras, f)
-   
+
 
     def agregarVenta(self, ticker, valor, cantidad):
         logging.debug("Agregando Venta Nueva")
@@ -558,20 +534,3 @@ lista=[]
 ahora = datetime.now()
 a = AADR(lista, ahora)
 a.larva()
-
-#a.xcompra("BBAR",139, 100, 100, 232)
-#a.xcompra("BBAR",250, 240, 100, 232)
-#a.printCompras()
-#a.agregarVenta("BMA", 24,1)
-
-#y = Yahoo()
-
-#print(' GGAL YAHOO: '+ str(y.getCotiz('GGAL.BA')))
-#print(' GGAL IOL: '+ str(iol.getCotiz('GGAL')))
-
-#dolar_ccl_promedio=(aa.calculo_ccl_AlCierreARG("GGAL.BA")+aa.calculo_ccl_AlCierreARG("YPFD.BA")+aa.calculo_ccl_AlCierreARG("BMA.BA")+aa.calculo_ccl_AlCierreARG("PAMP.BA"))/4
-#print("*****Dolar CCL (GGAL, YPFD, BMA, PAMP) Promedio: "+str(dolar_ccl_promedio))
-
-#for tt in aa.lista:
-#    valor_arbi = aa.calculo_valor_arbitrado(tt[1],dolar_ccl_promedio)
-#    aa.imprimir_resultado(tt[1],valor_arbi)
