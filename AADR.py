@@ -56,6 +56,7 @@ class AADR(object):
             ## Guardo la lista
             with open(self.PATH+"lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.lista, f)
+                #json.dump(json.dumps(self.lista), f)
             ## Guardo la listaValoresActualesAcciones
             with open(self.PATH+"listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.listaValoresActualesAcciones, f)
@@ -128,6 +129,7 @@ class AADR(object):
         with open('config.json', 'r') as file:
             config = json.load(file)
         self.PATH = config['DEFAULT']['PATH']
+        self.TIMEREFRESH = config['DEFAULT']['TIMEREFRESH']
 
     ## LOGGER
     def loguear(self):
@@ -290,6 +292,8 @@ class AADR(object):
             ahora = self.fecha.strftime('%d/%m/%Y %H:%M:%S')
             print("\tFecha: "+ahora)
 
+            self.getConfig()
+
             print(Fore.BLUE+"\nCompras: "+str(self.compras)+Fore.RESET)
             self.getTodasLasCotizaciones()
             enPeriodo = True
@@ -334,7 +338,7 @@ class AADR(object):
                     logging.info(tickerlocal + " * LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
             ## TIEMPO DEL CICLO
             print(Fore.RED+"\n ...Hilo ppal en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
-            ti.sleep(10)
+            ti.sleep(self.TIMEREFRESH)
 
     ## Metodo que implementa el Hilo de Venta
     def worker_venta(self):
@@ -349,7 +353,7 @@ class AADR(object):
                 self.xventa()
 
             logging.info("...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            ti.sleep(10)
+            ti.sleep(self.TIMEREFRESH)
 
 
     ## Metodo que compara el objetivo de venta con el precio de la punta de compra. Si es menor manda la compra.
