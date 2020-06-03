@@ -37,6 +37,7 @@ class AADR(object):
         self.fecha = fecha
         self.iol = Iol()
         self.getConfig()
+        
 
         if (self.MODOTEST != 1):
             self.lista=lista
