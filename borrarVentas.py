@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 import pickle
+from datetime import datetime
+
 l = []
-with open("ventas.dat", "wb") as f:
+hoy = datetime.now()
+
+
+with open("ventas"+hoy.strftime('%d%m%Y')+".dat", "wb") as f:
     pickle.dump(l, f)
 
 
