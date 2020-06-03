@@ -23,10 +23,10 @@ class AADR(object):
     fechaUltimoCierre = ""
     TIMEREFRESH = 10
     MONTOCOMPRA = 2000
-    GANANCIAPORCENTUAL = 2 #Constante que defije objetivo de ganancia relativa porcentual
+    GANANCIAPORCENTUAL = 0 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     MODOTEST = 0
-    FECHALIMITECOMPRA11 = 20
+    FECHALIMITECOMPRA11 = 120
     MINUTEGRADIENTEVENTA = 45
     APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
