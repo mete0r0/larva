@@ -15,8 +15,8 @@ import json
 
 class AADR(object):
     lista = [] ##    ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO) ##Lista que mantiene cotizaciónes al cierre anterior ##
-    compras = [] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, VENDIDO, TIMESTAMP)
-    ventas = [] ##   ( TICKER, VALOR, CANTIDADm NROOPERACION, TIMESTAMP)
+    compras = [] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, bool VENDIDO, TIMESTAMP)
+    ventas = [] ##   ( TICKER, VALOR, CANTIDAD, NROOPERACION, TIMESTAMP)
     listaValoresActualesAcciones = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     listaValoresActualesAdrs = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     listaccl = [] ##Lista de historicos CCL.
@@ -26,11 +26,12 @@ class AADR(object):
     GANANCIAPORCENTUAL = 0 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     MODOTEST = 0
-    FECHALIMITECOMPRA11 = 120
+    FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 45
     APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
     PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta a costo.
+    enPeriodo = False
 
     def __init__(self, lista, fecha):
         self.loguear()
@@ -286,6 +287,8 @@ class AADR(object):
         fecha = self.fecha
         threadvendedor = threading.Thread(target=self.worker_venta, name="HiloVentas")
         threadvendedor.start()
+        threadvendedor.join()
+
         logging.debug("Arranca larva: ")
         ###
         ### Bucle principal ##############################################################
@@ -297,18 +300,17 @@ class AADR(object):
 
             print(Fore.BLUE+"\nCompras: "+str(self.compras)+Fore.RESET)
             self.getTodasLasCotizaciones()
-            enPeriodo = True
 
             now = datetime.now()
             minutosTranscurridos = (now - self.APERTURA).seconds / 60
 
-            if (minutosTranscurridos <= self.PERIODOCOMPRA):
+            if 0 <= minutosTranscurridos  and (minutosTranscurridos <= self.PERIODOCOMPRA) :
                 logging.info(" Tiempo restante de compra: " + str(minutosTranscurridos))
-                enPeriodo = True
+                self.enPeriodo = True
             else:
-                logging.info(" Ya no es periodo de compra.")
-                print("Fin periodo de compra. ")
-                enPeriodo = False
+                logging.info(" Termino periodo de compra. ")
+                print(" Termino periodo de compra. ")
+                self.enPeriodo = False
 
 
             for tt in self.lista:
@@ -322,7 +324,7 @@ class AADR(object):
                 diferencia = float(valor_arbi)-float(cotizlocalf)
                 variacion = float((diferencia)*100)/float(cotizlocalf)
 
-                if (variacion >= self.DIFPORCENTUALMINCOMPRA and enPeriodo):
+                if (variacion >= self.DIFPORCENTUALMINCOMPRA and self.enPeriodo):
                     ## Imprimo ticker con posibilidad de compra.
                     print(Fore.BLUE+tickerlocal + " => LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi) + " - VAR: {0:.2f}%".format(variacion)+Fore.RESET)
                     ##################
@@ -339,7 +341,10 @@ class AADR(object):
                     logging.info(tickerlocal + " * LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
             ## TIEMPO DEL CICLO
             print(Fore.RED+"\n ...Hilo ppal en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
+
+
             ti.sleep(self.TIMEREFRESH)
+        logging.info("**FIN!**")
 
     ## Metodo que implementa el Hilo de Venta
     def worker_venta(self):
@@ -350,10 +355,13 @@ class AADR(object):
             if (len(self.compras) == 0):
                 logging.debug("NO HAY COMPRAS HECHAS")
             else:
-                logging.debug("Compras hechas: {0:.2f}".format(len(self.compras)))
+                logging.debug("Compras pendientes de venta: {0:.2f}".format(float(len(self.compras)-len(self.ventas))))
                 self.xventa()
 
-            logging.info("...Hilo venta en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            logging.info("...Hilo venta en ejecucion... "+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
+            ##Miro si termino TODO
+
+            #if not self.enPeriodo and (len(self.compras) - len(self.ventas) == 0): break
             ti.sleep(self.TIMEREFRESH)
 
 
@@ -377,13 +385,14 @@ class AADR(object):
                         if (punta_cantidadCompra < campo[2]):
                             logging.debug("La cantidad de la punta de compra es menor a la cantidad que se quiere vender. VER")
 
-                        self.vender(campo[0], punta_precioCompra, campo[2])
+                        self.vender(campo, punta_precioCompra)
 
     ## Orden que envia a Vender a IOL y agrega a la lista de operaciones pendientes.
-    def vender(self, ticker, valor, cantidad):
+    def vender(self, campo, valor):
+        ticker = campo[0]
+        cantidad = campo[2]
         if not self.siExiste(self.ventas, ticker):
-            logging.debug("Envio orden de VENTA: " + ticker + " Cantidad: {0:.2f}".format(
-                cantidad) + " Valor: {0:.2f}".format(valor))
+            logging.debug("Envio orden de VENTA: " + ticker + " Cantidad: {0:.2f}".format(cantidad) + " Valor: {0:.2f}".format(valor))
             self.agregarVenta(ticker, valor, cantidad)
             print(Fore.GREEN + "\tVenta Finalizada: " + ticker + " Valor: {0:.2f}".format(valor)+ " Cantidad: {0:.2f}".format(cantidad) + Fore.RESET)
         else:
@@ -465,11 +474,11 @@ class AADR(object):
     def printCompras(self):
         print(self.compras)
 
+    ## Agrega la compra a la lista. Persiste la lista en disco.
     def agregarCompra(self, ticker, valor, cantidad, valorVentaMin):
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.compras.append([ticker, valor, cantidad, "000", valorVentaMin, False, ahora])
-        self.actualizarVentas()
-
+        self.actualizarCompras()
 
     def actualizarCompras(self):
         with open(self.PATH+"compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
@@ -482,12 +491,13 @@ class AADR(object):
             pickle.dump(self.compras, f)
 
 
+    ## Agrega la venta a la lista. Actualiza el estado de la compra y persiste en disco.
     def agregarVenta(self, ticker, valor, cantidad):
-        logging.debug("Agregando Venta Nueva")
         ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         campo = self.buscar(self.compras, ticker)
         if campo != None:
             campo[5] = True
+            self.actualizarCompras()
             self.ventas.append([ticker, valor, cantidad, "000", ahora])
             self.actualizarVentas()
 
@@ -546,4 +556,7 @@ lista=[]
 #PRODUCCION
 ahora = datetime.now()
 a = AADR(lista, ahora)
+a.compra('BMA',200, 20, 202)
+#ti.sleep(5)
+a.vender(a.buscar(a.compras,'BMA'), 203)
 a.larva()

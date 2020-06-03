@@ -44,7 +44,7 @@ for c in compras:
 
             ganancia = vendido - (comprado+costoCompra)
             totalGanado = totalGanado + ganancia
-            print(Fore.GREEN+"\tCerrada: "+c[0]+" GAN: $ {0:.2f}".format(float(ganancia))+", Fecha compra: "+str(c[5])+", Fecha Venta: "+str(v[4])+Fore.RESET)
+            print(Fore.GREEN+"\tCerrada: "+c[0]+" GAN: $ {0:.2f}".format(float(ganancia))+", Fecha compra: "+str(c[6])+", Fecha Venta: "+str(v[4])+Fore.RESET)
             vendio = True
 
             break

@@ -9,8 +9,6 @@ import logging
 import os
 from colorama import Fore
 
-
-
 #### Clase que accede a datos del servidor Invertir Online
 class Iol(object):
     token = "0"
@@ -32,7 +30,7 @@ class Iol(object):
 
     def __init__(self):
         self.login()
-        self.loguear()
+        #self.loguear()
 
     # Loguin almacena en una variable de clase el token de conexion.
     def login(self):
