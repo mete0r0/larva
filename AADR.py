@@ -32,13 +32,13 @@ class AADR(object):
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
     PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta a costo.
     enPeriodo = False
+    ganancia = float(0)
 
     def __init__(self, lista, fecha):
         self.loguear()
         self.fecha = fecha
         self.iol = Iol()
         self.getConfig()
-        
 
         if (self.MODOTEST != 1):
             self.lista=lista
@@ -56,29 +56,29 @@ class AADR(object):
             self.lista.sort()
             self.cargar_cotiz(fecha)
             ## Guardo la lista
-            with open(self.PATH+"lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
+            with open(self.PATH+"data/lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.lista, f)
                 #json.dump(json.dumps(self.lista), f)
             ## Guardo la listaValoresActualesAcciones
-            with open(self.PATH+"listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
+            with open(self.PATH+"data/listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.listaValoresActualesAcciones, f)
         else: # MODO TEST
             ##Cargo lista desde archivo
             try:
-                with open(self.PATH+"lista"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+                with open(self.PATH+"data/lista"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
                     self.lista = pickle.load(f)
             except Exception:
-                pickle.dump(self.lista, open(self.PATH+"lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb"))
+                pickle.dump(self.lista, open(self.PATH+"data/lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb"))
 
             print("Cantidad lista en Inicio: " + str(len(self.lista)))
             print(self.lista)
 
             ##Cargo listaValoresActualesAcciones desde archivo
             try:
-                with open(self.PATH+"listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+                with open(self.PATH+"data/listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
                     self.listaValoresActualesAcciones = pickle.load(f)
             except Exception:
-                pickle.dump(self.lista, open(self.PATH+"listaValoresActualesAcciones" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
+                pickle.dump(self.lista, open(self.PATH+"data/listaValoresActualesAcciones" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
 
             print("Cantidad listaValoresActualesAcciones en Inicio: " + str(len(self.lista)))
             print(self.listaValoresActualesAcciones)
@@ -94,37 +94,54 @@ class AADR(object):
         ## Guardo fecha y ccl de ultimo cierre
         if not self.siExiste(self.listaccl, self.fechaUltimoCierre):
             self.listaccl.append([self.fechaUltimoCierre, self.dolar_ccl_promedio])
-        with open(self.PATH+"listaccl.dat", "wb") as f:
+        with open(self.PATH+"data/listaccl.dat", "wb") as f:
             pickle.dump(self.listaccl, f)
 
         self.cargar_ValoresArbitrados()
 
         print(" CCL: "+str(self.dolar_ccl_promedio))
+        self.getComprasVentasfromFile()
 
         print("Fecha: " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
         logging.info("INICIANDO LARVA " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
         print("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
         logging.info("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
 
+    ## Carga las listas de compras y ventas desde archivo.
+    def getComprasVentasfromFile(self):
         ##Cargo compras desde archivo
         try:
-            with open(self.PATH+"compras"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+            with open(self.PATH + "data/compras" + self.fecha.strftime('%d%m%Y') + ".dat", "rb") as f:
                 self.compras = pickle.load(f)
         except Exception:
-            pickle.dump(self.compras, open(self.PATH+"compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
+            pickle.dump(self.compras, open(self.PATH + "data/compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
 
-        print("Cantidad compras en Inicio: "+str(len(self.compras)))
+        print("Cantidad compras en Inicio: " + str(len(self.compras)))
         print(self.compras)
 
         ##Cargo ventas desde archivo
         try:
-            with open(self.PATH+"ventas"+self.fecha.strftime('%d%m%Y')+".dat", "rb") as f:
+            with open(self.PATH + "data/ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "rb") as f:
                 self.ventas = pickle.load(f)
         except Exception:
-            pickle.dump(self.ventas, open(self.PATH+"ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
+            pickle.dump(self.ventas, open(self.PATH + "data/ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb"))
 
-        print("Cantidad ventas en Inicio: "+str(len(self.ventas)))
+        print("Cantidad ventas en Inicio: " + str(len(self.ventas)))
         print(self.ventas)
+
+        for c in self.compras:
+            for v in self.ventas:
+                if c[0] == v[0]:
+                    comprado = float(c[2] * c[1])
+                    vendido = float(v[2] * v[1])
+                    compraTotal = compraTotal + comprado
+                    ventaTotal = ventaTotal + vendido
+                    costoCompra = self.iol.calculoCostoOp(comprado)
+                    ganancia = vendido - (comprado + costoCompra)
+                    self.ganancia = self.ganancia + ganancia
+                    break
+        logging.info(" *** Ganancia: ${0:.2f} ***".format(self.ganancia))
+
 
     ## Toma configuracion de un archivo
     def getConfig(self):
@@ -135,7 +152,7 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "larva.log"))
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./log/larva.log"))
         #handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
@@ -399,36 +416,73 @@ class AADR(object):
         return 0
 
     ## En funcion del tiempo que hace que esta comprado el papel baja el valorMinVenta.
-    ## compras ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, TIMESTAMP)
+    ## compras ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, bool VENDIDO, TIMESTAMP)
 
     def gradientePrecioVenta(self, campo):
         ahora = datetime.now()
         horarioCompra = campo[6]
 
-        dif = ahora - datetime.strptime(horarioCompra,"%Y-%m-%d %H:%M:%S")
+        difCompra = ahora - datetime.strptime(horarioCompra,"%Y-%m-%d %H:%M:%S")
         valorCompra = campo[1]
         costoCompra = valorCompra + self.iol.calculoCostoOp(valorCompra)
         difObjetivo = campo[4] - costoCompra
         descuento = difObjetivo / 3
 
-        logging.info(campo[0]+" Costo TOTAL compra: $ {0:.2f} (incluye costos broker)".format(costoCompra))
+        #logging.info(campo[0]+" Costo TOTAL compra: $ {0:.2f} (incluye costos broker)".format(costoCompra))
+        nuevoValor = campo[4]
 
-        if  self.MINUTEGRADIENTEVENTA <= (dif.seconds/60) and (dif.seconds/60) < (2*self.MINUTEGRADIENTEVENTA):
-            logging.info(campo[0]+" Ejecuto Gradiente N1, decuento: ${0:.2f}".format(descuento)+" Nuevo ValorVentaMin: ${0:.2f}".format(campo[4]-descuento)+" (anterior: ${0:.2f})".format(campo[4]))
-            return campo[4]-descuento
+        if  self.MINUTEGRADIENTEVENTA <= (difCompra.seconds/60) and (difCompra.seconds/60) < (2*self.MINUTEGRADIENTEVENTA):
+            nuevoValor = campo[4]-descuento
+            logging.info(campo[0] + " Ejecuto Gradiente N1, decuento: ${0:.2f}".format(
+            descuento) + " Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor) + " (anterior: ${0:.2f})".format(
+            campo[4]))
 
-        elif (2*self.MINUTEGRADIENTEVENTA)<=(dif.seconds/60) and (dif.seconds/60) <= (4*self.MINUTEGRADIENTEVENTA)  :
-            logging.info(campo[0]+" Ejecuto Gradiente N2, decuento: ${0:.2f}".format(2*descuento)+" Nuevo ValorVentaMin: ${0:.2f}".format(campo[4]-(2*descuento))+" (anterior: ${0:.2f})".format(campo[4]))
-            return campo[4]-(2*descuento)
-        elif (dif.seconds/60) >= (4*self.MINUTEGRADIENTEVENTA):
-            logging.info(campo[0] + " Ejecuto Gradiente N3, decuento: ${0:.2f}".format(3 * descuento) + " Nuevo ValorVentaMin: ${0:.2f}".format(campo[4] - (3 * descuento)) + " (anterior: ${0:.2f})".format(campo[4]))
-            return campo[4] - (3 * descuento)
-        elif self.PERIODOVENTA <= ((ahora - self.APERTURA).seconds / 60):
-            logging.info(campo[0] +
-                         " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(costoCompra))
-            return costoCompra
+        elif (2*self.MINUTEGRADIENTEVENTA)<=(difCompra.seconds/60) and (difCompra.seconds/60) <= (4*self.MINUTEGRADIENTEVENTA)  :
+            nuevoValor = campo[4]-(2*descuento)
+            logging.info(campo[0] + " Ejecuto Gradiente N2, decuento: ${0:.2f}".format(
+            2 * descuento) + " Nuevo ValorVentaMin: ${0:.2f}".format(
+                nuevoValor) + " (anterior: ${0:.2f})".format(campo[4]))
 
-        return campo[4]
+        elif (4*self.MINUTEGRADIENTEVENTA) < (difCompra.seconds/60) :
+            nuevoValor = campo[4] - (3 * descuento)
+            logging.info(campo[0] + " Ejecuto Gradiente N3, decuento: ${0:.2f}".format(
+            3 * descuento) + " Nuevo ValorVentaMin: ${0:.2f}".format(
+                nuevoValor) + " (anterior: ${0:.2f})".format(campo[4]))
+
+        ## 16:00 intento vender al costo de compra.
+        if self.PERIODOVENTA <= ((ahora - self.APERTURA).seconds / 60):
+            nuevoValor = costoCompra
+            logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+
+        ## Gradientes con perdida.
+        ## 16:45
+        if 345 <= ((ahora - self.APERTURA).seconds / 60):
+            descuento5 = costoCompra * 5 / 100
+            totalDescuento5 = (costoCompra-descuento5) * campo[2]
+            if totalDescuento5 <= self.ganancia:
+                nuevoValor = costoCompra - descuento5
+                logging.info(campo[0] + " Ejecuto Gradiente c/Perdida, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+            else: logging.info(campo[0] + " Gradiente c/Perdida 16:45 sin saldo")
+
+        ## 16:50
+        if 350 <= ((ahora - self.APERTURA).seconds / 60):
+            descuento10 = costoCompra * 10 / 100
+            totalDescuento10 = (costoCompra - descuento10) * campo[2]
+            if totalDescuento10 <= self.ganancia:
+                nuevoValor = costoCompra - descuento10
+                logging.info(campo[0] + " Ejecuto Gradiente c/Perdida, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+            else: logging.info(campo[0] + " Gradiente c/Perdida 16:50 sin saldo")
+
+        ## 16:55
+        if 355 <= ((ahora - self.APERTURA).seconds / 60):
+            descuento15 = costoCompra * 15 / 100
+            totalDescuento15 = (costoCompra - descuento15) * campo[2]
+            if totalDescuento15 <= self.ganancia:
+                nuevoValor = costoCompra - descuento15
+                logging.info(campo[0] + " Ejecuto Gradiente c/Perdida, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+            else: logging.info(campo[0] + " Gradiente c/Perdida 16:55 sin saldo")
+
+        return nuevoValor
 
     ## Calcula el punto medio entre el valor y el arbitrado y se mueve 0,5 para cada lado
     def calculoValoresCompraYVenta(self, ticker, valor, valorArbitrado):
@@ -480,13 +534,13 @@ class AADR(object):
         self.actualizarCompras()
 
     def actualizarCompras(self):
-        with open(self.PATH+"compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
+        with open(self.PATH+"data/compras" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
             pickle.dump(self.compras, f)
     
     def borrarCompras(self):
         l = []
         self.compras = l
-        with open(self.PATH+"compras"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
+        with open(self.PATH+"data/compras"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
             pickle.dump(self.compras, f)
 
 
@@ -501,7 +555,7 @@ class AADR(object):
             self.actualizarVentas()
 
     def actualizarVentas(self):
-        with open(self.PATH+"ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
+        with open(self.PATH+"data/ventas" + self.fecha.strftime('%d%m%Y') + ".dat", "wb") as f:
             pickle.dump(self.ventas, f)
 
     def larvaBackTest(self, fecha):
