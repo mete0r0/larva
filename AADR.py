@@ -287,7 +287,6 @@ class AADR(object):
         fecha = self.fecha
         threadvendedor = threading.Thread(target=self.worker_venta, name="HiloVentas")
         threadvendedor.start()
-        threadvendedor.join()
 
         logging.debug("Arranca larva: ")
         ###
@@ -556,7 +555,7 @@ lista=[]
 #PRODUCCION
 ahora = datetime.now()
 a = AADR(lista, ahora)
-a.compra('BMA',200, 20, 202)
+#a.compra('BMA',200, 20, 202)
 #ti.sleep(5)
-a.vender(a.buscar(a.compras,'BMA'), 203)
+#a.vender(a.buscar(a.compras,'BMA'), 203)
 a.larva()
