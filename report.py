@@ -13,13 +13,13 @@ hoy = datetime.now()
 
 
 print("FECHA: "+hoy.strftime('%d%m%Y')+"\n")
-with open("compras"+hoy.strftime('%d%m%Y')+".dat", "rb") as f:
+with open("./data/compras"+hoy.strftime('%d%m%Y')+".dat", "rb") as f:
     compras = pickle.load(f)
 print("Cantidad compras: " + str(len(compras)))
 print(compras)
 
 ventas = []
-with open("ventas"+hoy.strftime('%d%m%Y')+".dat", "rb") as f:
+with open("./data/ventas"+hoy.strftime('%d%m%Y')+".dat", "rb") as f:
     ventas = pickle.load(f)
 print("Cantidad ventas: " + str(len(ventas)))
 #print(ventas)
