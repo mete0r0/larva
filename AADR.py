@@ -13,6 +13,7 @@ from finance_dao import Iol
 import json
 
 
+
 class AADR(object):
     lista = [] ##    ( TICKER EXTRANGERO, TICKER LOCAL, FACTOR, COTIZ ADR CIERRE ANTEIOR, COTIZ LOCAL CIERRE ANTERIOR, VALOR ARBITRADO) ##Lista que mantiene cotizaciónes al cierre anterior ##
     compras = [] ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, VALORVENTAMIN, bool VENDIDO, TIMESTAMP)
@@ -25,7 +26,7 @@ class AADR(object):
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 0 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 0
+    MODOTEST = 0 ## Implica no consultar libs de Yahoo y no hacer orden routing real.
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 45
     APERTURA = 0
@@ -33,6 +34,7 @@ class AADR(object):
     PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta a costo.
     enPeriodo = False
     ganancia = float(0)
+
 
     def __init__(self, lista, fecha):
         self.loguear()
