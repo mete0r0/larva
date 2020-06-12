@@ -58,7 +58,12 @@ class AADR(object):
             ## Guardo la lista
             with open(self.PATH+"data/lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.lista, f)
-                #json.dump(json.dumps(self.lista), f)
+
+            #with open(self.PATH + "data/lista" + self.fecha.strftime('%d%m%Y') + ".json", "wb",encoding="utf8") as f:
+            #    ss = json.dumps(self.lista)
+            #    f.write(ss)
+            #    print(" jsonnnn: "+ss)
+
             ## Guardo la listaValoresActualesAcciones
             with open(self.PATH+"data/listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.listaValoresActualesAcciones, f)
@@ -152,7 +157,7 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "./log/larva.log"))
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "larva.log"))
         #handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
@@ -321,7 +326,7 @@ class AADR(object):
             minutosTranscurridos = (now - self.APERTURA).seconds / 60
 
             if 0 <= minutosTranscurridos  and (minutosTranscurridos <= self.PERIODOCOMPRA) :
-                logging.info(" Tiempo restante de compra: " + str(minutosTranscurridos))
+                logging.info(" Tiempo de compra: " + str(minutosTranscurridos))
                 self.enPeriodo = True
             else:
                 logging.info(" Termino periodo de compra. ")
@@ -331,7 +336,7 @@ class AADR(object):
 
             for tt in self.lista:
                 tickerlocal = tt[1].split(".")[0]
-                local_up, precioCompra, cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(tickerlocal)
+                local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(tickerlocal)
 
                 valor_arbi = float(tt[5])
                 cotizlocalf = float(local_up)
@@ -351,8 +356,7 @@ class AADR(object):
 
                     if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta and not self.siExiste(self.compras, tickerlocal):
                         cantidad = self.MONTOCOMPRA // cotizlocalf
-                        print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(cantidad)+ " - Punta vendedora - Cant: {0:.2f}".format(
-                            punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta) + Fore.RESET)
+                        print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(cantidad)+ " - PUNTAS:  *VENTA - Cant: {0:.2f}".format(punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta)+" *COMPRA - Cant: {0:.2f}".format(punta_cantidadCompra) + ", valor: {0:.2f}".format(punta_precioCompra) + Fore.RESET)
                         self.compra(tickerlocal, cotizlocalf, cantidad, valorVentaMin)
                 else:
                     print(tickerlocal + " => LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
@@ -377,7 +381,6 @@ class AADR(object):
                 self.xventa()
 
             logging.info("...Hilo venta en ejecucion... "+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            ##Miro si termino TODO
 
             #if not self.enPeriodo and (len(self.compras) - len(self.ventas) == 0): break
             ti.sleep(self.TIMEREFRESH)
