@@ -21,13 +21,13 @@ class AADR(object):
     listaValoresActualesAdrs = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     listaccl = [] ##Lista de historicos CCL.
     fechaUltimoCierre = ""
-    TIMEREFRESH = 10
+    TIMEREFRESH = 10 ## Valor por defecto. Toma el valor del archivo config.json
     MONTOCOMPRA = 2000
-    GANANCIAPORCENTUAL = 0 #Constante que defije objetivo de ganancia relativa porcentual
+    GANANCIAPORCENTUAL = 2 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     MODOTEST = 0
-    FECHALIMITECOMPRA11 = 15
-    MINUTEGRADIENTEVENTA = 45
+    FECHALIMITECOMPRA11 = 10
+    MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
     PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta a costo.
