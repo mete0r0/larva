@@ -25,13 +25,13 @@ class AADR(object):
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 2 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 0
+    MODOTEST = 1
     FECHALIMITECOMPRA11 = 10
     MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
     PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta a costo.
-    enPeriodo = False
+    enPeriodoCompra = False
     ganancia = float(0)
     listaIndices = []
 
@@ -144,7 +144,7 @@ class AADR(object):
             fin = float(yf.download(ind, period=fecha.strftime('%Y-%m-%d'), interval='1m').tail(1)['Close'].values[0])
             prop = ((fin-primero)/fin)*100
             campo[2] = prop
-            logging.info(campo[1]+" Variación ultimo cierre: {0:.2f} %".format(prop))
+            logging.info(campo[1]+": Variación ultimo cierre: {0:.2f} %".format(prop))
 
     ## Carga las listas de compras y ventas desde archivo.
     def getComprasVentasfromFile(self):
@@ -191,8 +191,8 @@ class AADR(object):
 
     ## LOGGER
     def loguear(self):
-        #handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "larva.log"))
-        handler = logging.StreamHandler()
+        handler = logging.handlers.WatchedFileHandler(os.environ.get("LOGFILE", "larva.log"))
+        #handler = logging.StreamHandler()
         formatter = logging.Formatter(' %(asctime)s - %(threadName)s - %(funcName)s - %(levelname)s - %(message)s ')
         handler.setFormatter(formatter)
         root = logging.getLogger()
@@ -349,6 +349,14 @@ class AADR(object):
             logging.info("Bloqueo la compra. SP500 {0:.2f} ".format(propSP500))
             return False
 
+
+
+    ## Devuelve true si hay compras pendientes de venta. falso en caso contrario
+    def isComprasPendientes(self):
+        for campo in self.compras:
+            if not campo[5]: return True
+        return False
+
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
     def larva(self):
         fecha = self.fecha
@@ -372,13 +380,13 @@ class AADR(object):
 
             if 0 <= minutosTranscurridos  and (minutosTranscurridos <= self.PERIODOCOMPRA) :
                 logging.info(" Tiempo de compra: " + str(minutosTranscurridos))
-                self.enPeriodo = True
+                self.enPeriodoCompra = True
             else:
                 logging.info(" Termino periodo de compra. ")
                 print(" Termino periodo de compra. ")
-                self.enPeriodo = False
+                self.enPeriodoCompra = False
 
-            if self.enPeriodo and self.condicionIndicesMundiales():
+            if self.enPeriodoCompra and self.condicionIndicesMundiales():
                 for tt in self.lista:
                     tickerlocal = tt[1].split(".")[0]
                     local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(tickerlocal)
@@ -408,9 +416,12 @@ class AADR(object):
                         logging.info(tickerlocal + " * LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
                 ## TIEMPO DEL CICLO
                 print(Fore.RED+"\n ...Hilo ppal(de compra) en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
+            elif not self.enPeriodoCompra and not self.isComprasPendientes() and self.MODOTEST == 0:
+                logging.info("**FIN HILO COMPRAS**")
+                return
+
 
             ti.sleep(self.TIMEREFRESH)
-        logging.info("**FIN!**")
 
     ## Metodo que implementa el Hilo de Venta
     def worker_venta(self):
@@ -424,7 +435,9 @@ class AADR(object):
                 logging.debug("Compras pendientes de venta: {0:.2f}".format(float(len(self.compras)-len(self.ventas))))
                 self.xventa()
             logging.info("...Hilo venta en ejecucion... "+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            #if not self.enPeriodo and (len(self.compras) - len(self.ventas) == 0): break
+            if not self.enPeriodoCompra and not self.isComprasPendientes() and self.MODOTEST == 0:
+                logging.info("**FIN HILO VENTAS**")
+                return
             ti.sleep(self.TIMEREFRESH)
 
 
