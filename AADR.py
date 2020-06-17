@@ -46,7 +46,7 @@ class AADR(object):
         self.listaIndices.append(['^N225', "Nikkei", 0]) ## Nikkei
         self.listaIndices.append(['^IBEX',"IBEX", 0]) ## IBEX
         self.listaIndices.append(['^GDAXI',"DAX-ALEMANIA", 0]) ## DAX PERFORMANCE-INDEX
-        #self.listaIndices.append(['^XIN9.FGI',"China A50", 0]) ## China A50
+        self.listaIndices.append(['^HSI',"HANG SENG INDEX", 0]) ## HANG SENG INDEX
 
 
         self.getPrincipalesIndices(fecha)
@@ -129,7 +129,6 @@ class AADR(object):
 
     ### Varialiones de los principales indices.
     def getPrincipalesIndices(self,fecha):
-        logging.debug('Variacion de indices')
         start = fecha - timedelta(days=4)
         end = fecha
 
@@ -139,12 +138,11 @@ class AADR(object):
             try:
                 primero = float(df.drop(fecha.date()).tail(1)['Close'].values[0])
             except KeyError:
-                logging.info(campo[1])
                 primero = float(df.tail(1)['Close'].values[0])
             fin = float(yf.download(ind, period=fecha.strftime('%Y-%m-%d'), interval='1m').tail(1)['Close'].values[0])
             prop = ((fin-primero)/fin)*100
             campo[2] = prop
-            logging.info(campo[1]+": Variacion ultimo cierre: {0:.2f} %".format(prop))
+            logging.info(campo[1]+" - "+campo[0]+": Variacion ultimo cierre: {0:.2f} %".format(prop))
 
     ## Carga las listas de compras y ventas desde archivo.
     def getComprasVentasfromFile(self):
