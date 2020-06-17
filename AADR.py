@@ -339,6 +339,7 @@ class AADR(object):
 
     def condicionIndicesMundiales(self):
         propSP500 = self.listaIndices[0][2]
+        return True ## TODO
 
         if propSP500 >= self.GANANCIAPORCENTUAL:
             logging.info("Se habilita la compra. SP500 {0:.2f} ".format(propSP500))
