@@ -144,7 +144,7 @@ class AADR(object):
             fin = float(yf.download(ind, period=fecha.strftime('%Y-%m-%d'), interval='1m').tail(1)['Close'].values[0])
             prop = ((fin-primero)/fin)*100
             campo[2] = prop
-            logging.info(campo[1]+": Variación ultimo cierre: {0:.2f} %".format(prop))
+            logging.info(campo[1]+": Variacion ultimo cierre: {0:.2f} %".format(prop))
 
     ## Carga las listas de compras y ventas desde archivo.
     def getComprasVentasfromFile(self):
