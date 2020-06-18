@@ -27,7 +27,7 @@ class AADR(object):
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     PORCENTUALINDICES = 1 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
     MODOTEST = 0
-    FECHALIMITECOMPRA11 = 10
+    FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
@@ -349,7 +349,7 @@ class AADR(object):
     ## Devuelve True si los indices cumplen con la condicion
     # TODO: por ahora solo tomo el SP500 como indice referencia.
     def condicionIndicesMundiales(self):
-        propSP500 = ((self.listaIndices[0][3] - self.listaIndices[0][2]) / self.listaIndices[0][3]) * 100
+        propSP500 = self.calculoPropIndice()
 
         if propSP500 >= self.PORCENTUALINDICES:
             logging.info("Se habilita la compra. SP500 {0:.2f} mayor a: {0:.2f} ".format(propSP500,self.PORCENTUALINDICES))
@@ -358,6 +358,9 @@ class AADR(object):
             logging.info("Bloqueo la compra. SP500 {0:.2f} ".format(propSP500))
             return False
 
+
+    def calculoPropIndice(self):
+        return ((self.listaIndices[0][3] - self.listaIndices[0][2]) / self.listaIndices[0][3]) * 100
 
     ## Devuelve true si hay compras pendientes de venta. falso en caso contrario
     def isComprasPendientes(self):
@@ -369,14 +372,19 @@ class AADR(object):
         now = datetime.now()
         minutosTranscurridos = (now - self.APERTURA).seconds / 60
 
+        if now <= self.APERTURA:
+            print("La rueda no abrio.")
+            return True
+
+
         #if 0 <= minutosTranscurridos and (minutosTranscurridos <= self.PERIODOCOMPRA):
         if (minutosTranscurridos <= self.PERIODOCOMPRA):
 
             logging.info(" Tiempo de compra: " + str(minutosTranscurridos))
-            self.enPeriodoCompra = True
+            return True
         else:
             logging.info(" Termino periodo de compra. ")
-            self.enPeriodoCompra = False
+            return False
 
 
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
@@ -401,7 +409,7 @@ class AADR(object):
             self.getCotizActualIndices(fecha)
 
             ## Actualizo horario de compra
-            self.isHorarioCompra()
+            self.enPeriodoCompra = self.isHorarioCompra()
 
             if self.enPeriodoCompra:
                 if self.condicionIndicesMundiales():
@@ -434,7 +442,7 @@ class AADR(object):
                     ## TIEMPO DEL CICLO
                     print(Fore.RED+"\n ...Hilo ppal(de compra) en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
                 else:
-                    print("Bloqueo compra por no cumplir condicion de indices bursatiles. ")
+                    print("Bloqueo compra por no cumplir condicion de indices bursatiles SP500: "+str(self.calculoPropIndice()))
             else:
                 print("Termino periodo de compra. ")
                 if not self.isComprasPendientes() and self.MODOTEST == 0:
