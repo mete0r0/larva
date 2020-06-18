@@ -25,7 +25,8 @@ class AADR(object):
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 2 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    MODOTEST = 1
+    PORCENTUALINDICES = 1 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
+    MODOTEST = 0
     FECHALIMITECOMPRA11 = 10
     MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
@@ -41,16 +42,18 @@ class AADR(object):
         self.iol = Iol()
         self.getConfig()
 
-        self.listaIndices.append(['^GSPC',"S&P 500", 0]) ## S&P 500
-        self.listaIndices.append(['^IXIC',"NASDAQ", 0]) ## NASDAQ
-        self.listaIndices.append(['^N225', "Nikkei", 0]) ## Nikkei
-        self.listaIndices.append(['^IBEX',"IBEX", 0]) ## IBEX
-        self.listaIndices.append(['^GDAXI',"DAX-ALEMANIA", 0]) ## DAX PERFORMANCE-INDEX
-        self.listaIndices.append(['^HSI',"HANG SENG INDEX", 0]) ## HANG SENG INDEX
 
+        ### Indices [TICKER YAHOO, Desc, Cotiz cierre anterior, Cotiz actual]
+        self.listaIndices.append(['^GSPC',"S&P 500", 0, 0]) ## S&P 500
+        self.listaIndices.append(['^IXIC',"NASDAQ", 0, 0]) ## NASDAQ
+        self.listaIndices.append(['^N225', "Nikkei", 0, 0]) ## Nikkei
+        self.listaIndices.append(['^IBEX',"IBEX", 0, 0]) ## IBEX
+        self.listaIndices.append(['^GDAXI',"DAX-ALEMANIA", 0, 0]) ## DAX PERFORMANCE-INDEX
+        self.listaIndices.append(['^HSI',"HANG SENG INDEX", 0, 0]) ## HANG SENG INDEX
 
         self.getPrincipalesIndices(fecha)
-
+        print("Lista de indices.")
+        print(self.listaIndices)
 
         if (self.MODOTEST != 1):
             self.lista=lista
@@ -71,11 +74,6 @@ class AADR(object):
             ## Guardo la lista
             with open(self.PATH+"data/lista"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
                 pickle.dump(self.lista, f)
-
-            #with open(self.PATH + "data/lista" + self.fecha.strftime('%d%m%Y') + ".json", "wb",encoding="utf8") as f:
-            #    ss = json.dumps(self.lista)
-            #    f.write(ss)
-            #    print(" jsonnnn: "+ss)
 
             ## Guardo la listaValoresActualesAcciones
             with open(self.PATH+"data/listaValoresActualesAcciones"+self.fecha.strftime('%d%m%Y')+".dat", "wb") as f:
@@ -136,13 +134,24 @@ class AADR(object):
             ind = campo[0]
             df = yf.download(ind, start=start.strftime('%Y-%m-%d'), end=end.strftime('%Y-%m-%d'))
             try:
-                primero = float(df.drop(fecha.date()).tail(1)['Close'].values[0])
+                cierreAnterior = float(df.drop(fecha.date()).tail(1)['Close'].values[0])
             except KeyError:
-                primero = float(df.tail(1)['Close'].values[0])
+                cierreAnterior = float(df.tail(1)['Close'].values[0])
+
+            campo[2] = cierreAnterior
+
             fin = float(yf.download(ind, period=fecha.strftime('%Y-%m-%d'), interval='1m').tail(1)['Close'].values[0])
-            prop = ((fin-primero)/fin)*100
-            campo[2] = prop
+            campo[3] = fin
+
+            prop = ((fin - cierreAnterior) / fin) * 100
             logging.info(campo[1]+" - "+campo[0]+": Variacion ultimo cierre: {0:.2f} %".format(prop))
+
+    ## Carga en la lista las cotizaciónes actuales de los indices
+    def getCotizActualIndices(self, fecha):
+        for campo in self.listaIndices:
+            fin = float(yf.download(campo[0], period=fecha.strftime('%Y-%m-%d'), interval='1m').tail(1)['Close'].values[0])
+            campo[3] = fin
+
 
     ## Carga las listas de compras y ventas desde archivo.
     def getComprasVentasfromFile(self):
@@ -337,17 +346,17 @@ class AADR(object):
         return [0,0,0,0,0]
 
 
+    ## Devuelve True si los indices cumplen con la condicion
+    # TODO: por ahora solo tomo el SP500 como indice referencia.
     def condicionIndicesMundiales(self):
-        propSP500 = self.listaIndices[0][2]
-        return True ## TODO
+        propSP500 = ((self.listaIndices[0][3] - self.listaIndices[0][2]) / self.listaIndices[0][3]) * 100
 
-        if propSP500 >= self.GANANCIAPORCENTUAL:
-            logging.info("Se habilita la compra. SP500 {0:.2f} ".format(propSP500))
+        if propSP500 >= self.PORCENTUALINDICES:
+            logging.info("Se habilita la compra. SP500 {0:.2f} mayor a: {0:.2f} ".format(propSP500,self.PORCENTUALINDICES))
             return True
         else:
             logging.info("Bloqueo la compra. SP500 {0:.2f} ".format(propSP500))
             return False
-
 
 
     ## Devuelve true si hay compras pendientes de venta. falso en caso contrario
@@ -355,6 +364,20 @@ class AADR(object):
         for campo in self.compras:
             if not campo[5]: return True
         return False
+
+    def isHorarioCompra(self):
+        now = datetime.now()
+        minutosTranscurridos = (now - self.APERTURA).seconds / 60
+
+        #if 0 <= minutosTranscurridos and (minutosTranscurridos <= self.PERIODOCOMPRA):
+        if (minutosTranscurridos <= self.PERIODOCOMPRA):
+
+            logging.info(" Tiempo de compra: " + str(minutosTranscurridos))
+            self.enPeriodoCompra = True
+        else:
+            logging.info(" Termino periodo de compra. ")
+            self.enPeriodoCompra = False
+
 
     ## Metodo que permite hacer seguimietno ONLINE de ARB.
     def larva(self):
@@ -374,50 +397,49 @@ class AADR(object):
             print(Fore.BLUE+"\nCompras: "+str(self.compras)+Fore.RESET)
             self.getTodasLasCotizaciones()
 
-            now = datetime.now()
-            minutosTranscurridos = (now - self.APERTURA).seconds / 60
+            ## Actualizo los valores actuales de los indices.
+            self.getCotizActualIndices(fecha)
 
-            if 0 <= minutosTranscurridos  and (minutosTranscurridos <= self.PERIODOCOMPRA) :
-                logging.info(" Tiempo de compra: " + str(minutosTranscurridos))
-                self.enPeriodoCompra = True
+            ## Actualizo horario de compra
+            self.isHorarioCompra()
+
+            if self.enPeriodoCompra:
+                if self.condicionIndicesMundiales():
+                    for tt in self.lista:
+                        tickerlocal = tt[1].split(".")[0]
+                        local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(tickerlocal)
+
+                        valor_arbi = float(tt[5])
+                        cotizlocalf = float(local_up)
+
+                        diferencia = float(valor_arbi)-float(cotizlocalf)
+                        variacion = float((diferencia)*100)/float(cotizlocalf)
+
+                        if (variacion >= self.DIFPORCENTUALMINCOMPRA):
+                            ## Imprimo ticker con posibilidad de compra.
+                            print(Fore.BLUE+tickerlocal + " => LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi) + " - VAR: {0:.2f}%".format(variacion)+Fore.RESET)
+
+                            logging.info(tickerlocal + " * LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
+                            ##################
+                            ### Proceso Compra
+                            valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(tickerlocal, cotizlocalf, valor_arbi)
+
+                            if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta and not self.siExiste(self.compras, tickerlocal):
+                                cantidad = self.MONTOCOMPRA // cotizlocalf
+                                print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(cantidad)+ " - PUNTAS:  *VENTA - Cant: {0:.2f}".format(punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta)+" *COMPRA - Cant: {0:.2f}".format(punta_cantidadCompra) + ", valor: {0:.2f}".format(punta_precioCompra) + Fore.RESET)
+                                self.compra(tickerlocal, cotizlocalf, cantidad, valorVentaMin)
+                        else:
+                            print(tickerlocal + " => LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
+                            logging.info(tickerlocal + " * LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
+                    ## TIEMPO DEL CICLO
+                    print(Fore.RED+"\n ...Hilo ppal(de compra) en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
+                else:
+                    print("Bloqueo compra por no cumplir condicion de indices bursatiles. ")
             else:
-                logging.info(" Termino periodo de compra. ")
-                print(" Termino periodo de compra. ")
-                self.enPeriodoCompra = False
-
-            if self.enPeriodoCompra and self.condicionIndicesMundiales():
-                for tt in self.lista:
-                    tickerlocal = tt[1].split(".")[0]
-                    local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(tickerlocal)
-
-                    valor_arbi = float(tt[5])
-                    cotizlocalf = float(local_up)
-                    cotizadrf = 0 #float(adr_up)
-
-                    diferencia = float(valor_arbi)-float(cotizlocalf)
-                    variacion = float((diferencia)*100)/float(cotizlocalf)
-
-                    if (variacion >= self.DIFPORCENTUALMINCOMPRA):
-                        ## Imprimo ticker con posibilidad de compra.
-                        print(Fore.BLUE+tickerlocal + " => LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi) + " - VAR: {0:.2f}%".format(variacion)+Fore.RESET)
-
-                        logging.info(tickerlocal + " * LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
-                        ##################
-                        ### Proceso Compra
-                        valorCompraMax, valorVentaMin = self.calculoValoresCompraYVenta(tickerlocal, cotizlocalf, valor_arbi)
-
-                        if valorCompraMax != 0 and punta_precioVenta != 0 and valorCompraMax >= punta_precioVenta and not self.siExiste(self.compras, tickerlocal):
-                            cantidad = self.MONTOCOMPRA // cotizlocalf
-                            print(Fore.GREEN + " AVISO: Comprar: {0:.2f}".format(cantidad)+ " - PUNTAS:  *VENTA - Cant: {0:.2f}".format(punta_cantidadVenta) + ", valor: {0:.2f}".format(punta_precioVenta)+" *COMPRA - Cant: {0:.2f}".format(punta_cantidadCompra) + ", valor: {0:.2f}".format(punta_precioCompra) + Fore.RESET)
-                            self.compra(tickerlocal, cotizlocalf, cantidad, valorVentaMin)
-                    else:
-                        print(tickerlocal + " => LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
-                        logging.info(tickerlocal + " * LOCAL: ${0:.2f}".format(cotizlocalf) + " - ARBITRADO: ${0:.2f}".format(valor_arbi)+" - VAR: {0:.2f}%".format(variacion))
-                ## TIEMPO DEL CICLO
-                print(Fore.RED+"\n ...Hilo ppal(de compra) en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
-            elif not self.enPeriodoCompra and not self.isComprasPendientes() and self.MODOTEST == 0:
-                logging.info("**FIN HILO COMPRAS**")
-                return
+                print("Termino periodo de compra. ")
+                if not self.isComprasPendientes() and self.MODOTEST == 0:
+                    logging.info("**FIN HILO COMPRAS**")
+                    return
 
 
             ti.sleep(self.TIMEREFRESH)
