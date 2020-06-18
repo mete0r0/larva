@@ -27,7 +27,7 @@ class AADR(object):
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     PORCENTUALINDICES = 1 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
     MODOTEST = 0
-    FECHALIMITECOMPRA11 = 10
+    FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
