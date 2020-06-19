@@ -33,6 +33,7 @@ class AADR(object):
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
     PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta a costo.
     enPeriodoCompra = False
+    FINVENTAS = False
     ganancia = float(0)
     listaIndices = []
 
@@ -447,8 +448,9 @@ class AADR(object):
                 print("Termino periodo de compra. ")
                 if not self.isComprasPendientes() and self.MODOTEST == 0:
                     logging.info("**FIN HILO COMPRAS**")
+                    print("** FIN HILO COMPRAS ** ")
+                    self.FINVENTAS = True
                     return
-
 
             ti.sleep(self.TIMEREFRESH)
 
@@ -464,8 +466,9 @@ class AADR(object):
                 logging.debug("Compras pendientes de venta: {0:.2f}".format(float(len(self.compras)-len(self.ventas))))
                 self.xventa()
             logging.info("...Hilo venta en ejecucion... "+datetime.now().strftime('%d/%m/%Y %H:%M:%S'))
-            if not self.enPeriodoCompra and not self.isComprasPendientes() and self.MODOTEST == 0:
+            if self.FINVENTAS and not self.isComprasPendientes():
                 logging.info("**FIN HILO VENTAS**")
+                print("** FIN HILO VENTAS ** ")
                 return
             ti.sleep(self.TIMEREFRESH)
 
