@@ -23,9 +23,9 @@ class AADR(object):
     fechaUltimoCierre = ""
     TIMEREFRESH = 10 ## Valor por defecto. Toma el valor del archivo config.json
     MONTOCOMPRA = 2000
-    GANANCIAPORCENTUAL = 2 #Constante que defije objetivo de ganancia relativa porcentual
-    DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    PORCENTUALINDICES = 1 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
+    GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
+    DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+0.4 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
+    PORCENTUALINDICES = 0.6 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
     MODOTEST = 0
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
@@ -121,9 +121,8 @@ class AADR(object):
 
         print("Fecha: " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
         logging.info("INICIANDO LARVA " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
-        print("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
+        print("\n\n**CCL al cierre anterior, "+str(self.fechaUltimoCierre)+", (GGAL, YPFD, BMA, PAMP) Promedio: ${0:.2f}".format(self.dolar_ccl_promedio))
         logging.info("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
-
 
 
     ### Varialiones de los principales indices.
@@ -235,7 +234,8 @@ class AADR(object):
                 local_ca = pd_local['Close'].values[0]
                 np_date = pd_local.index.values[0]
                 self.fechaUltimoCierre = numpy.datetime_as_string(np_date, "D")
-                logging.debug("Calculo CCL al dia: "+self.fechaUltimoCierre)
+                logging.info("Calculo CCL al dia: "+self.fechaUltimoCierre)
+
 
                 ##Con esta linea me traigo el ADR del mismo dia del local
                 pd_adr = yf.download(campo[0], start=numpy.datetime_as_string(np_date, "D"), interval="1d").head(1)
@@ -353,10 +353,10 @@ class AADR(object):
         propSP500 = self.calculoPropIndice()
 
         if propSP500 >= self.PORCENTUALINDICES:
-            logging.info("Se habilita la compra. SP500 {0:.2f} mayor a: {0:.2f} ".format(propSP500,self.PORCENTUALINDICES))
+            logging.info("Se habilita la compra. SP500 {0:.2f}%".format(propSP500)+" mayor a: {0:.2f}% ".format(self.PORCENTUALINDICES))
             return True
         else:
-            logging.info("Bloqueo la compra. SP500 {0:.2f} ".format(propSP500))
+            logging.info("Bloqueo la compra. SP500 {0:.2f}% ".format(propSP500))
             return False
 
 
@@ -414,7 +414,7 @@ class AADR(object):
 
             if self.enPeriodoCompra:
                 if self.condicionIndicesMundiales():
-                    for tt in self.lista:
+                    for tt in self.lista: ## ITERO POR TICKER
                         tickerlocal = tt[1].split(".")[0]
                         local_up, punta_precioCompra, punta_cantidadCompra, punta_precioVenta, punta_cantidadVenta = self.getCotizacion(tickerlocal)
 
@@ -443,7 +443,7 @@ class AADR(object):
                     ## TIEMPO DEL CICLO
                     print(Fore.RED+"\n ...Hilo ppal(de compra) en ejecucion..."+datetime.now().strftime('%d/%m/%Y %H:%M:%S')+Fore.RESET)
                 else:
-                    print("Bloqueo compra por no cumplir condicion de indices bursatiles SP500: "+str(self.calculoPropIndice()))
+                    print("Se Bloquea la compra. SP500 {0:.2f}%".format(self.calculoPropIndice()) + " menor a: {0:.2f}% ".format(self.PORCENTUALINDICES))
             else:
                 print("Termino periodo de compra. ")
                 if not self.isComprasPendientes() and self.MODOTEST == 0:
