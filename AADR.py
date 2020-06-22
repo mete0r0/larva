@@ -23,9 +23,9 @@ class AADR(object):
     fechaUltimoCierre = ""
     TIMEREFRESH = 10 ## Valor por defecto. Toma el valor del archivo config.json
     MONTOCOMPRA = 2000
-    GANANCIAPORCENTUAL = 2 #Constante que defije objetivo de ganancia relativa porcentual
-    DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+1 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    PORCENTUALINDICES = 1 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
+    GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
+    DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+0.4 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
+    PORCENTUALINDICES = 0.5 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
     MODOTEST = 0
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
