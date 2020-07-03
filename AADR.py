@@ -25,7 +25,7 @@ class AADR(object):
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+0.4 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    PORCENTUALINDICES = 0.6 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
+    PORCENTUALINDICES = 0.2 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
     MODOTEST = 0
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
@@ -46,11 +46,11 @@ class AADR(object):
 
         ### Indices [TICKER YAHOO, Desc, Cotiz cierre anterior, Cotiz actual]
         self.listaIndices.append(['^GSPC',"S&P 500", 0, 0]) ## S&P 500
-        self.listaIndices.append(['^IXIC',"NASDAQ", 0, 0]) ## NASDAQ
-        self.listaIndices.append(['^N225', "Nikkei", 0, 0]) ## Nikkei
-        self.listaIndices.append(['^IBEX',"IBEX", 0, 0]) ## IBEX
-        self.listaIndices.append(['^GDAXI',"DAX-ALEMANIA", 0, 0]) ## DAX PERFORMANCE-INDEX
-        self.listaIndices.append(['^HSI',"HANG SENG INDEX", 0, 0]) ## HANG SENG INDEX
+        #self.listaIndices.append(['^IXIC',"NASDAQ", 0, 0]) ## NASDAQ
+        #self.listaIndices.append(['^N225', "Nikkei", 0, 0]) ## Nikkei
+        #self.listaIndices.append(['^IBEX',"IBEX", 0, 0]) ## IBEX
+        #self.listaIndices.append(['^GDAXI',"DAX-ALEMANIA", 0, 0]) ## DAX PERFORMANCE-INDEX
+        #self.listaIndices.append(['^HSI',"HANG SENG INDEX", 0, 0]) ## HANG SENG INDEX
 
         self.getPrincipalesIndices(fecha)
         print("Lista de indices.")
