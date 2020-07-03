@@ -31,7 +31,7 @@ class AADR(object):
     MINUTEGRADIENTEVENTA = 30
     APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
-    PERIODOVENTA = 5 * 60 ## 16hs comienza el horario de venta a costo.
+    PERIODOVENTAFORZADA = 5 * 60 ## 16hs comienza el horario de venta a costo.
     enPeriodoCompra = False
     FINVENTAS = False
     ganancia = float(0)
@@ -541,13 +541,13 @@ class AADR(object):
                 nuevoValor) + " (anterior: ${0:.2f})".format(campo[4]))
 
         ## 16:00 intento vender al costo de compra.
-        if self.PERIODOVENTA <= ((ahora - self.APERTURA).seconds / 60):
+        if self.PERIODOVENTAFORZADA <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0 :
             nuevoValor = costoCompra
             logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
 
         ## Gradientes con perdida.
         ## 16:45
-        if 345 <= ((ahora - self.APERTURA).seconds / 60):
+        if 345 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
             descuento5 = costoCompra * 5 / 100
             totalDescuento5 = (costoCompra-descuento5) * campo[2]
             if totalDescuento5 <= self.ganancia:
@@ -556,7 +556,7 @@ class AADR(object):
             else: logging.info(campo[0] + " Gradiente c/Perdida 16:45 sin saldo")
 
         ## 16:50
-        if 350 <= ((ahora - self.APERTURA).seconds / 60):
+        if 350 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
             descuento10 = costoCompra * 10 / 100
             totalDescuento10 = (costoCompra - descuento10) * campo[2]
             if totalDescuento10 <= self.ganancia:
@@ -565,7 +565,7 @@ class AADR(object):
             else: logging.info(campo[0] + " Gradiente c/Perdida 16:50 sin saldo")
 
         ## 16:55
-        if 355 <= ((ahora - self.APERTURA).seconds / 60):
+        if 355 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
             descuento15 = costoCompra * 15 / 100
             totalDescuento15 = (costoCompra - descuento15) * campo[2]
             if totalDescuento15 <= self.ganancia:
