@@ -1,6 +1,10 @@
 {
   "DEFAULT": {
     "PATH": "/Users/MeteOro/codigo/larva/",
-    "TIMEREFRESH": 10
+    "TIMEREFRESH": 10,
+    "PERIODOVENTAFORZADAMIN": 300,
+    "GANANCIAPORCENTUAL": 1,
+    "PORCENTUALINDICES": 0.2,
+    "FECHALIMITECOMPRA11": 15
   }
 }
