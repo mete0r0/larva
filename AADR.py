@@ -20,7 +20,8 @@ class AADR(object):
     listaValoresActualesAcciones = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     listaValoresActualesAdrs = [] ## TICKER, ULTIMOPRECIO, punta_cantCompra, punta_precioCompra, punta_cantVenta, punta_precioVenta, TIMESTAMP)
     listaccl = [] ##Lista de historicos CCL.
-    fechaUltimoCierre = ""
+    fechaUltimoCierreLocal = ""
+    fechaUltimoCierreAdr = ""
     TIMEREFRESH = 10 ## Valor por defecto. Toma el valor del archivo config.json
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
@@ -29,9 +30,8 @@ class AADR(object):
     MODOTEST = 0
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
-    APERTURA = 0
     PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
-    PERIODOVENTAFORZADA = 5 * 60 ## 16hs comienza el horario de venta a costo.
+    PERIODOVENTAFORZADAMIN = 300 ## 16hs comienza el horario de venta a costo.
     enPeriodoCompra = False
     FINVENTAS = False
     ganancia = float(0)
@@ -100,8 +100,7 @@ class AADR(object):
             print("Cantidad listaValoresActualesAcciones en Inicio: " + str(len(self.lista)))
             print(self.listaValoresActualesAcciones)
 
-
-        once = time(hour=11, minute=0, second=0)
+        once = time(hour=0, minute=29, second=0)
         self.APERTURA = datetime.combine(fecha, once)
         logging.debug("Apertura: "+str(self.APERTURA))
 
@@ -109,8 +108,8 @@ class AADR(object):
             "YPFD.BA") + self.calculo_ccl_AlCierreARG("BMA.BA") + self.calculo_ccl_AlCierreARG("PAMP.BA")) / 4
 
         ## Guardo fecha y ccl de ultimo cierre
-        if not self.siExiste(self.listaccl, self.fechaUltimoCierre):
-            self.listaccl.append([self.fechaUltimoCierre, self.dolar_ccl_promedio])
+        if not self.siExiste(self.listaccl, self.fechaUltimoCierreLocal):
+            self.listaccl.append([self.fechaUltimoCierreLocal, self.dolar_ccl_promedio])
         with open(self.PATH+"data/listaccl.dat", "wb") as f:
             pickle.dump(self.listaccl, f)
 
@@ -121,7 +120,7 @@ class AADR(object):
 
         print("Fecha: " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
         logging.info("INICIANDO LARVA " + self.fecha.strftime('%d/%m/%Y %H:%M:%S'))
-        print("\n\n**CCL al cierre anterior, "+str(self.fechaUltimoCierre)+", (GGAL, YPFD, BMA, PAMP) Promedio: ${0:.2f}".format(self.dolar_ccl_promedio))
+        print("\n\n**CCL al cierre anterior, "+str(self.fechaUltimoCierreLocal)+", (GGAL, YPFD, BMA, PAMP) Promedio: ${0:.2f}".format(self.dolar_ccl_promedio))
         logging.info("\n\n**CCL al cierre anterior: (GGAL, YPFD, BMA, PAMP) Promedio: {0:.2f}".format(self.dolar_ccl_promedio))
 
 
@@ -180,7 +179,7 @@ class AADR(object):
                 if c[0] == v[0]:
                     comprado = float(c[2] * c[1])
                     vendido = float(v[2] * v[1])
-                    compraTotal = compraTotal + comprado
+                    compraTotal      = compraTotal + comprado
                     ventaTotal = ventaTotal + vendido
                     costoCompra = self.iol.calculoCostoOp(comprado)
                     ganancia = vendido - (comprado + costoCompra)
@@ -195,6 +194,10 @@ class AADR(object):
             config = json.load(file)
         self.PATH = config['DEFAULT']['PATH']
         self.TIMEREFRESH = config['DEFAULT']['TIMEREFRESH']
+        self.PERIODOVENTAFORZADAMIN = config['DEFAULT']['PERIODOVENTAFORZADAMIN']
+        self.GANANCIAPORCENTUAL = config['DEFAULT']['GANANCIAPORCENTUAL']
+        self.PORCENTUALINDICES = config['DEFAULT']['PORCENTUALINDICES']
+        self.FECHALIMITECOMPRA11 = config['DEFAULT']['FECHALIMITECOMPRA11']
 
     ## LOGGER
     def loguear(self):
@@ -218,31 +221,42 @@ class AADR(object):
     def cargar_cotiz(self, fecha):
         logging.debug('Cargando cotizaciones ultimo cierre.')
         #lista_aux=[]
-        start = fecha - timedelta(days=3)
+        start = fecha - timedelta(days=5)
         end = fecha
         for campo in self.lista:
+            ## Tomo la ultima cotización local.
             local_ca = 0
-            adr_ca = 0
             try:
                 pd_local_aux = yf.download(campo[1], start=start.strftime('%Y-%m-%d'), end=end.strftime('%Y-%m-%d'), interval="1d")
                 pd_local = pd_local_aux.drop(fecha.date()).tail(1)
             except KeyError:
                 logging.debug("No se pudo borrar el dia de hoy. "+ campo[1])
                 pd_local = pd_local_aux.tail(1)
-
             if  not pd_local.empty:
                 local_ca = pd_local['Close'].values[0]
                 np_date = pd_local.index.values[0]
-                self.fechaUltimoCierre = numpy.datetime_as_string(np_date, "D")
-                logging.info("Calculo CCL al dia: "+self.fechaUltimoCierre)
+                self.fechaUltimoCierreLocal = numpy.datetime_as_string(np_date, "D")
+                logging.debug(self.fechaUltimoCierreLocal + " - " + campo[1] + " C. Loc ULT CIERRE {0:.2f}".format(local_ca))
+
+            ## Tomo la ultima cotizacion ADR.
+            adr_ca = 0
+            try:
+                pd_adr_aux = yf.download(campo[0], start=start.strftime('%Y-%m-%d'), end=end.strftime('%Y-%m-%d'),
+                                           interval="1d")
+                pd_adr = pd_adr_aux.drop(fecha.date()).tail(1)
+            except KeyError:
+                logging.debug("No se pudo borrar el dia de hoy. " + campo[0])
+                pd_adr = pd_adr_aux.tail(1)
+            if not pd_adr.empty:
+                adr_ca = pd_adr['Close'].values[0]
+                np_date = pd_adr.index.values[0]
+                self.fechaUltimoCierreAdr = numpy.datetime_as_string(np_date, "D")
+                logging.debug(self.fechaUltimoCierreAdr + " - " + campo[0] + " C. ADR ULT CIERRE {0:.2f}".format(adr_ca))
 
 
-                ##Con esta linea me traigo el ADR del mismo dia del local
-                pd_adr = yf.download(campo[0], start=numpy.datetime_as_string(np_date, "D"), interval="1d").head(1)
+            ##Con esta linea me traigo el ADR del mismo dia del local
+            #pd_adr = yf.download(campo[0], start=numpy.datetime_as_string(np_date, "D"), interval="1d").head(1)
 
-                if not pd_adr.empty:
-                    adr_ca = pd_adr['Close'].values[0]
-            logging.debug(self.fechaUltimoCierre+ " - "+campo[0] + " C. ADR ULT CIERRE {0:.2f}".format(adr_ca) + " C. Loc ULT CIERRE {0:.2f}".format(local_ca))
 
             campo[3] = adr_ca
             campo[4] = local_ca
@@ -481,8 +495,9 @@ class AADR(object):
 
                     ##Logica que tiene en cuenta el tipo que hace que esta comprado y cambia el ValorMinVenta
                     valorMinVenta = self.gradientePrecioVenta(campo)
-                    campo[4] = valorMinVenta
-                    self.actualizarCompras()
+                    if (valorMinVenta != campo[4]):
+                        campo[4] = valorMinVenta
+                        self.actualizarCompras()
 
                     logging.info("Ticker: "+campo[0]+" Punta de compra: $ {0:.2f}".format(punta_precioCompra)+" Objetivo: $ {0:.2f}".format(valorMinVenta))
 
@@ -541,22 +556,26 @@ class AADR(object):
                 nuevoValor) + " (anterior: ${0:.2f})".format(campo[4]))
 
         ## 16:00 intento vender al costo de compra.
-        #if self.PERIODOVENTAFORZADA <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0 :
-        #    nuevoValor = costoCompra
-        #    logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+        if (ahora >=self.APERTURA):
+            difAperturaMin = (ahora - self.APERTURA).seconds / 60
+        else:
+            difAperturaMin = 0
+        logging.info(" Minutos desde la apertura: {0:.2f} ".format(difAperturaMin))
 
+        if self.PERIODOVENTAFORZADAMIN <= difAperturaMin and difAperturaMin < 345:
+            nuevoValor = costoCompra
+            logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
         ## Gradientes con perdida.
         ## 16:45
-        #if 345 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
-        #    descuento5 = costoCompra * 5 / 100
-        #    totalDescuento5 = (costoCompra-descuento5) * campo[2]
-        #    if totalDescuento5 <= self.ganancia:
-        #        nuevoValor = costoCompra - descuento5
-        #        logging.info(campo[0] + " Ejecuto Gradiente c/Perdida, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
-         #   else: logging.info(campo[0] + " Gradiente c/Perdida 16:45 sin saldo")
-
-        ## 16:50
-        if 350 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
+        if 345 <= difAperturaMin and difAperturaMin < 350:
+            descuento5 = costoCompra * 5 / 100
+            totalDescuento5 = (costoCompra-descuento5) * campo[2]
+            if totalDescuento5 <= self.ganancia:
+                nuevoValor = costoCompra - descuento5
+                logging.info(campo[0] + " Ejecuto Gradiente c/Perdida, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+            else: logging.info(campo[0] + " Gradiente c/Perdida 16:45 sin saldo")
+            ## 16:50
+        if 350 <= difAperturaMin and difAperturaMin < 355:
             descuento10 = costoCompra * 10 / 100
             totalDescuento10 = (costoCompra - descuento10) * campo[2]
             if totalDescuento10 <= self.ganancia:
@@ -565,7 +584,7 @@ class AADR(object):
             else: logging.info(campo[0] + " Gradiente c/Perdida 16:50 sin saldo")
 
         ## 16:55
-        if 355 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
+        if 355 <= difAperturaMin:
             descuento15 = costoCompra * 15 / 100
             totalDescuento15 = (costoCompra - descuento15) * campo[2]
             if totalDescuento15 <= self.ganancia:

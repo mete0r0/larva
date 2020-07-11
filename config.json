@@ -1,6 +1,10 @@
 {
   "DEFAULT": {
     "PATH": "/usr/src/larva/",
-    "TIMEREFRESH": 2
+    "TIMEREFRESH": 2,
+    "PERIODOVENTAFORZADAMIN": 300,
+    "GANANCIAPORCENTUAL": 1,
+    "PORCENTUALINDICES": 0.2,
+    "FECHALIMITECOMPRA11": 15
   }
 }
