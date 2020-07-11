@@ -1,6 +1,6 @@
 {
   "DEFAULT": {
-    "PATH": "/Users/MeteOro/codigo/larva/",
-    "TIMEREFRESH": 10
+    "PATH": "/usr/src/larva/",
+    "TIMEREFRESH": 2
   }
 }
