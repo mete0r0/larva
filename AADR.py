@@ -541,19 +541,19 @@ class AADR(object):
                 nuevoValor) + " (anterior: ${0:.2f})".format(campo[4]))
 
         ## 16:00 intento vender al costo de compra.
-        if self.PERIODOVENTAFORZADA <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0 :
-            nuevoValor = costoCompra
-            logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+        #if self.PERIODOVENTAFORZADA <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0 :
+        #    nuevoValor = costoCompra
+        #    logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
 
         ## Gradientes con perdida.
         ## 16:45
-        if 345 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
-            descuento5 = costoCompra * 5 / 100
-            totalDescuento5 = (costoCompra-descuento5) * campo[2]
-            if totalDescuento5 <= self.ganancia:
-                nuevoValor = costoCompra - descuento5
-                logging.info(campo[0] + " Ejecuto Gradiente c/Perdida, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
-            else: logging.info(campo[0] + " Gradiente c/Perdida 16:45 sin saldo")
+        #if 345 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
+        #    descuento5 = costoCompra * 5 / 100
+        #    totalDescuento5 = (costoCompra-descuento5) * campo[2]
+        #    if totalDescuento5 <= self.ganancia:
+        #        nuevoValor = costoCompra - descuento5
+        #        logging.info(campo[0] + " Ejecuto Gradiente c/Perdida, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+         #   else: logging.info(campo[0] + " Gradiente c/Perdida 16:45 sin saldo")
 
         ## 16:50
         if 350 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
