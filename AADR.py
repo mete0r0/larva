@@ -180,7 +180,7 @@ class AADR(object):
                 if c[0] == v[0]:
                     comprado = float(c[2] * c[1])
                     vendido = float(v[2] * v[1])
-                    compraTotal = compraTotal + comprado
+                    compraTotal      = compraTotal + comprado
                     ventaTotal = ventaTotal + vendido
                     costoCompra = self.iol.calculoCostoOp(comprado)
                     ganancia = vendido - (comprado + costoCompra)
