@@ -25,7 +25,7 @@ class AADR(object):
     MONTOCOMPRA = 2000
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+0.4 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
-    PORCENTUALINDICES = 0.6 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
+    PORCENTUALINDICES = 0.2 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
     MODOTEST = 0
     FECHALIMITECOMPRA11 = 15
     MINUTEGRADIENTEVENTA = 30
@@ -46,11 +46,11 @@ class AADR(object):
 
         ### Indices [TICKER YAHOO, Desc, Cotiz cierre anterior, Cotiz actual]
         self.listaIndices.append(['^GSPC',"S&P 500", 0, 0]) ## S&P 500
-        self.listaIndices.append(['^IXIC',"NASDAQ", 0, 0]) ## NASDAQ
-        self.listaIndices.append(['^N225', "Nikkei", 0, 0]) ## Nikkei
-        self.listaIndices.append(['^IBEX',"IBEX", 0, 0]) ## IBEX
-        self.listaIndices.append(['^GDAXI',"DAX-ALEMANIA", 0, 0]) ## DAX PERFORMANCE-INDEX
-        self.listaIndices.append(['^HSI',"HANG SENG INDEX", 0, 0]) ## HANG SENG INDEX
+        #self.listaIndices.append(['^IXIC',"NASDAQ", 0, 0]) ## NASDAQ
+        #self.listaIndices.append(['^N225', "Nikkei", 0, 0]) ## Nikkei
+        #self.listaIndices.append(['^IBEX',"IBEX", 0, 0]) ## IBEX
+        #self.listaIndices.append(['^GDAXI',"DAX-ALEMANIA", 0, 0]) ## DAX PERFORMANCE-INDEX
+        #self.listaIndices.append(['^HSI',"HANG SENG INDEX", 0, 0]) ## HANG SENG INDEX
 
         self.getPrincipalesIndices(fecha)
         print("Lista de indices.")
@@ -541,19 +541,19 @@ class AADR(object):
                 nuevoValor) + " (anterior: ${0:.2f})".format(campo[4]))
 
         ## 16:00 intento vender al costo de compra.
-        if self.PERIODOVENTAFORZADA <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0 :
-            nuevoValor = costoCompra
-            logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+        #if self.PERIODOVENTAFORZADA <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0 :
+        #    nuevoValor = costoCompra
+        #    logging.info(campo[0] + " Ejecuto Gradiente Final, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
 
         ## Gradientes con perdida.
         ## 16:45
-        if 345 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
-            descuento5 = costoCompra * 5 / 100
-            totalDescuento5 = (costoCompra-descuento5) * campo[2]
-            if totalDescuento5 <= self.ganancia:
-                nuevoValor = costoCompra - descuento5
-                logging.info(campo[0] + " Ejecuto Gradiente c/Perdida, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
-            else: logging.info(campo[0] + " Gradiente c/Perdida 16:45 sin saldo")
+        #if 345 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
+        #    descuento5 = costoCompra * 5 / 100
+        #    totalDescuento5 = (costoCompra-descuento5) * campo[2]
+        #    if totalDescuento5 <= self.ganancia:
+        #        nuevoValor = costoCompra - descuento5
+        #        logging.info(campo[0] + " Ejecuto Gradiente c/Perdida, Nuevo ValorVentaMin: ${0:.2f}".format(nuevoValor))
+         #   else: logging.info(campo[0] + " Gradiente c/Perdida 16:45 sin saldo")
 
         ## 16:50
         if 350 <= ((ahora - self.APERTURA).seconds / 60) and ((ahora - self.APERTURA).seconds / 60) > 0:
