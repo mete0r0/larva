@@ -100,7 +100,7 @@ class AADR(object):
             print("Cantidad listaValoresActualesAcciones en Inicio: " + str(len(self.lista)))
             print(self.listaValoresActualesAcciones)
 
-        once = time(hour=0, minute=29, second=0)
+        once = time(hour=11, minute=0, second=0)
         self.APERTURA = datetime.combine(fecha, once)
         logging.debug("Apertura: "+str(self.APERTURA))
 
