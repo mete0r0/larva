@@ -2,8 +2,6 @@
 import pickle
 from colorama import Fore
 from finance_dao import Iol
-import logging
-import logging.handlers
 from datetime import datetime, date
 
 i = 0
@@ -39,7 +37,7 @@ for c in compras:
             vendido = float(v[2]*v[1])
             compraTotal = compraTotal + comprado
             ventaTotal = ventaTotal + vendido
-            #print("\tCotiz compra: $ {0:.2f}".format(c[1])+" - Cotiz de venta: $ {0:.2f}".format(v[1]))
+            print("\tCotiz compra: $ {0:.2f}".format(c[1])+" - Cotiz de venta: $ {0:.2f}".format(v[1]))
             costoCompra = iol.calculoCostoOp(comprado)
 
             ganancia = vendido - (comprado+costoCompra)
