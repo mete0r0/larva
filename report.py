@@ -5,27 +5,34 @@ from finance_dao import Iol
 import logging
 import logging.handlers
 from datetime import datetime, date
+import sys
 
 i = 0
 compras =[]
 hoy = datetime.now()
 #hoy = date(2020, 5, 19)
 
+if (len(sys.argv)==1):
+    fecha = hoy.strftime('%d%m%Y')
+else:
+    fecha = sys.argv[1]
 
-print("FECHA: "+hoy.strftime('%d%m%Y')+"\n")
-with open("./data/compras"+hoy.strftime('%d%m%Y')+".dat", "rb") as f:
+print("FECHA: "+fecha+"\n")
+with open("./data/compras"+fecha+".dat", "rb") as f:
     compras = pickle.load(f)
 print("Cantidad compras: " + str(len(compras)))
 print(compras)
 
 ventas = []
-with open("./data/ventas"+hoy.strftime('%d%m%Y')+".dat", "rb") as f:
+with open("./data/ventas"+fecha+".dat", "rb") as f:
     ventas = pickle.load(f)
 print("Cantidad ventas: " + str(len(ventas)))
 #print(ventas)
 
 compraTotal = float(0)
+compraTotalVendidos = float(0)
 saldoTotal = float(0)
+saldoSinVender = float(0)
 ventaTotal = float(0)
 vendio = False
 totalGanado = float(0)
@@ -38,8 +45,9 @@ for c in compras:
             comprado = float(c[2]*c[1])
             vendido = float(v[2]*v[1])
             compraTotal = compraTotal + comprado
+            compraTotalVendidos = compraTotalVendidos + comprado
             ventaTotal = ventaTotal + vendido
-            #print("\tCotiz compra: $ {0:.2f}".format(c[1])+" - Cotiz de venta: $ {0:.2f}".format(v[1]))
+            print("\tCotiz compra: $ {0:.2f}".format(c[1])+" - Cotiz de venta: $ {0:.2f}".format(v[1]))
             costoCompra = iol.calculoCostoOp(comprado)
 
             ganancia = vendido - (comprado+costoCompra)
@@ -52,11 +60,15 @@ for c in compras:
     if not vendio:
         print("\t Compra Abierta: "+ c[0]+ ", monto: {0:.2f} ".format(c[1]*c[2])+ " Objetivo: {0:.2f}".format(c[4]))
         compraTotal = compraTotal + float(c[1]*c[2])
+        saldoSinVender = saldoSinVender + float(c[1]*c[2])
     #print(str(i)+"  "+c[0]+" Compra sin vender {0:.2f}".format(c[1])+" Time: "+ c[5])
 
 
 costoCompras = iol.calculoCostoOp(compraTotal)
 saldoTotal = ventaTotal - (compraTotal+costoCompras)
 print(" Saldo: {0:.2f}".format(saldoTotal))
-print(" Ganado: {0:.2f}".format(totalGanado))
+print(" Saldo Sin vender: {0:.2f}".format(saldoSinVender))
+print(" Inversion total posiciones cerradas: {0:.2f}".format(compraTotalVendidos))
+if compraTotalVendidos != 0:
+    print(" Ganado: {0:.2f}".format(totalGanado)+ " porcentaje: {0:.2f} %".format((totalGanado/(compraTotalVendidos))*100))
 
