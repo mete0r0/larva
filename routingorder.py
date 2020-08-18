@@ -17,6 +17,7 @@ class RoutingOrder(object):
     modotest = True
     compras = []  ##  ( TICKER, VALOR, CANTIDAD, NROOPERACION, Estado(Enum), TIMESTAMP, VALORVENTAMIN)
     ventas = []  ##   ( TICKER, VALOR, CANTIDAD, NROOPERACION, Estado(Enum), TIMESTAMP)
+    TIMEREFRESH = 1
 
     def __init__(self, compras, ventas, modotest, logger):
         self.compras = compras
@@ -45,8 +46,8 @@ class RoutingOrder(object):
                     th_Vender = threading.Thread(target=self.worker_estado_op, args=(venta,))
                     th_Vender.start()
             print("VENTAS: "+ str(self.ventas))
-            self.logging.info("Puleando Ventas")
-            time.sleep(20)
+            self.logging.info("Puleando Ventas, espero {}".format(self.TIMEREFRESH))
+            time.sleep(self.TIMEREFRESH)
 
     def worker_Vender(self, venta):
         venta[4] = Estado.CURSANDO
@@ -57,7 +58,7 @@ class RoutingOrder(object):
 
         if self.modotest:
             self.logging.info(" Vendiendo en modo test.")
-            time.sleep(20)
+            time.sleep(self.TIMEREFRESH)
             venta[4] = Estado.OPERADA
         else:
             iol = Iol()
@@ -95,8 +96,8 @@ class RoutingOrder(object):
                     th_Comprar.start()
 
             print("COMPRAS: "+ str(self.compras))
-            self.logging.info("Puleando Compras")
-            time.sleep(22)
+            self.logging.info("Puleando Compras, espero {}".format(self.TIMEREFRESH))
+            time.sleep(self.TIMEREFRESH)
 
 
     def worker_Comprar(self, compra):
@@ -107,8 +108,8 @@ class RoutingOrder(object):
         validez = datetime.now().strftime('%Y-%m-%d')
 
         if self.modotest:
-            self.logging.info(" Vendiendo en modo test.")
-            time.sleep(20)
+            self.logging.info(" Comprando en modo test.")
+            time.sleep(3)
             compra[4] = Estado.OPERADA
         else:
             iol = Iol()
