@@ -39,8 +39,8 @@ class AADR(object):
 
     MODOTEST = 0
     CONRUTEO = True
-    horarioApertura = time(hour=23, minute=55, second=0)
-    PORCENTUALINDICES = 0.6
+    horarioApertura = time(hour=11, minute=00, second=0)
+    PORCENTUALINDICES = 0.2
 
     def __init__(self, lista, fecha):
         self.logger= self.loguear()
@@ -370,7 +370,7 @@ class AADR(object):
 
         ## Inicio Routing
         if (self.CONRUTEO):
-            r = RoutingOrder(self.compras, self.ventas, True, self.logger)
+            r = RoutingOrder(self.compras, self.ventas, False, self.logger)
         ###
         ### Bucle principal ##############################################################
         while (True):
