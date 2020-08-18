@@ -212,14 +212,22 @@ class Iol(object):
             'plazo': 't2',
             'validez': validez
         }
+        try:
+            r = requests.post(url=URL, json=payload, headers=headers)
+            if r.ok:
+                # r.encoding = 'ISO-8859-1'
+                texto = r.text.replace("'", "\"")
+                rJson = json.loads(texto)
+                nro = rJson['numeroOperacion']
+                logging.debug("Operacion de compra cargada con exito. {}".format(nro))
+        except:
+            logging.debug("No se pudo ejecutar la orden de compra en IOL")
+            raise ConnectionError("Fallo conexion IOL, CODE: {}, {}".format(str(r.status_code), rJson))
+            return None
 
-        r = requests.post(url=URL, json=payload, headers=headers)
+        return nro
 
-        if r.status_code > 299:
-            raise ConnectionError("Fallo conexion IOL, CODE: " + str(r.status_code))
-        
-        return json.loads(r.text)
-
+    ## envia la orden de venta a IOL y devuelve el numero de operación
     def vender(self, ticker, cantidad, precio, validez):
         nrope = 0
         URL = "https://api.invertironline.com/api/v2/operar/Vender"
@@ -234,25 +242,53 @@ class Iol(object):
             'plazo': 't2',
             'validez': validez
         }
+        try:
+            r = requests.post(url=URL, json=payload, headers=headers)
+            if r.ok:
+                #r.encoding = 'ISO-8859-1'
+                texto = r.text.replace("'","\"")
+                rJson = json.loads(texto)
+                nro = rJson['numeroOperacion']
+                logging.debug("Operacion de venta cargada con exito. {}".format(nro))
+        except:
+            logging.debug("No se pudo ejecutar la orden de venta en IOL")
+            raise ConnectionError("Fallo conexion IOL, CODE: {}, {}".format(str(r.status_code),rJson))
+            return None
 
-        r = requests.post(url=URL, json=payload, headers=headers)
-
-        if r.status_code > 299:
-            raise ConnectionError("Fallo conexion IOL, CODE: " + str(r.status_code))
-        print(r.encoding)
-        r.encoding = 'ISO-8859-1'
-        return r.text
+        return nro
 
     def borrarOperacion(self, number):
         headers = {'Authorization': "Bearer " + self.getToken()}
-        r = requests.delete("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
-        return r.text
+        try:
+            r = requests.delete("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
+            if r.ok:
+                # r.encoding = 'ISO-8859-1'
+                texto = r.text.replace("'", "\"")
+                rJson = json.loads(texto)
+                descripcion = ""
+                if rJson['ok']:
+                    descripcion = rJson['messages'][0]['description']
+                logging.debug("Operacion de venta cargada con exito. {}".format(descripcion))
+        except:
+            logging.debug("No se pudo ejecutar la orden de venta en IOL")
+            raise ConnectionError("Fallo conexion IOL, CODE: {}, {}".format(str(r.status_code), rJson))
+            return None
+        return True
 
     def getOperacion(self, number):
         headers = {'Authorization': "Bearer " + self.getToken()}
-        r = requests.get("https://api.invertironline.com/api/v2/operaciones/"+number, headers=headers)
-        return r.text
-
+        r = ""
+        try:
+            r = requests.get("https://api.invertironline.com/api/v2/operaciones/"+str(number), headers=headers)
+            if r.ok:
+                texto = r.text.replace("'", "\"")
+                rJson = json.loads(texto)
+                return rJson['estadoActual']
+                logging.debug("Operacion de venta cargada con exito. {}".format(descripcion))
+        except:
+            logging.debug("No se pudo ejecutar la orden GetOperacion en IOL")
+            raise ConnectionError("Fallo conexion IOL, CODE: {}, {}".format(str(r.status_code), rJson))
+            return None
     def getOperaciones(self):
         headers = {'Authorization': "Bearer " + self.getToken()}
         r = requests.get("https://api.invertironline.com/api/v2/operaciones/", headers=headers)
