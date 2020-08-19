@@ -42,7 +42,7 @@ class AADR(object):
     PORCENTUALINDICES = 0.2
 
     def __init__(self, lista, fecha):
-        self.logger= self.loguear()
+        self.logger = self.loguear()
         self.logger.info("Iniciando Larva")
 
         self.fecha = fecha
@@ -155,7 +155,7 @@ class AADR(object):
         self.GANANCIAPORCENTUAL = config['DEFAULT']['GANANCIAPORCENTUAL']
         self.PORCENTUALINDICES = config['DEFAULT']['PORCENTUALINDICES']
         self.LIMITECOMPRA_MIN = config['DEFAULT']['LIMITECOMPRA_MIN']
-        if config['DEFAULT']['CONRUTEO'] == "1":
+        if config['DEFAULT']['CONRUTEO'] == 1:
             self.CONRUTEO = True
 
     ## LOGGER
