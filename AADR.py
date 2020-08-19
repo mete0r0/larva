@@ -29,17 +29,16 @@ class AADR(object):
     GANANCIAPORCENTUAL = 1 #Constante que defije objetivo de ganancia relativa porcentual
     DIFPORCENTUALMINCOMPRA = GANANCIAPORCENTUAL+0.4 #Minima diferencia con el valor arbitrado par considerarlo en la compra.
     PORCENTUALINDICES = 0.2 # Porcentaje de indice de otros mercados que tiene que superar para poder habilitar la compra.
-    FECHALIMITECOMPRA11 = 15
+    LIMITECOMPRA_MIN = 15 # Minutos desde apertura
     MINUTEGRADIENTEVENTA = 30
-    PERIODOCOMPRA = FECHALIMITECOMPRA11 ## Periodo maximo de compra.
     PERIODOVENTAFORZADAMIN = 300 ## 16hs comienza el horario de venta a costo.
     enPeriodoCompra = False
     FINVENTAS = False
     #GANANCIA = float(0)
 
     MODOTEST = 0
-    CONRUTEO = True
-    horarioApertura = time(hour=11, minute=00, second=0)
+    CONRUTEO = False ## Por parametros
+    HORARIOAPERTURA = time(hour=11, minute=00, second=0)
     PORCENTUALINDICES = 0.2
 
     def __init__(self, lista, fecha):
@@ -49,6 +48,8 @@ class AADR(object):
         self.fecha = fecha
         self.iol = Iol()
         self.getConfig()
+
+        print("Minutos fin de periodo compras: {}".format(self.LIMITECOMPRA_MIN))
         self.dao = Dao(self.PATH)
 
         ### Indices [TICKER YAHOO, Desc, Cotiz cierre anterior, Cotiz actual]
@@ -92,7 +93,7 @@ class AADR(object):
             print("Cantidad listaValoresActualesAcciones en Inicio: " + str(len(self.lista)))
             print(self.listaValoresActualesAcciones)
 
-        self.APERTURA = datetime.combine(fecha, self.horarioApertura)
+        self.APERTURA = datetime.combine(fecha, self.HORARIOAPERTURA)
         self.logger.debug("Apertura: "+str(self.APERTURA))
 
         self.dolar_ccl_promedio = (self.calculo_ccl_AlCierreARG("GGAL.BA") + self.calculo_ccl_AlCierreARG(
@@ -153,7 +154,9 @@ class AADR(object):
         self.PERIODOVENTAFORZADAMIN = config['DEFAULT']['PERIODOVENTAFORZADAMIN']
         self.GANANCIAPORCENTUAL = config['DEFAULT']['GANANCIAPORCENTUAL']
         self.PORCENTUALINDICES = config['DEFAULT']['PORCENTUALINDICES']
-        self.FECHALIMITECOMPRA11 = config['DEFAULT']['FECHALIMITECOMPRA11']
+        self.LIMITECOMPRA_MIN = config['DEFAULT']['LIMITECOMPRA_MIN']
+        if config['DEFAULT']['CONRUTEO'] == "1":
+            self.CONRUTEO = True
 
     ## LOGGER
     def loguear(self):
@@ -350,8 +353,8 @@ class AADR(object):
             return True
 
 
-        #if 0 <= minutosTranscurridos and (minutosTranscurridos <= self.PERIODOCOMPRA):
-        if (minutosTranscurridos <= self.PERIODOCOMPRA):
+        #if 0 <= minutosTranscurridos and (minutosTranscurridos <= self.LIMITECOMPRA_MIN):
+        if (minutosTranscurridos <= self.LIMITECOMPRA_MIN):
 
             self.logger.info(" Tiempo de compra: " + str(minutosTranscurridos))
             return True
@@ -370,7 +373,7 @@ class AADR(object):
 
         ## Inicio Routing
         if (self.CONRUTEO):
-            r = RoutingOrder(self.compras, self.ventas, False, self.logger)
+            r = RoutingOrder(self.compras, self.ventas, False, self.logger, self.enPeriodoCompra)
         ###
         ### Bucle principal ##############################################################
         while (True):
