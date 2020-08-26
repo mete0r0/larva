@@ -32,7 +32,7 @@ class AADR(object):
     LIMITECOMPRA_MIN = 15 # Minutos desde apertura
     MINUTEGRADIENTEVENTA = 30
     PERIODOVENTAFORZADAMIN = 300 ## 16hs comienza el horario de venta a costo.
-    enPeriodoCompra = False
+    enPeriodoCompra = True
     FINVENTAS = False
     #GANANCIA = float(0)
 
@@ -344,6 +344,8 @@ class AADR(object):
             if not campo[5]: return True
         return False
 
+
+    ## Metodo que devuelve True en caso de estar dentro del periodo de compra
     def isHorarioCompra(self):
         now = datetime.now()
         minutosTranscurridos = (now - self.APERTURA).seconds / 60
@@ -355,7 +357,6 @@ class AADR(object):
 
         #if 0 <= minutosTranscurridos and (minutosTranscurridos <= self.LIMITECOMPRA_MIN):
         if (minutosTranscurridos <= self.LIMITECOMPRA_MIN):
-
             self.logger.info(" Tiempo de compra: " + str(minutosTranscurridos))
             return True
         else:
@@ -370,6 +371,8 @@ class AADR(object):
         threadvendedor.start()
 
         self.logger.debug("Arranca larva: ")
+
+        self.enPeriodoCompra = self.isHorarioCompra()
 
         ## Inicio Routing
         if (self.CONRUTEO):

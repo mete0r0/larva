@@ -212,6 +212,7 @@ class Iol(object):
             'plazo': 't2',
             'validez': validez
         }
+        nro = ""
         try:
             r = requests.post(url=URL, json=payload, headers=headers)
             if r.ok:
@@ -289,6 +290,7 @@ class Iol(object):
             logging.debug("No se pudo ejecutar la orden GetOperacion en IOL")
             raise ConnectionError("Fallo conexion IOL, CODE: {}, {}".format(str(r.status_code), rJson))
             return None
+
     def getOperaciones(self):
         headers = {'Authorization': "Bearer " + self.getToken()}
         r = requests.get("https://api.invertironline.com/api/v2/operaciones/", headers=headers)

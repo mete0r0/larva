@@ -17,6 +17,7 @@ class RoutingOrder(object):
     ventas = []  ##   ( TICKER, VALOR, CANTIDAD, NROOPERACION, Estado(Enum), TIMESTAMP)
     TIMEREFRESH = 1
     FINCOMPRA = False
+    enPeriodoCompra = False
 
     def __init__(self, compras, ventas, modotest, logger, enPeriodoCompra):
         self.compras = compras
@@ -116,7 +117,7 @@ class RoutingOrder(object):
                 elif compra[4] != Estado.OPERADA:
                     hayPendiente = True
                     self.logging.info("No al compras pendientes de orden.")
-            if (not hayPendiente):
+            if not hayPendiente and self.enPeriodoCompra:
                 self.FINCOMPRA = True
                 self.logging.info("Fin hilo operador Compra")
 
