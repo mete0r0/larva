@@ -117,7 +117,7 @@ class RoutingOrder(object):
                 elif compra[4] != Estado.OPERADA:
                     hayPendiente = True
                     self.logging.info("No al compras pendientes de orden.")
-            if not hayPendiente and self.enPeriodoCompra:
+            if not hayPendiente and not self.enPeriodoCompra:
                 self.FINCOMPRA = True
                 self.logging.info("Fin hilo operador Compra")
 
