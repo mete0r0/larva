@@ -341,7 +341,7 @@ class AADR(object):
     ## Devuelve true si hay compras pendientes de venta. falso en caso contrario
     def isComprasPendientes(self):
         for campo in self.compras:
-            if not campo[5]: return True
+            if campo[4] != Estado.OPERADA: return True
         return False
 
 

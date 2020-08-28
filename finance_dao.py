@@ -199,7 +199,7 @@ class Iol(object):
         return proporcionTicker
 
     def comprar(self, ticker, cantidad, precio, validez):
-        nrope = 0
+        nrope = "000"
         URL = "https://api.invertironline.com/api/v2/operar/Comprar"
         auth = "Bearer " + self.getToken()
 
@@ -212,25 +212,24 @@ class Iol(object):
             'plazo': 't2',
             'validez': validez
         }
-        nro = ""
         try:
             r = requests.post(url=URL, json=payload, headers=headers)
             if r.ok:
                 # r.encoding = 'ISO-8859-1'
                 texto = r.text.replace("'", "\"")
                 rJson = json.loads(texto)
-                nro = rJson['numeroOperacion']
-                logging.debug("Operacion de compra cargada con exito. {}".format(nro))
+                nrope = rJson['numeroOperacion']
+                logging.debug("Operacion de compra enviada. Nro Ope: {}".format(nrope))
         except:
             logging.debug("No se pudo ejecutar la orden de compra en IOL")
             raise ConnectionError("Fallo conexion IOL, CODE: {}, {}".format(str(r.status_code), rJson))
             return None
 
-        return nro
+        return nrope
 
     ## envia la orden de venta a IOL y devuelve el numero de operación
     def vender(self, ticker, cantidad, precio, validez):
-        nrope = 0
+        nrope = "000"
         URL = "https://api.invertironline.com/api/v2/operar/Vender"
         auth = "Bearer " + self.getToken()
 
@@ -249,14 +248,14 @@ class Iol(object):
                 #r.encoding = 'ISO-8859-1'
                 texto = r.text.replace("'","\"")
                 rJson = json.loads(texto)
-                nro = rJson['numeroOperacion']
-                logging.debug("Operacion de venta cargada con exito. {}".format(nro))
+                nrope = rJson['numeroOperacion']
+                logging.debug("Operacion de venta cargada. Nro Ope: {}".format(nrope))
         except:
             logging.debug("No se pudo ejecutar la orden de venta en IOL")
             raise ConnectionError("Fallo conexion IOL, CODE: {}, {}".format(str(r.status_code),rJson))
             return None
 
-        return nro
+        return nrope
 
     def borrarOperacion(self, number):
         headers = {'Authorization': "Bearer " + self.getToken()}
